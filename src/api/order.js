@@ -67,6 +67,27 @@ export function returnConfirmOrder(orderId) {
   })
 }
 
+export function payAndThaw(orderId, amount) {
+  return request({
+    url: '/order/payAndThaw',
+    method: 'get',
+    params: {
+      orderId: orderId,
+      amount: amount
+    }
+  })
+}
+
+export function thaw(orderId) {
+  return request({
+    url: '/order/thaw',
+    method: 'get',
+    params: {
+      orderId
+    }
+  })
+}
+
 export function getCheckInfo(orderId, userId) {
   return request({
     url: '/order/auditInfo',

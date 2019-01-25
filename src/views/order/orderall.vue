@@ -193,27 +193,6 @@
             <el-table-column align="center" label="支付订单" prop="outTradeOrderId" />
           </el-table>
         </el-form-item>
-
-        <el-form-item label="支付信息">
-          <span>（支付渠道）支付宝</span>
-          <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
-            <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
-            <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
-            <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
-            <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
-
-            <el-table-column align="center" label="支付时间" prop="updateTime" />
-            <el-table-column align="center" label="支付订单" prop="outTradeOrderId" />
-            <!--<el-table-column align="center" label="货品图片" prop="picUrl">-->
-              <!--<template slot-scope="scope">-->
-                <!--<img :src="scope.row.picUrl" width="40" />-->
-              <!--</template>-->
-            <!--</el-table-column>-->
-          </el-table>
-        </el-form-item>
-
-
-
         <el-form-item label="快递信息">
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>

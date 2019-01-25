@@ -10,7 +10,6 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
-
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
       highlight-current-row>
@@ -55,10 +54,11 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" @click="handleReturn(scope.row)" size="mini">确认归还</el-button>
+          <!--<el-button type="primary" @click="compensationAndThawing(scope.row)" size="mini">赔偿并解冻</el-button>-->
+          <el-button type="primary" @click="thaw(scope.row)" size="mini">直接解冻</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
@@ -66,8 +66,6 @@
         :total="total">
       </el-pagination>
     </div>
-
-
     <!-- 订单详情对话框 -->
     <el-dialog title="订单详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
 
@@ -202,7 +200,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
   </div>
 </template>
 
@@ -229,7 +226,9 @@
   import {
     listOrder,
     detailOrder,
-    returnConfirmOrder
+    returnConfirmOrder,
+    payAndThaw,
+    thaw
   } from '@/api/order'
   import {
     parseTime
@@ -355,6 +354,53 @@
           const filterVal = ['id', 'orderSn', 'userId', 'orderStatus', 'isDelete', 'consignee', 'mobile', 'address']
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
+        })
+      },
+      compensationAndThawing(row) {
+        this.$confirm('确定需要赔偿么?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'primary'
+        }).then(() => {
+          payAndThaw(row.id).then(response => {
+            this.checkDialogVisible = false
+            this.$notify({
+              title: '成功',
+              message: '已确认支付并解冻押金',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+      },
+      thaw(row) {
+        this.$confirm('确定解冻押金么?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'primary'
+        }).then(() => {
+          thaw(row.id).then(response => {
+            console.info(JSON.stringify(response))
+            this.checkDialogVisible = false
+            this.$notify({
+              title: '成功',
+              message: response.data.data == null ? '已解冻押金成功' : response.data.data,
+              type: response.data.data == null ? 'success' : 'error',
+              duration: 2000
+            })
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
         })
       }
     }
