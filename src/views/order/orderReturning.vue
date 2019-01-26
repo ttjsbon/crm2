@@ -54,7 +54,18 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" @click="handleReturn(scope.row)" size="mini">确认归还</el-button>
-          <!--<el-button type="primary" @click="compensationAndThawing(scope.row)" size="mini">赔偿并解冻</el-button>-->
+          <el-button type="primary" @click="bulletBoxAndAmount(scope.row)" size="mini">赔偿并解冻</el-button>
+          <el-dialog title="输入金额" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+              <el-form-item label="金额">
+                <el-input v-model="scope.row.amount" auto-complete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="payAndThaw(scope.row)">确 定</el-button>
+            </div>
+          </el-dialog>
           <el-button type="primary" @click="thaw(scope.row)" size="mini">直接解冻</el-button>
         </template>
       </el-table-column>
@@ -271,6 +282,7 @@
           orderGoods: []
         },
         downloadLoading: false,
+        dialogFormVisible: false,
         userdata: null
       }
     },
@@ -356,27 +368,20 @@
           this.downloadLoading = false
         })
       },
-      compensationAndThawing(row) {
-        this.$confirm('确定需要赔偿么?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'primary'
-        }).then(() => {
-          payAndThaw(row.id).then(response => {
-            this.checkDialogVisible = false
-            this.$notify({
-              title: '成功',
-              message: '已确认支付并解冻押金',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
+      bulletBoxAndAmount(row) {
+        this.editObj = row
+        this.dialogFormVisible = true
+      },
+      payAndThaw(row) {
+        this.dialogFormVisible = false
+        payAndThaw(row.id, this.editObj.amount).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '已确认支付并解冻押金',
+            type: 'success',
+            duration: 2000
           })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
+          this.getList()
         })
       },
       thaw(row) {
