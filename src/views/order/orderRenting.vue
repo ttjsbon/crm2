@@ -179,8 +179,24 @@
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
-            <el-table-column align="center" label="支付时间" prop="updateTime" />
-            <el-table-column align="center" label="支付订单" prop="outTradeOrderId" />
+            <!--<el-table-column align="center" label="支付时间" prop="updateTime" />-->
+            <!--<el-table-column align="center" label="支付订单" prop="outTradeOrderId" />-->
+
+            <el-table-column  align="center" :label="'支付时间'" width="200px">
+              <template slot-scope="scope" >
+                <span>  {{ scope.row.updateTime.substring(0, 10)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column  align="center" :label="'支付订单'" width="200px">
+              <template slot-scope="scope" >
+                <span>  {{ scope.row.outTradeOrderId}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column  align="center" :label="'支付状态'" width="200px">
+              <template slot-scope="scope" >
+                <span>  {{ scope.row.outTradeOrderId ? '已支付': '未支付'}}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </el-form-item>
         <el-form-item label="快递信息">
