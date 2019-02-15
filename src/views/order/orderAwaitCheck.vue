@@ -232,6 +232,41 @@
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
           </el-input>
         </el-form-item>
+        <!--&lt;!&ndash; TODO 列表直接从接口获取 &ndash;&gt;-->
+        <!--<div v-for="risk in showCheckData">-->
+
+          <!--<el-form-item label="信用渠道" prop="refundMoney" v-if='risk&&risk.channel'>-->
+            <!--{{risk.channel}}-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='risk&&risk.creditScore'>-->
+            <!--<div v-html='risk.creditScore'>-->
+              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+            <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='!(risk&&risk.creditScore)'>-->
+            <!--''-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='risk&&risk.score'>-->
+            <!--{{risk.score}}-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(risk&&risk.score)'>-->
+            <!--''-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='risk&&risk.decision'>-->
+            <!--{{risk.decision}}-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='!(risk&&risk.decision)'>-->
+            <!--''-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='risk&&risk.result'>-->
+            <!--<div v-html='risk.result'>-->
+              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+            <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='!(risk&&risk.result)'>-->
+            <!--''-->
+          <!--</el-form-item>-->
+        <!--</div>-->
         <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
           <div v-html='showCheckData.creditScore'>
             <!-- {{showCheckData}} -->
@@ -401,6 +436,8 @@
       },
       handleCheck(row) {
         getCheckInfo(row.id, row.userId).then(res => {
+          // var da = [res.data.data]
+          // this.showCheckData = da
           this.showCheckData = res.data.data
           this.changeJson(this.showCheckData, 'result')
           this.changeJson(this.showCheckData, 'creditScore')
