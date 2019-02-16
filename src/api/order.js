@@ -78,6 +78,17 @@ export function payAndThaw(orderId, amount) {
   })
 }
 
+export function enterTheAmountOfCompensation(orderId, amount) {
+  return request({
+    url: '/order/enterTheAmountOfCompensation',
+    method: 'get',
+    params: {
+      orderId: orderId,
+      amount: amount
+    }
+  })
+}
+
 export function thaw(orderId) {
   return request({
     url: '/order/thaw',
