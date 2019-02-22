@@ -90,11 +90,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="365" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- <el-button type="primary" size="mini" @click="setStock(scope.row)">设置库存</el-button> -->
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" @click="handleTop(scope.row)">置顶</el-button>
+          <el-button type="primary" size="mini" @click="handleUp(scope.row)">上移</el-button>
+          <el-button type="primary" size="mini" @click="handleDown(scope.row)">下移</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -144,7 +147,8 @@
   import {
     listGoods,
     deleteGoods,
-    editOnSale
+    editOnSale,
+    sort
 
   } from '@/api/goods'
   import BackToTop from '@/components/BackToTop'
@@ -232,6 +236,54 @@
           })
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
+        })
+      },
+      handleTop(row) {
+        this.handleTopParams = {
+          orderId: row.id,
+          move: 0,
+          top: true
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '置顶成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+      },
+      handleUp(row) {
+        this.handleTopParams = {
+          orderId: row.id,
+          move: 1,
+          top: false
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '置顶成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+      },
+      handleDown(row) {
+        this.handleTopParams = {
+          orderId: row.id,
+          move: -1,
+          top: false
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '置顶成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
         })
       },
       handleDownload() {

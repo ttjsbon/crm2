@@ -42,6 +42,14 @@ export function editGoods(data) {
   })
 }
 
+export function sort(data) {
+  return request({
+    url: '/goods/sort',
+    method: 'post',
+    data
+  })
+}
+
 export function listCatAndBrand() {
   return request({
     url: '/goods/catAndBrand',
