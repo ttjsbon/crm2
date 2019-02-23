@@ -287,10 +287,61 @@
         <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>
           ''
         </el-form-item>
-        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
           <div v-html='showCheckData.result'>
-            <!-- {{showCheckData}} -->
+            {{showCheckData}}
           </div>
+        </el-form-item>-->
+        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">
+          <div v-html='showCheckData.result'>
+          <!-- {{showCheckData}} -->
+          </div>
+          <!--<span v-if="checkTongDun.INFOANALYSIS.id_age" >年龄：{{ checkTongDun.INFOANALYSIS.id_age }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.id_gender">性别：{{ checkTongDun.INFOANALYSIS.id_gender === 'F' ? '女' : '男' }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address_province">移动地址省份：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address_province }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address_city">移动地址市区：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address_city }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address">移动地址：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_province">身份证省份：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_province }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_city">身份证市区：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_city }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_address">身份证地址：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_address }}<br></span>
+          <span v-if="checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.credit_score">信用分：{{ checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.credit_score }}<br></span>
+          <span v-if="checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.model_version">版本：{{ checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.model_version }}<br></span>
+          <span v-if="checkTongDun.RENT.final_decision">是否通过：{{ checkTongDun.RENT.final_decision }}<br></span>
+          <span v-if="checkTongDun.RENT.final_score">反欺诈分数：{{ checkTongDun.RENT.final_score }}<br></span>
+          <span v-if="checkTongDun.RENT.risk_items">风控异常信息<br></span>
+          <div v-if="checkTongDun.RENT.risk_items" style="margin-left: 25px" v-for="item in checkTongDun.RENT.risk_items">
+            <span v-if="item.rule_id">规则ID：{{ item.rule_id }}<br></span>
+            <span v-if="item.policy_score">政策评分：{{ item.policy_score }}<br></span>
+            <span v-if="item.score">分数：{{ item.score }}<br></span>
+            <span v-if="item.policy_mode">政策模式：{{ item.policy_mode }}<br></span>
+            <span v-if="item.decision">决策：{{ item.decision }}<br></span>
+            <span v-if="item.policy_decision">决策：{{ item.policy_decision }}<br></span>
+            <span v-if="item.policy_name">政策名称：{{ item.policy_name }}<br></span>
+            <span v-if="item.risk_name">风险名称：{{ item.risk_name }}<br></span>
+            <span v-if="item.risk_detail">风控异常详情<br></span>
+            <div v-if="item.risk_detail" v-for="risk_detail in item.risk_detail" style="margin-left: 25px">
+              <span v-if="risk_detail.hit_type_display_name">证件类型：{{risk_detail.hit_type_display_name}}<br></span>
+              <span v-if="risk_detail.fraud_type_display_name">欺诈类型：{{risk_detail.fraud_type_display_name}}<br></span>
+              <span v-if="risk_detail.description">描述：{{risk_detail.description}}<br></span>
+              <span v-if="risk_detail.type">所在名单：{{risk_detail.type}}<br></span>
+              <div v-if="risk_detail.grey_list_details" v-for="grey_list_details in risk_detail.grey_list_details" style="margin-left: 25px">
+                <span v-if="grey_list_details.evidence_time">时间：{{grey_list_details.evidence_time}}<br></span>
+                <span v-if="grey_list_details.fraud_type">欺诈类型：{{grey_list_details.fraud_type}}<br></span>
+                <span v-if="grey_list_details.fraud_type_display_name">欺诈类型：{{grey_list_details.fraud_type_display_name}}<br></span>
+                <span v-if="grey_list_details.risk_level">风险等级：{{grey_list_details.risk_level}}<br></span>
+                <span v-if="grey_list_details.value">值：{{grey_list_details.value}}<br></span>
+              </div>
+
+
+              <div >
+                <span>明细清单</span>
+                <div v-if="risk_detail.frequency_detail_list" v-for="frequency_detail_list in risk_detail.frequency_detail_list" style="margin-left: 25px">
+                  <span v-if="frequency_detail_list.detail">详情：{{frequency_detail_list.detail}}<br></span>
+                </div>
+              </div>
+              <span v-if="risk_detail.frequency_detail_list.type">所在名单：{{risk_detail.frequency_detail_list.type}}<br></span>
+            </div>
+          </div>-->
         </el-form-item>
         <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>
           ''
@@ -439,6 +490,7 @@
           // var da = [res.data.data]
           // this.showCheckData = da
           this.showCheckData = res.data.data
+          this.checkTongDun = JSON.parse(this.showCheckData.result)
           this.changeJson(this.showCheckData, 'result')
           this.changeJson(this.showCheckData, 'creditScore')
         })

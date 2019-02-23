@@ -46,3 +46,14 @@ export function deleteCategory(data) {
     data
   })
 }
+
+export function sort(id, move) {
+  return request({
+    url: '/category/sort',
+    method: 'post',
+    params: {
+      categoryId: id,
+      move: move
+    }
+  })
+}

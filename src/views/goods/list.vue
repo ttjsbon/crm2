@@ -263,7 +263,7 @@
         sort(this.handleTopParams).then(response => {
           this.$notify({
             title: '成功',
-            message: '置顶成功',
+            message: '上移成功',
             type: 'success',
             duration: 2000
           })
@@ -279,7 +279,7 @@
         sort(this.handleTopParams).then(response => {
           this.$notify({
             title: '成功',
-            message: '置顶成功',
+            message: '下移成功',
             type: 'success',
             duration: 2000
           })

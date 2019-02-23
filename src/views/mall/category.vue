@@ -47,12 +47,14 @@
       </el-table-column>   
 
       <el-table-column align="center" label="父类目ID" prop="pid">
-      </el-table-column> 
+      </el-table-column>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="295" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.level === 'L1' " type="primary" size="mini" @click="handleUp(scope.row)">上移</el-button>
+          <el-button v-if="scope.row.level === 'L1' " type="primary" size="mini" @click="handleDown(scope.row)">下移</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -140,7 +142,7 @@
 </style>
 
 <script>
-import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
+import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory, sort } from '@/api/category'
 import { uploadPath } from '@/api/storage'
 
 export default {
@@ -306,6 +308,28 @@ export default {
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
+      })
+    },
+    handleUp(row) {
+      sort(row.id, 1).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '上移成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      })
+    },
+    handleDown(row) {
+      sort(row.id, -1).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '下移成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
       })
     },
     handleDownload() {
