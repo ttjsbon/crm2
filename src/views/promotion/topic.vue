@@ -98,7 +98,46 @@
     </el-dialog>
 
     <!-- 修改商品 -->
-    <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancel" :close-on-click-modal='false'>
+    <div title="设置商品" class="setting" v-if="this.dialogGoods===true" :visible.sync="dialogGoods" @close="cancel" :close-on-click-modal='false'>
+      <div class="content" >
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearch"
+                         placeholder="请输入商品名称或id" @select="handleSelect">
+          <template slot-scope="props">
+            <div v-if='!props.item.nonesuggestion' class="proinfo flex">
+              <div class="pic">
+                <img :src="props.item.picUrl" alt="">
+              </div>
+              <div class="prointroduce">
+                <div class="proId">{{props.item.id}}</div>
+                <div class="proname wordhide">{{props.item.name}}</div>
+              </div>
+            </div>
+            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
+              {{props.item.nonesuggestion}}
+            </div>
+          </template>
+        </el-autocomplete>
+        <div class="flex goodlist">
+          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
+            <div class="goodbox flex">
+              <div>
+                <img :src="item.picUrl" alt="">
+              </div>
+              <div class="goodnames">{{item.name}}</div>
+            </div>
+            <div class="rightinfo">
+              <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer" style="margin-top: 10px">
+        <el-button @click="cancel">取消</el-button>
+        <el-button type="primary" @click="addgoods">确定</el-button>
+      </div>
+    </div>
+    <!--<el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancel" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearch"
           placeholder="请输入商品名称或id" @select="handleSelect">
@@ -136,12 +175,18 @@
         <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="addgoods">确定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog>-->
 
   </div>
 </template>
 
 <style lang="scss">
+  .setting {
+    margin-top: -169px;
+    z-index: auto;
+    position: absolute;
+    background-color: white;
+  }
   .el-dialog {
     width: 800px;
   }
@@ -470,17 +515,21 @@
         })
       },
       changeGoods(row) {
-        if (row.goods.length) {
-          getGoodsInfo({
-            idList: row.goods
-          }).then(res => {
-            this.editGood = res.data.data
+        if (this.dialogGoods === false) {
+          if (row.goods.length) {
+            getGoodsInfo({
+              idList: row.goods
+            }).then(res => {
+              this.editGood = res.data.data
+              this.dialogGoods = true
+              this.dataForm = Object.assign({}, row)
+            })
+          } else {
             this.dialogGoods = true
             this.dataForm = Object.assign({}, row)
-          })
-        } else {
-          this.dialogGoods = true
-          this.dataForm = Object.assign({}, row)
+          }
+        } else if (this.dialogGoods === true) {
+          this.dialogGoods = false
         }
       },
       cancel() {
