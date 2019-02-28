@@ -348,8 +348,6 @@
 </style>
 
 <script>
-
-
   import {
     listOrder,
     shipOrder,
@@ -392,7 +390,8 @@
           name: undefined,
           orderStatusArray: [],
           sort: 'add_time',
-          order: 'desc'
+          order: 'desc',
+          overdue: 1
         },
         statusMap,
         orderDialogVisible: false,
