@@ -246,6 +246,14 @@ export const asyncRouterMap = [{
       noCache: true
     }
   }, {
+    path: 'orderOverdue',
+    component: _import('order/orderOverdue'),
+    name: 'orderOverdue',
+    meta: {
+      title: '逾期中',
+      noCache: true
+    }
+  }, {
     path: 'orderReturning',
     component: _import('order/orderReturning'),
     name: 'orderReturning',
