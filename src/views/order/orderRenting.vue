@@ -7,6 +7,10 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+      </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
@@ -278,7 +282,8 @@
           orderStatusArray: [501],
           sort: 'add_time',
           order: 'desc',
-          overdue: 1
+          overdue: 1,
+          mobile: undefined
         },
         statusMap,
         orderDialogVisible: false,

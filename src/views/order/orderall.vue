@@ -7,6 +7,10 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+      </el-input>
       <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
@@ -387,11 +391,12 @@
           page: 1,
           limit: 20,
           id: undefined,
-          name: undefined,
           orderStatusArray: [],
           sort: 'add_time',
           order: 'desc',
-          overdue: 1
+          overdue: 1,
+          name: undefined,
+          mobile: undefined
         },
         statusMap,
         orderDialogVisible: false,
