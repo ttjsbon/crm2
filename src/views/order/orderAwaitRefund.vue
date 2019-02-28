@@ -293,7 +293,8 @@
           name: undefined,
           orderStatusArray: [302],
           sort: 'add_time',
-          order: 'desc'
+          order: 'desc',
+          overdue: 1
         },
         statusMap,
         orderDialogVisible: false,
