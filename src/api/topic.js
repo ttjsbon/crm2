@@ -26,7 +26,7 @@ export function readTopic(data) {
 
 export function read(id) {
   return request({
-    url: '/topic/readById',
+    url: '/topic/v1.2/readById',
     method: 'get',
     params: {
       id: id
