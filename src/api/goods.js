@@ -44,7 +44,7 @@ export function editGoods(data) {
 
 export function sort(data) {
   return request({
-    url: '/goods/sort',
+    url: '/goods/v1.2/sort',
     method: 'post',
     data
   })

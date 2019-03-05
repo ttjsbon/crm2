@@ -49,7 +49,7 @@ export function deleteCategory(data) {
 
 export function sort(id, move) {
   return request({
-    url: '/category/sort',
+    url: '/category/v1.2/sort',
     method: 'post',
     params: {
       categoryId: id,

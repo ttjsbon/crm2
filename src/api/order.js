@@ -8,6 +8,14 @@ export function listOrder(query) {
   })
 }
 
+export function listOrder2(query) {
+  return request({
+    url: '/order/v1.2/list',
+    method: 'get',
+    params: query
+  })
+}
+
 export function detailOrder(id) {
   return request({
     url: '/order/detail',
@@ -80,7 +88,7 @@ export function payAndThaw(orderId, amount) {
 
 export function enterTheAmountOfCompensation(orderId, amount) {
   return request({
-    url: '/order/enterTheAmountOfCompensation',
+    url: '/order/v1.2/enterTheAmountOfCompensation',
     method: 'get',
     params: {
       orderId: orderId,

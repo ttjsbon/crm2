@@ -26,7 +26,7 @@ export function readAd(data) {
 
 export function updateAd(data) {
   return request({
-    url: '/ad/update',
+    url: '/ad/v1.2/update',
     method: 'post',
     data
   })
