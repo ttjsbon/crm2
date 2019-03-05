@@ -39,3 +39,11 @@ export function deleteAd(data) {
     data
   })
 }
+
+export function updateGoodAndTopic(data) {
+  return request({
+    url: '/ad/v1.2/updateGoodAndTopic',
+    method: 'post',
+    data
+  })
+}
