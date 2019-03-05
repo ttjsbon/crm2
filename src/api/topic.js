@@ -24,6 +24,16 @@ export function readTopic(data) {
   })
 }
 
+export function read(id) {
+  return request({
+    url: '/topic/readById',
+    method: 'get',
+    params: {
+      id: id
+    }
+  })
+}
+
 export function updateTopic(data) {
   return request({
     url: '/topic/update',

@@ -172,7 +172,7 @@
           <div class="goodwarp flex" v-for="(item,index) in editTopic" :key="index">
             <div class="topicbox flex">
               <div>
-                <img :src="item.picUrl" alt="" width="80px" height="80px">
+                <img :src="item.picUrl" alt="" width="150px" height="80px">
               </div>
               <div class="topictitles">{{item.title}}</div>
             </div>
@@ -501,10 +501,9 @@
           if (row.id != null) {
             this.dataForm.topicId = row.topicId
             read(this.dataForm.topicId).then(res => {
-              this.editTopic = res.data.data
+              this.editTopic = [res.data.data]
               this.dialogTopic = true
               this.dataForm = Object.assign({}, row)
-              console.info(res)
             })
           } else {
             this.dialogTopic = true
@@ -551,7 +550,7 @@
         })
         this.dataForm.topicId = arr[0]
         updateGoodAndTopic(this.dataForm).then(res => {
-          this.dialogGoods = false
+          this.dialogTopic = false
           this.getList()
         })
       },
