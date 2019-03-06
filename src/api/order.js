@@ -26,6 +26,16 @@ export function detailOrder(id) {
   })
 }
 
+export function detailOrder2(id) {
+  return request({
+    url: '/order/v1.2/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
 export function shipOrder(data) {
   return request({
     url: '/order/ship',
@@ -110,6 +120,17 @@ export function thaw(orderId) {
 export function getCheckInfo(orderId, userId) {
   return request({
     url: '/order/auditInfo',
+    method: 'get',
+    params: {
+      orderId,
+      userId
+    }
+  })
+}
+
+export function refund(orderId, userId) {
+  return request({
+    url: '/order/v1.2/refund',
     method: 'get',
     params: {
       orderId,

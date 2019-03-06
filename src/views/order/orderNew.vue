@@ -125,6 +125,21 @@
 
         <div class="flex itemtogether">
 
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+
           <el-form-item label="豁免押金">
             <template slot-scope="scope">
               <span>{{orderDetail.order.freeDeposit}}</span>
@@ -261,9 +276,9 @@
 
 <script>
   import {
-    listOrder,
+    listOrder2,
     freeDepositOrder,
-    detailOrder
+    detailOrder2
   } from '@/api/order'
   import {
     parseTime
@@ -305,7 +320,8 @@
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         freeForm: {
           orderId: undefined,
@@ -327,7 +343,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder(this.listQuery).then(response => {
+        listOrder2(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -350,7 +366,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

@@ -158,6 +158,21 @@
 
         <div class="flex itemtogether">
 
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+
           <el-form-item label="豁免押金">
             <template slot-scope="scope">
               <span>{{orderDetail.order.freeDeposit}}</span>
@@ -292,7 +307,7 @@
 <script>
   import {
     listOrder2,
-    detailOrder,
+    detailOrder2,
     returnConfirmOrder,
     payAndThaw,
     enterTheAmountOfCompensation,
@@ -338,7 +353,8 @@
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         downloadLoading: false,
         dialogFormVisible: false,
@@ -380,7 +396,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

@@ -58,7 +58,8 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
+          <el-button v-if="scope.row.orderStatus!==202" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
+          <el-button v-if="scope.row.orderStatus===202" type="primary" size="mini" @click="handleRefund(scope.row)">确认退款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -120,6 +121,21 @@
           </el-form-item>
           <el-form-item label="全部租金">
             <span>{{ orderDetail.order.actualPrice }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
           </el-form-item>
         </div>
 
@@ -269,9 +285,10 @@
 
 <script>
   import {
-    listOrder,
+    listOrder2,
     shipOrder,
-    detailOrder
+    detailOrder2,
+    refund
   } from '@/api/order'
   import {
     parseTime
@@ -302,7 +319,7 @@
           limit: 20,
           id: undefined,
           name: undefined,
-          orderStatusArray: [301],
+          orderStatusArray: [301, 202],
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
@@ -313,7 +330,8 @@
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         shipForm: {
           orderId: undefined,
@@ -337,7 +355,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder(this.listQuery).then(response => {
+        listOrder2(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -360,7 +378,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -423,6 +441,33 @@
       },
       resetId() {
         this.shipForm.deviceId = []
+      },
+      handleRefund(row) {
+        this.$confirm('是否同意用户退款?', '提示', {
+          confirmButtonText: '拒绝',
+          cancelButtonText: '同意',
+          type: 'primary'
+        }).then(() => {
+          this.shipForm.orderId = row.id
+          this.shipForm.shipChannel = row.shipChannel
+          this.shipForm.shipSn = row.shipSn
+          this.shipDialogVisible = true
+          this.$nextTick(() => {
+            this.$refs['shipForm'].clearValidate()
+          })
+        }).catch(() => {
+          // 接入支付宝退款
+          refund(row.id).then(response => {
+            this.shipDialogVisible = false
+            this.$notify({
+              title: '成功',
+              message: '同意退款',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
+        })
       }
     }
   }
