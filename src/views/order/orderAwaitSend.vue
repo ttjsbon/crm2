@@ -260,6 +260,18 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="支付宝交易号" :visible.sync="dialogFormVisibleAmount" >
+      <el-form>
+        <el-form-item label="支付宝交易号">
+          <el-input v-model="amount"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAmount = false">取 消</el-button>
+        <el-button type="primary" @click="enterTheAmountOfCompensation(amount)">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -314,6 +326,7 @@
         list: undefined,
         total: undefined,
         listLoading: true,
+        dialogFormVisibleAmount: false,
         listQuery: {
           page: 1,
           limit: 20,
@@ -442,6 +455,23 @@
       resetId() {
         this.shipForm.deviceId = []
       },
+      bulletBoxAndAmount(row) {
+        this.dialogFormVisibleAmount = true
+        this.editRow = row
+      },
+      enterTheAmountOfCompensation(row) {
+        this.dialogFormVisibleAmount = false
+        refund(this.editRow.id, this.amount).then(response => {
+          this.shipDialogVisible = false
+          this.$notify({
+            title: '成功',
+            message: '同意退款',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+      },
       handleRefund(row) {
         this.$confirm('是否同意用户退款?', '提示', {
           confirmButtonText: '拒绝',
@@ -456,17 +486,7 @@
             this.$refs['shipForm'].clearValidate()
           })
         }).catch(() => {
-          // 接入支付宝退款
-          refund(row.id).then(response => {
-            this.shipDialogVisible = false
-            this.$notify({
-              title: '成功',
-              message: '同意退款',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
-          })
+          this.bulletBoxAndAmount(row)
         })
       }
     }

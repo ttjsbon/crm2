@@ -450,8 +450,6 @@
       },
       payAndThaw() {
         this.dialogFormVisible = false
-        console.info(this.editRow)
-        console.info(this.amount)
         payAndThaw(this.editRow.id, this.amount).then(response => {
           this.$notify({
             title: '成功',

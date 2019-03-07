@@ -128,13 +128,13 @@ export function getCheckInfo(orderId, userId) {
   })
 }
 
-export function refund(orderId, userId) {
+export function refund(orderId, outOrderId) {
   return request({
     url: '/order/v1.2/refund',
     method: 'get',
     params: {
       orderId,
-      userId
+      outOrderId
     }
   })
 }
