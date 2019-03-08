@@ -3,10 +3,11 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名" v-model="listQuery.username">
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.cardName">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 250px;" ></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" @click="handleCreate" icon="el-icon-edit">添加</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -17,20 +18,17 @@
       <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable>
       </el-table-column>
 
-      <el-table-column align="center" label="用户名" prop="username">
+      <el-table-column align="center" label="姓名" prop="cardName">
       </el-table-column>
 
       <el-table-column align="center" label="手机号码" prop="mobile">
       </el-table-column>
-      
+
       <el-table-column align="center" label="性别" prop="gender">
         <template slot-scope="scope">
           <el-tag >{{genderDic[scope.row.status]}}</el-tag>
         </template>
       </el-table-column>   
-
-      <el-table-column align="center" label="生日" prop="birthday">
-      </el-table-column>
 
       <el-table-column align="center" label="用户等级" prop="userLevel">
         <template slot-scope="scope">
@@ -42,7 +40,13 @@
         <template slot-scope="scope">
           <el-tag>{{statusDic[scope.row.status]}}</el-tag>
         </template>
-      </el-table-column>     
+      </el-table-column>
+
+      <el-table-column align="center" label="注册时间" prop="addTime">
+        <template slot-scope="scope" >
+          <span>  {{ scope.row.addTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -62,8 +66,8 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="dataForm.username"></el-input>
+        <el-form-item label="姓名" prop="cardName">
+          <el-input v-model="dataForm.cardName"></el-input>
         </el-form-item>
         <el-form-item label="手机号码" prop="mobile">
           <el-input v-model="dataForm.mobile"></el-input>
@@ -121,8 +125,10 @@
 
 <script>
 import { fetchList, createUser, updateUser } from '@/api/user'
+import DatePicker from 'vue2-datepicker'
 
 export default {
+  components: { DatePicker },
   name: 'User',
   data() {
     var validatePass = (rule, value, callback) => {
@@ -145,20 +151,39 @@ export default {
       }
     }
     return {
+      timePeriod: '',
+      lang: {
+        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+        placeholder: {
+          date: 'Select Date',
+          dateRange: 'Select Date Range'
+        }
+      },
+      shortcuts: [
+        {
+          text: 'Today',
+          onClick: () => {
+            this.timePeriod = [new Date(), new Date()]
+          }
+        }
+      ],
       list: null,
       total: null,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
-        username: undefined,
+        cardName: undefined,
+        timePeriod: [null],
         mobile: undefined,
         sort: 'add_time',
         order: 'desc'
       },
       dataForm: {
         id: undefined,
-        username: '',
+        cardName: '',
         mobile: '',
         password: undefined,
         checkPassword: undefined,
@@ -174,7 +199,7 @@ export default {
         create: '创建'
       },
       rules: {
-        username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+        cardName: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
         mobile: [{ required: true, message: '手机号码不能为空', trigger: 'blur' }],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
@@ -222,7 +247,7 @@ export default {
     resetForm() {
       this.dataForm = {
         id: undefined,
-        username: '',
+        cardName: '',
         mobile: '',
         pass: undefined,
         checkPass: undefined,
@@ -297,8 +322,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['用户名', '手机号码', '性别', '生日', '状态']
-        const filterVal = ['username', 'mobile', 'gender', 'birthday', 'status']
+        const tHeader = ['姓名', '手机号码', '性别', '生日', '状态']
+        const filterVal = ['cardName', 'mobile', 'gender', 'birthday', 'status']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '用户信息')
         this.downloadLoading = false
       })

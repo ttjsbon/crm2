@@ -14,6 +14,7 @@ import store from './store'
 import './icons' // icon
 import './permission' // permission control
 // import './mock' // simulation data
+import moment from 'moment'
 
 Vue.use(Element, {
   size: 'medium' // set element-ui default size
@@ -28,3 +29,10 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+Vue.filter(
+  'dateformat',
+  function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
+    return moment(dataStr).format(pattern)
+  }
+)
