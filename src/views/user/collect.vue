@@ -23,8 +23,11 @@
       <el-table-column align="center" min-width="100px" label="商品ID" prop="valueId">
       </el-table-column>
       
-      <el-table-column align="center" min-width="100px" label="添加时间" prop="addTime">
-      </el-table-column>          
+      <el-table-column align="center" label="添加时间" prop="addTime">
+        <template slot-scope="scope" >
+          <span>  {{ scope.row.addTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
