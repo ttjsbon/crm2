@@ -7,6 +7,8 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入收货人名称" v-model="listQuery.name">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入收货人手机号" v-model="listQuery.mobile">
+      </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" @click="handleCreate" icon="el-icon-edit">添加</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -118,7 +120,8 @@ export default {
         name: undefined,
         userId: undefined,
         sort: 'add_time',
-        order: 'desc'
+        order: 'desc',
+        mobile: undefined
       },
       provinces: {},
       cities: {},

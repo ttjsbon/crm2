@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listAddress(query) {
   return request({
-    url: '/address/list',
+    url: '/address/v1.2/list',
     method: 'get',
     params: query
   })
