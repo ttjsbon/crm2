@@ -3,14 +3,15 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
       <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
@@ -365,6 +366,7 @@
   import {
     parseTime
   } from '@/utils/index'
+  import DatePicker from 'vue2-datepicker'
   const statusMap = {
     201: '已付款',
     301: '审核通过',
@@ -375,9 +377,28 @@
   }
 
   export default {
+    components: { DatePicker },
     name: 'Order',
     data() {
       return {
+        timePeriod: '',
+        lang: {
+          days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+          placeholder: {
+            date: 'Select Date',
+            dateRange: 'Select Date Range'
+          }
+        },
+        shortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.timePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -390,7 +411,8 @@
           sort: 'add_time',
           order: 'desc,',
           overdue: 0,
-          mobile: undefined
+          mobile: undefined,
+          timePeriod: [null]
         },
         statusMap,
         orderDialogVisible: false,
