@@ -55,11 +55,11 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
-      <el-table-column align="center" label="物流单号" prop="shipSn">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
+      <!--</el-table-column>-->
 
-      <el-table-column align="center" label="物流渠道" prop="shipChannel">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
