@@ -95,7 +95,7 @@
           <el-button type="primary" @click="handleReturn(scope.row)" size="mini">确认归还</el-button>
           <el-button type="primary" @click="bulletBoxAndAmount(scope.row)" size="mini">赔偿并解冻</el-button>
           <el-button type="primary" @click="thaw(scope.row)" size="mini">直接解冻</el-button>
-          <el-button type="primary" @click="pendingSettlement(scope.row)" size="mini">待结算</el-button>
+          <el-button v-if="scope.row.compensationAmountPayStatus==='未支付'" type="primary" @click="pendingSettlement(scope.row)" size="mini">待结算</el-button>
         </template>
       </el-table-column>
     </el-table>
