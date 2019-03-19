@@ -498,7 +498,7 @@
       },
       changeTopic(row) {
         if (this.dialogTopic === false) {
-          if (row.id != null) {
+          if (row.topicId != null) {
             this.dataForm.topicId = row.topicId
             read(this.dataForm.topicId).then(res => {
               this.editTopic = [res.data.data]
