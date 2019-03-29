@@ -252,6 +252,9 @@
             <el-radio label="false">不通过</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="预授权" prop="preAuthorization" v-if='showCheckData'>
+          {{showCheckData.preAuthorization==true?'已通过':'未通过'}}（该订单是否通过支付宝预授权）
+        </el-form-item>
         <el-form-item label="备注" prop="refundMoney">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
           </el-input>

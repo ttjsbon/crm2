@@ -119,7 +119,7 @@ export function thaw(orderId) {
 
 export function getCheckInfo(orderId, userId) {
   return request({
-    url: '/order/auditInfo',
+    url: '/order/v1.2/auditInfo',
     method: 'get',
     params: {
       orderId,
