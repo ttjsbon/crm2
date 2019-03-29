@@ -212,20 +212,24 @@
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <!--<el-table-column align="center" label="支付时间" prop="updateTime" />-->
             <!--<el-table-column align="center" label="支付订单" prop="outTradeOrderId" />-->
-
-            <el-table-column  align="center" :label="'支付时间'" width="200px">
+            <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
-                <span>  {{ scope.row.updateTime.substring(0, 10)}}</span>
+                <span>  {{ scope.row.createTime.substring(0, 10)}}</span>
               </template>
             </el-table-column>
-            <el-table-column  align="center" :label="'支付订单'" width="200px">
+            <el-table-column  align="center" :label="'支付时间'" width="160px">
               <template slot-scope="scope" >
-                <span>  {{ scope.row.outTradeOrderId}}</span>
+                <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column  align="center" :label="'支付状态'" width="200px">
+            <el-table-column  align="center" :label="'支付订单'" width="195px">
               <template slot-scope="scope" >
-                <span>  {{ scope.row.outTradeOrderId ? '已支付': '未支付'}}</span>
+                <span>  {{ scope.row.payOrderId}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column  align="center" :label="'支付状态'" width="160px">
+              <template slot-scope="scope" >
+                <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
               </template>
             </el-table-column>
           </el-table>
