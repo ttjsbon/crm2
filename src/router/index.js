@@ -314,6 +314,53 @@ export const asyncRouterMap = [{
 },
 
 {
+  path: '/conpon',
+  component: Layout,
+  redirect: 'noredirect',
+  name: 'conponManage',
+  meta: {
+    title: '优惠券管理',
+    icon: 'chart'
+  },
+  children: [{
+    path: 'list',
+    component: _import('conpon/couponConfig'),
+    name: 'conponConfig',
+    meta: {
+      title: '优惠券配置',
+      noCache: true
+    }
+  },
+  {
+    path: 'create',
+    component: _import('conpon/couponBanner'),
+    name: 'couponBanner',
+    meta: {
+      title: '详情banner配置',
+      noCache: true
+    }
+  },
+  {
+    path: 'create',
+    component: _import('conpon/activityBanner'),
+    name: 'activityBanner',
+    meta: {
+      title: '首页活动banner配置',
+      noCache: true
+    }
+  },
+  {
+    path: 'create',
+    component: _import('conpon/userCoupon'),
+    name: 'userCoupon',
+    meta: {
+      title: '领券记录',
+      noCache: true
+    }
+  }]
+},
+
+{
   path: '/promotion',
   component: Layout,
   redirect: 'noredirect',
