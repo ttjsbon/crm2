@@ -71,3 +71,35 @@ export function delActivityBanner(data) {
     data
   })
 }
+
+export function couponConfigList(query) {
+  return request({
+    url: '/coupon/v1.3.0/couponConfig/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addCouponConfig(data) {
+  return request({
+    url: '/coupon/v1.3.0/couponConfig/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateCouponConfig(data) {
+  return request({
+    url: '/coupon/v1.3.0/couponConfig/update',
+    method: 'post',
+    data
+  })
+}
+
+export function delCouponConfig(data) {
+  return request({
+    url: '/coupon/v1.3.0/couponConfig/del',
+    method: 'post',
+    data
+  })
+}

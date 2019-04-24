@@ -3,9 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告标题" v-model="listQuery.name">
-      </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容" v-model="listQuery.content">
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入描述内容" v-model="listQuery.remarks">
       </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -14,45 +12,38 @@
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-
-
-      <el-table-column align="center" label="广告ID" prop="id" sortable>
+      <el-table-column align="center" label="ID" prop="id" sortable>
       </el-table-column>
-
-      <el-table-column align="center" label="广告标题" prop="name">
+      <el-table-column align="center" label="内容" prop="content">
       </el-table-column>
-
-      <el-table-column align="center" label="广告内容" prop="content">
-      </el-table-column>
-
-      <el-table-column align="center" label="广告图片" prop="url">
+      <el-table-column align="center" label="展示位置" prop="page">
         <template slot-scope="scope">
-          <img :src="scope.row.url" width="80" v-if="scope.row.url"/>
+          <el-tag >{{ scope.row.page===1 ? '首页banner详情页' : '商品详情页' }}</el-tag>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="广告位置" prop="position">
-      </el-table-column>
-
-      <el-table-column align="center" label="活动链接" prop="link">
-      </el-table-column>
-      <el-table-column align="center" label="商品id" prop="goodId">
-      </el-table-column>
-      <el-table-column align="center" label="专题id" prop="topicId">
-      </el-table-column>
-
-      <el-table-column align="center" label="是否启用" prop="enabled">
+      <el-table-column align="center" label="跳转类型" prop="pageType">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
+          <el-tag >{{ scope.row.pageType===1 ? '跳转至原生页面' : '跳转至H5页面' }}</el-tag>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" label="优惠券类型" prop="type">
+        <template slot-scope="scope">
+          <el-tag >{{ scope.row.type===1 ? '新用户注册' : scope.row.type===2 ? '指定商品' : '指定用户' }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="优惠金额" prop="discountedPrice">
+      </el-table-column>
+      <el-table-column align="center" label="指定商品id" prop="goodsId">
+      </el-table-column>
+      <el-table-column align="center" label="满足金额" prop="fullPrice">
+      </el-table-column>
+      <el-table-column align="center" label="过期时长(单位：天)" prop="expirationTime">
+      </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
           <el-button type="primary" size="mini" @click="changeGoods(scope.row)">设置商品</el-button>
-          <el-button type="primary" size="mini" @click="changeTopic(scope.row)">设置专题</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,40 +58,50 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="广告标题" prop="name">
-          <el-input v-model="dataForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="广告内容" prop="content">
+        <el-form-item label="内容" prop="content">
           <el-input v-model="dataForm.content"></el-input>
         </el-form-item>
-        <el-form-item label="广告图片" prop="url">
-          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
-            <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="广告位置" prop="position">
-          <el-select v-model="dataForm.position" placeholder="请选择">
-            <el-option label="首页" :value="1">
+        <el-form-item label="展示位置" prop="page">
+          <el-select v-model="dataForm.page" placeholder="请选择">
+            <el-option label="首页banner" :value="1">
+            </el-option>
+            <el-option label="商品详情页" :value="2">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动链接" prop="link">
-          <el-input v-model="dataForm.link"></el-input>
-        </el-form-item>
-        <el-form-item label="商品id" prop="goodId">
-          <el-input v-model="dataForm.goodId"></el-input>
-        </el-form-item>
-        <el-form-item label="专题id" prop="topicId">
-          <el-input v-model="dataForm.topicId"></el-input>
-        </el-form-item>
-        <el-form-item label="是否启用" prop="enabled">
-          <el-select v-model="dataForm.enabled" placeholder="请选择">
-            <el-option label="启用" :value="true">
+        <el-form-item label="跳转类型" prop="pageType">
+          <el-select v-model="dataForm.pageType" placeholder="请选择">
+            <el-option label="原生" :value="1">
             </el-option>
-            <el-option label="不启用" :value="false">
+            <el-option label="H5页面" :value="2">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="优惠券类型" prop="type">
+          <el-select v-model="dataForm.type" placeholder="请选择">
+            <el-option label="新用户注册" :value="1">
+            </el-option>
+            <el-option label="指定商品" :value="2">
+            </el-option>
+            <el-option label="指定用户" :value="3">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="优惠金额" prop="discountedPrice">
+          <el-input v-model="dataForm.discountedPrice"></el-input>
+        </el-form-item>
+
+        <el-form-item label="指定商品id" prop="goodsId">
+          <el-input v-model="dataForm.goodsId"></el-input>
+        </el-form-item>
+
+        <el-form-item label="满足金额" prop="fullPrice">
+          <el-input v-model="dataForm.fullPrice"></el-input>
+        </el-form-item>
+
+        <el-form-item label="过期时长(单位：天)" prop="expirationTime">
+          <el-input v-model="dataForm.expirationTime"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -109,129 +110,21 @@
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
     </el-dialog>
-
-    <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
-      <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchGoods"
-                         placeholder="请输入商品名称或id" @select="handleSelectGoods">
-          <template slot-scope="props">
-            <div v-if='!props.item.nonesuggestion' class="proinfo flex">
-              <div class="pic">
-                <img :src="props.item.picUrl" alt="">
-              </div>
-              <div class="prointroduce">
-                <div class="proId">{{props.item.id}}</div>
-                <div class="proname wordhide">{{props.item.name}}</div>
-              </div>
-            </div>
-            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
-              {{props.item.nonesuggestion}}
-            </div>
-          </template>
-        </el-autocomplete>
-        <div class="flex goodlist">
-          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
-            <div class="goodbox flex">
-              <div>
-                <img :src="item.picUrl" alt="" width="80px" height="80px">
-              </div>
-              <div class="goodnames">{{item.name}}</div>
-            </div>
-            <div class="rightinfo">
-              <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelGoods">取消</el-button>
-        <el-button type="primary" @click="addGoods">确定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="设置专题" :visible.sync="dialogTopic" @close="cancelTopic" :close-on-click-modal='false'>
-      <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchTopic"
-                         placeholder="请输入专题名称或id" @select="handleSelectTopic">
-          <template slot-scope="props">
-            <div v-if='!props.item.nonesuggestion' class="proinfo flex">
-              <div class="pic">
-                <img :src="props.item.picUrl" alt="">
-              </div>
-              <div class="prointroduce">
-                <div class="proId">{{props.item.id}}</div>
-                <div class="proname wordhide">{{props.item.name}}</div>
-              </div>
-            </div>
-            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
-              {{props.item.nonesuggestion}}
-            </div>
-          </template>
-        </el-autocomplete>
-        <div class="flex topiclist">
-          <div class="goodwarp flex" v-for="(item,index) in editTopic" :key="index">
-            <div class="topicbox flex">
-              <div>
-                <img :src="item.picUrl" alt="" width="150px" height="80px">
-              </div>
-              <div class="topictitles">{{item.title}}</div>
-            </div>
-            <div class="rightinfo">
-              <div class="delattrs" @click="delTopic(index)"><i class="el-icon-close delicon"></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelTopic">取消</el-button>
-        <el-button type="primary" @click="addTopic">确定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
-<style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #20a0ff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 120px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center;
-  }
-  .avatar {
-    width: 120px;
-    height: 120px;
-    display: block;
-  }
-</style>
 
 <script>
-  import { listAd, createAd, updateAd, deleteAd, updateGoodAndTopic } from '@/api/ad'
-
+  import { couponConfigList, addCouponConfig, updateCouponConfig, delCouponConfig } from '@/api/coupon'
+  import BackToTop from '@/components/BackToTop'
+  import Editor from '@tinymce/tinymce-vue'
+  import { updateGoodAndTopic } from '@/api/ad'
   import {
-    listTopic,
-    read,
     getGoodsInfo
   } from '@/api/topic'
   import {
     listGoods
   } from '@/api/goods'
-  import {
-    uploadPath
-  } from '@/api/storage'
-  import BackToTop from '@/components/BackToTop'
-  import Editor from '@tinymce/tinymce-vue'
 
   export default {
     name: 'Ad',
@@ -241,7 +134,6 @@
     },
     data() {
       return {
-        uploadPath,
         dialogGoods: false,
         dialogTopic: false,
         list: undefined,
@@ -250,21 +142,18 @@
         listQuery: {
           page: 1,
           limit: 20,
-          name: undefined,
-          content: undefined,
+          remarks: undefined,
           sort: 'add_time',
           order: 'desc'
         },
         dataForm: {
           id: undefined,
-          name: undefined,
-          content: undefined,
           url: undefined,
-          link: undefined,
-          position: 1,
-          goodId: undefined,
-          topicId: undefined,
-          enabled: true
+          pic: undefined,
+          remarks: undefined,
+          type: undefined,
+          targetId: undefined,
+          targetType: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -273,9 +162,8 @@
           create: '创建'
         },
         rules: {
-          name: [{ required: true, message: '广告标题不能为空', trigger: 'blur' }],
-          content: [{ required: true, message: '广告内容不能为空', trigger: 'blur' }],
-          url: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
+          remarks: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
+          pic: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
         },
         downloadLoading: false,
         adddata: {
@@ -296,7 +184,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listAd(this.listQuery).then(response => {
+        couponConfigList(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -339,13 +227,10 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      uploadUrl: function(response) {
-        this.dataForm.url = response.data.url
-      },
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createAd(this.dataForm).then(response => {
+            addCouponConfig(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify({
@@ -369,7 +254,7 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAd(this.dataForm).then(() => {
+            updateCouponConfig(this.dataForm).then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
@@ -389,7 +274,7 @@
         })
       },
       handleDelete(row) {
-        deleteAd(row).then(response => {
+        delCouponConfig(row).then(response => {
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -492,92 +377,6 @@
           type: 'warning'
         }).then(() => {
           this.editGood.splice(index, 1)
-        }).catch(() => {
-
-        })
-      },
-      changeTopic(row) {
-        if (this.dialogTopic === false) {
-          if (row.topicId != null) {
-            this.dataForm.topicId = row.topicId
-            read(this.dataForm.topicId).then(res => {
-              this.editTopic = [res.data.data]
-              this.dialogTopic = true
-              this.dataForm = Object.assign({}, row)
-            })
-          } else {
-            this.dialogTopic = true
-            this.dataForm = Object.assign({}, row)
-          }
-        } else if (this.dialogTopic === true) {
-          this.dialogTopic = false
-        }
-      },
-      cancelTopic() {
-        this.dialogTopic = false
-        this.resetTopic()
-      },
-      handleSelectTopic(val) {
-        this.editTopic[0] = ({
-          id: val.id,
-          name: val.name,
-          picUrl: val.picUrl
-        })
-      },
-      querySearchTopic(queryString, cb) {
-        var prodata = this.allTopic
-        var results = queryString ? prodata.filter(this.createFilterTopic(queryString)) : prodata
-        if (results != null) {
-          results.push({
-            nonesuggestion: '无搜索结果',
-            data: queryString
-          })
-        }
-        cb(results)
-      },
-      createFilterTopic(queryString) {
-        return item => {
-          return (
-            item.id.toString().indexOf(queryString.toLowerCase()) !== -1 ||
-            item.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
-          )
-        }
-      },
-      addTopic() {
-        var arr = []
-        this.editTopic.forEach(item => {
-          arr.push(item.id)
-        })
-        this.dataForm.topicId = arr[0]
-        updateGoodAndTopic(this.dataForm).then(res => {
-          this.dialogTopic = false
-          this.getList()
-        })
-      },
-      resetTopic() {
-        this.editTopic = []
-        this.resetForm()
-      },
-      getTopic() {
-        var listQuery = {
-          page: 1,
-          limit: 1000,
-          goodsSn: undefined,
-          name: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        }
-        listTopic(listQuery).then(response => {
-          this.allTopic = response.data.data.items
-        })
-      },
-      delTopic(index) {
-        this.$confirm('确认删除此商品?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.editTopic.splice(index, 1)
         }).catch(() => {
 
         })
