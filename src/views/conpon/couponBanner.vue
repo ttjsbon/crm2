@@ -71,7 +71,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="商品/专题ID" prop="goodId">
-          <el-input v-model="dataForm.goodId"></el-input>
+          <el-input v-model="dataForm.targetId"></el-input>
         </el-form-item>
         <el-form-item label="商品/专题类型" prop="type">
           <el-select v-model="dataForm.targetType" placeholder="请选择">
@@ -204,8 +204,8 @@
 </style>
 
 <script>
-  import { createAd, updateAd, deleteAd, updateGoodAndTopic } from '@/api/ad'
-  import { couponConfigList } from '@/api/coupon'
+  import { updateGoodAndTopic } from '@/api/ad'
+  import { couponBannerList, addCouponBanner, updateCouponBanner, delCouponBanner } from '@/api/coupon'
 
   import {
     listTopic,
@@ -244,14 +244,12 @@
         },
         dataForm: {
           id: undefined,
-          name: undefined,
-          content: undefined,
           url: undefined,
-          link: undefined,
-          position: 1,
-          goodId: undefined,
-          topicId: undefined,
-          enabled: true
+          pic: undefined,
+          remarks: undefined,
+          type: undefined,
+          targetId: undefined,
+          targetType: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -260,9 +258,8 @@
           create: '创建'
         },
         rules: {
-          name: [{ required: true, message: '广告标题不能为空', trigger: 'blur' }],
-          content: [{ required: true, message: '广告内容不能为空', trigger: 'blur' }],
-          url: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
+          remarks: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
+          pic: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
         },
         downloadLoading: false,
         adddata: {
@@ -283,7 +280,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        couponConfigList(this.listQuery).then(response => {
+        couponBannerList(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -327,12 +324,12 @@
         })
       },
       uploadUrl: function(response) {
-        this.dataForm.url = response.data.url
+        this.dataForm.pic = response.data.url
       },
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createAd(this.dataForm).then(response => {
+            addCouponBanner(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify({
@@ -356,7 +353,7 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAd(this.dataForm).then(() => {
+            updateCouponBanner(this.dataForm).then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
@@ -376,7 +373,7 @@
         })
       },
       handleDelete(row) {
-        deleteAd(row).then(response => {
+        delCouponBanner(row).then(response => {
           this.$notify({
             title: '成功',
             message: '删除成功',

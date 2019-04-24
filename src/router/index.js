@@ -323,7 +323,7 @@ export const asyncRouterMap = [{
     icon: 'chart'
   },
   children: [{
-    path: 'list',
+    path: 'couponConfig',
     component: _import('conpon/couponConfig'),
     name: 'conponConfig',
     meta: {
@@ -332,7 +332,7 @@ export const asyncRouterMap = [{
     }
   },
   {
-    path: 'create',
+    path: 'couponBanner',
     component: _import('conpon/couponBanner'),
     name: 'couponBanner',
     meta: {
@@ -341,7 +341,7 @@ export const asyncRouterMap = [{
     }
   },
   {
-    path: 'create',
+    path: 'activityBanner',
     component: _import('conpon/activityBanner'),
     name: 'activityBanner',
     meta: {
@@ -350,7 +350,7 @@ export const asyncRouterMap = [{
     }
   },
   {
-    path: 'create',
+    path: 'userCoupon',
     component: _import('conpon/userCoupon'),
     name: 'userCoupon',
     meta: {

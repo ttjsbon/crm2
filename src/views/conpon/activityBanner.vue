@@ -3,9 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告标题" v-model="listQuery.name">
-      </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容" v-model="listQuery.content">
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入描述内容" v-model="listQuery.remarks">
       </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -14,36 +12,29 @@
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-
-
-      <el-table-column align="center" label="广告ID" prop="id" sortable>
+      <el-table-column align="center" label="ID" prop="id" sortable>
       </el-table-column>
 
-      <el-table-column align="center" label="广告标题" prop="name">
+      <el-table-column align="center" label="描述" prop="remarks">
       </el-table-column>
 
-      <el-table-column align="center" label="广告内容" prop="content">
-      </el-table-column>
-
-      <el-table-column align="center" label="广告图片" prop="url">
+      <el-table-column align="center" label="图片" prop="pic">
         <template slot-scope="scope">
-          <img :src="scope.row.url" width="80" v-if="scope.row.url"/>
+          <img :src="scope.row.pic" width="80" v-if="scope.row.pic"/>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="广告位置" prop="position">
+      <el-table-column align="center" label="H5地址" prop="url">
+      </el-table-column>
+      <el-table-column align="center" label="原生/H5页面" prop="type">
       </el-table-column>
 
-      <el-table-column align="center" label="活动链接" prop="link">
-      </el-table-column>
-      <el-table-column align="center" label="商品id" prop="goodId">
-      </el-table-column>
-      <el-table-column align="center" label="专题id" prop="topicId">
+      <el-table-column align="center" label="商品/专题ID" prop="targetId">
       </el-table-column>
 
-      <el-table-column align="center" label="是否启用" prop="enabled">
+      <el-table-column align="center" label="商品/专题类型" prop="enabled">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
+          <el-tag >{{ scope.row.enabled===1 ? '商品' : '专题' }}</el-tag>
         </template>
       </el-table-column>
 
@@ -67,38 +58,34 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="广告标题" prop="name">
-          <el-input v-model="dataForm.name"></el-input>
+        <el-form-item label="备注" prop="remarks">
+          <el-input v-model="dataForm.remarks"></el-input>
         </el-form-item>
-        <el-form-item label="广告内容" prop="content">
-          <el-input v-model="dataForm.content"></el-input>
+        <el-form-item label="H5地址" prop="url">
+          <el-input v-model="dataForm.url"></el-input>
         </el-form-item>
-        <el-form-item label="广告图片" prop="url">
+        <el-form-item label="图片" prop="pic">
           <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
-            <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
+            <img v-if="dataForm.pic" :src="dataForm.pic" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="广告位置" prop="position">
-          <el-select v-model="dataForm.position" placeholder="请选择">
-            <el-option label="首页" :value="1">
+        <el-form-item label="商品/专题ID" prop="goodId">
+          <el-input v-model="dataForm.targetId"></el-input>
+        </el-form-item>
+        <el-form-item label="商品/专题类型" prop="type">
+          <el-select v-model="dataForm.targetType" placeholder="请选择">
+            <el-option label="商品ID" :value="1">
+            </el-option>
+            <el-option label="专题ID" :value="2">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动链接" prop="link">
-          <el-input v-model="dataForm.link"></el-input>
-        </el-form-item>
-        <el-form-item label="商品id" prop="goodId">
-          <el-input v-model="dataForm.goodId"></el-input>
-        </el-form-item>
-        <el-form-item label="专题id" prop="topicId">
-          <el-input v-model="dataForm.topicId"></el-input>
-        </el-form-item>
-        <el-form-item label="是否启用" prop="enabled">
-          <el-select v-model="dataForm.enabled" placeholder="请选择">
-            <el-option label="启用" :value="true">
+        <el-form-item label="跳转类型" prop="type">
+          <el-select v-model="dataForm.type" placeholder="请选择">
+            <el-option label="原生" :value="1">
             </el-option>
-            <el-option label="不启用" :value="false">
+            <el-option label="H5页面" :value="2">
             </el-option>
           </el-select>
         </el-form-item>
@@ -217,7 +204,8 @@
 </style>
 
 <script>
-  import { listAd, createAd, updateAd, deleteAd, updateGoodAndTopic } from '@/api/ad'
+  import { updateGoodAndTopic } from '@/api/ad'
+  import { activityBannerList, addActivityBanner, updateActivityBanner, delActivityBanner } from '@/api/coupon'
 
   import {
     listTopic,
@@ -250,21 +238,18 @@
         listQuery: {
           page: 1,
           limit: 20,
-          name: undefined,
-          content: undefined,
+          remarks: undefined,
           sort: 'add_time',
           order: 'desc'
         },
         dataForm: {
           id: undefined,
-          name: undefined,
-          content: undefined,
           url: undefined,
-          link: undefined,
-          position: 1,
-          goodId: undefined,
-          topicId: undefined,
-          enabled: true
+          pic: undefined,
+          remarks: undefined,
+          type: undefined,
+          targetId: undefined,
+          targetType: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -273,9 +258,8 @@
           create: '创建'
         },
         rules: {
-          name: [{ required: true, message: '广告标题不能为空', trigger: 'blur' }],
-          content: [{ required: true, message: '广告内容不能为空', trigger: 'blur' }],
-          url: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
+          remarks: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
+          pic: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
         },
         downloadLoading: false,
         adddata: {
@@ -296,7 +280,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listAd(this.listQuery).then(response => {
+        activityBannerList(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -340,12 +324,12 @@
         })
       },
       uploadUrl: function(response) {
-        this.dataForm.url = response.data.url
+        this.dataForm.pic = response.data.url
       },
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createAd(this.dataForm).then(response => {
+            addActivityBanner(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify({
@@ -369,7 +353,7 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAd(this.dataForm).then(() => {
+            updateActivityBanner(this.dataForm).then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
@@ -389,7 +373,7 @@
         })
       },
       handleDelete(row) {
-        deleteAd(row).then(response => {
+        delActivityBanner(row).then(response => {
           this.$notify({
             title: '成功',
             message: '删除成功',
