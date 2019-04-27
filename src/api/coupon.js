@@ -103,3 +103,11 @@ export function delCouponConfig(data) {
     data
   })
 }
+
+export function userCouponList(query) {
+  return request({
+    url: '/coupon/v1.3.0/userCoupon/list',
+    method: 'get',
+    params: query
+  })
+}
