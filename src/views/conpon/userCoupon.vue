@@ -25,6 +25,9 @@
       <el-table-column align="center" label="手机号" prop="mobile">
       </el-table-column>
       <el-table-column align="center" label="领券时间" prop="addTime">
+        <template slot-scope="scope">
+          <el-text >{{ scope.row.addTime | formatDate }}</el-text>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="优惠券类型" prop="type">
         <template slot-scope="scope">
@@ -218,6 +221,23 @@
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
   export default {
+    filters: {
+      formatDate: function(value) {
+        var date = new Date(value)
+        var y = date.getFullYear()
+        var MM = date.getMonth() + 1
+        MM = MM < 10 ? ('0' + MM) : MM
+        var d = date.getDate()
+        d = d < 10 ? ('0' + d) : d
+        var h = date.getHours()
+        h = h < 10 ? ('0' + h) : h
+        var m = date.getMinutes()
+        m = m < 10 ? ('0' + m) : m
+        var s = date.getSeconds()
+        s = s < 10 ? ('0' + s) : s
+        return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+      }
+    },
     name: 'Ad',
     components: {
       BackToTop,
