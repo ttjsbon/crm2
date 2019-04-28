@@ -104,10 +104,28 @@ export function delCouponConfig(data) {
   })
 }
 
+export function delUserCoupon(data) {
+  return request({
+    url: '/coupon/v1.3.0/userCoupon/del',
+    method: 'post',
+    data
+  })
+}
+
 export function userCouponList(query) {
   return request({
     url: '/coupon/v1.3.0/userCoupon/list',
     method: 'get',
     params: query
+  })
+}
+
+export function userCouponDetail(id) {
+  return request({
+    url: '/coupon/v1.3.0/userCoupon/detail',
+    method: 'get',
+    params: {
+      id
+    }
   })
 }

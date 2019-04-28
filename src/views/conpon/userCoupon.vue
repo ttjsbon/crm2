@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -50,174 +50,35 @@
     </div>
 
     <!-- 订单详情对话框 -->
-    <!--<el-dialog title="订单详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
+    <el-dialog title="优惠券详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
       <el-form :data="orderDetail" label-position="left">
-        <el-form-item label="认证信息" class="bigitem">
-          <span>（姓名）{{ orderDetail.user.cardName }}</span>
-          <span>（住址）{{ orderDetail.user.homeAddress }}</span>
-          <span>（工作地址）{{ orderDetail.user.workAddress }}</span>
-          <span>（身份证）{{ orderDetail.user.idCardNo }}</span>
-          <span>（手机号）{{ orderDetail.user.mobile }}</span>
-          <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
-          <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
-          <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
+        <el-form-item label="" class="bigitem">
+          <span>用户id：{{ orderDetail.userId }}</span>
+          <span>（姓名）{{ orderDetail.cardName }}</span>
+          <span>（手机号）{{ orderDetail.mobile }}</span>
         </el-form-item>
-        <el-form-item label="身份证照" class="bigitem">
-          <img class="detailIdimg" v-if='userdata' :src="userdata.idCardFrontImage" alt="">
-          <img class="detailIdimg" v-if='userdata' :src="userdata.idCardBackImage" alt="">
+        <el-form-item label="" class="bigitem">
+          <span>（过期）{{ orderDetail.expired===0 ? '未过期' : '已过期' }}</span>
+          <span>（使用）{{ orderDetail.employ===false ? '未使用' : '已使用' }}</span>
+          <span>（优惠券类型）{{ orderDetail.type===1 ? '新人优惠券' : orderDetail.type===2 ? '针对商品优惠券' : '针对类别优惠券' }}</span>
         </el-form-item>
-
-        <el-form-item label="订单编号" class="bigitem">
-          <span>{{ orderDetail.order.orderSn }}</span>
+        <el-form-item label="" class="bigitem">
+          <span>（指定id）{{ orderDetail.targetId }}</span>
+          <span>（指定类型）{{ orderDetail.targetType===1 ? '商品id' : '专题id' }}</span>
         </el-form-item>
-        <div class="flex itemtogether">
-          <el-form-item label="订单状态">
-            <template slot-scope="scope">
-              <el-tag>{{orderDetail.order.orderStatus | orderStatusFilter}}</el-tag>
-            </template>
-          </el-form-item>
-          <el-form-item label="下单用户">
-            <span>{{ orderDetail.order.mobile }}</span>
-          </el-form-item>
-          <el-form-item label="下单时间" class="bigitem">
-            <span>{{ orderDetail.order.addTime }}</span>
-          </el-form-item>
-        </div>
-
-        <div class="flex itemtogether">
-
-          <el-form-item label="分期期数">
-            <template slot-scope="scope">
-              <span>{{orderDetail.order.periods}}</span>
-            </template>
-          </el-form-item>
-          <el-form-item label="每期租金">
-            <span>{{ orderDetail.order.periodPrice }}</span>
-          </el-form-item>
-          <el-form-item label="全部租金">
-            <span>{{ orderDetail.order.actualPrice }}</span>
-          </el-form-item>
-        </div>
-
-        <div class="flex itemtogether">
-
-          <el-form-item label="豁免押金">
-            <template slot-scope="scope">
-              <span>{{orderDetail.order.freeDeposit}}</span>
-            </template>
-          </el-form-item>
-          <el-form-item label="实际押金">
-            <span>{{ orderDetail.order.actualDeposit }}</span>
-          </el-form-item>
-          <el-form-item>
-            <span></span>
-          </el-form-item>
-        </div>
-
-        <div class="flex itemtogether">
-
-          <el-form-item label="增值服务总额">
-            <template slot-scope="scope">
-              <span>{{orderDetail.attach.actualPrice}}</span>
-            </template>
-          </el-form-item>
-          <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach.periodPrice }}</span>
-          </el-form-item>
-          <el-form-item label="增值服务期数">
-            <span>{{ orderDetail.attach.periods }}</span>
-          </el-form-item>
-        </div>
-
-        <div class="flex itemtogether">
-          <el-form-item label="租赁开始时间" class="bigitem">
-            <span>{{ orderDetail.order.beginTime }}</span>
-          </el-form-item>
-          <el-form-item label="租赁结束时间" class="bigitem">
-            <template slot-scope="scope">
-              <span>{{orderDetail.order.endTime}}</span>
-            </template>
-          </el-form-item>
-        </div>
-
-        <el-form-item label="收货信息">
-          <span>（收货人）{{ orderDetail.order.consignee }}</span>
-          <span>（手机号）{{ orderDetail.order.mobile }}</span>
-          <span>（地址）{{ orderDetail.order.address }}</span>
-        </el-form-item>
-        <el-form-item label="商品信息">
-          <el-table size="small" :data="orderDetail.orderGoods" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
-            <el-table-column align="center" label="货品图片" prop="picUrl">
-              <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40" />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-        <el-form-item label="费用信息">
-          <span>
-            (实际费用){{ orderDetail.order.actualPrice }}元 =
-            (商品总价){{ orderDetail.order.goodsPrice }}元 +
-            (快递费用){{ orderDetail.order.freightPrice }}元 -
-            (优惠减免){{ orderDetail.order.couponPrice }}元 -
-            (积分减免){{ orderDetail.order.integralPrice }}元
-          </span>
-        </el-form-item>
-
-        <el-form-item label="支付信息">
-          <span>（支付渠道）支付宝</span>
-          <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
-            <el-table-column  align="center" :label="'需支付时间'" width="160px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.createTime.substring(0, 10)}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付时间'" width="160px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'无'}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付订单'" width="195px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.payOrderId?scope.row.payOrderId:'无'}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付状态'" width="160px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-        <el-form-item label="快递信息">
-          <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
-          <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
-          <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
-        </el-form-item>
-        <el-form-item label="收货信息">
-          <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
-        </el-form-item>
-        <el-form-item label="归还信息">
-          <span v-if='orderDetail.order.backTime'>（归还时间）{{ orderDetail.order.backTime }}</span>
-          <span v-if='orderDetail.order.backShipSn'>（快递公司）{{ orderDetail.order.backShipSn }}</span>
-          <span  v-if='orderDetail.order.backShipChannel'>（快递单号）{{ orderDetail.order.backShipChannel }}</span>
-          <span v-if='!orderDetail.order.backTime'>（归还时间）暂无</span>
-          <span v-if='!orderDetail.order.backShipSn'>（快递公司）暂无</span>
-          <span  v-if='!orderDetail.order.backShipChannel'>（快递单号）暂无</span>
+        <el-form-item label="" class="bigitem">
+          <span>（过期时间）{{ orderDetail.expireDate | formatDate }}</span>
+          <span>（领取时间）{{ orderDetail.addTime | formatDate }}</span>
+          <span>（备注）{{ orderDetail.content ? orderDetail.content : '无' }}</span>
         </el-form-item>
       </el-form>
-    </el-dialog>-->
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
-  import { userCouponList } from '@/api/coupon'
+  import { userCouponList, delUserCoupon, userCouponDetail } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
   export default {
@@ -245,6 +106,8 @@
     },
     data() {
       return {
+        orderDetail: {},
+        orderDialogVisible: false,
         dialogGoods: false,
         dialogTopic: false,
         list: undefined,
@@ -338,14 +201,6 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      handleUpdate(row) {
-        this.dataForm = Object.assign({}, row)
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
       handleDownload() {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
@@ -354,6 +209,27 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '广告信息')
           this.downloadLoading = false
         })
+      },
+      handleDelete(row) {
+        delUserCoupon(row).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
+        })
+      },
+      handleDetail(row) {
+        userCouponDetail(row.id).then(response => {
+          this.orderDetail = response.data.data
+        })
+        this.orderDialogVisible = true
+      },
+      closeDetail() {
+        this.userdata = null
       }
     }
   }
