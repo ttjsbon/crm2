@@ -184,8 +184,6 @@
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
-            <!--<el-table-column align="center" label="支付时间" prop="updateTime" />-->
-            <!--<el-table-column align="center" label="支付订单" prop="outTradeOrderId" />-->
 
             <el-table-column  align="center" :label="'支付时间'" width="200px">
               <template slot-scope="scope" >
