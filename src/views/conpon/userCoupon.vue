@@ -52,25 +52,41 @@
     <!-- 订单详情对话框 -->
     <el-dialog title="优惠券详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
       <el-form :data="orderDetail" label-position="left">
-        <el-form-item label="" class="bigitem">
-          <span>用户id：{{ orderDetail.userId }}</span>
-          <span>（姓名）{{ orderDetail.cardName }}</span>
-          <span>（手机号）{{ orderDetail.mobile }}</span>
-        </el-form-item>
-        <el-form-item label="" class="bigitem">
-          <span>（过期）{{ orderDetail.expired===0 ? '未过期' : '已过期' }}</span>
-          <span>（使用）{{ orderDetail.employ===false ? '未使用' : '已使用' }}</span>
-          <span>（优惠券类型）{{ orderDetail.type===1 ? '新人优惠券' : orderDetail.type===2 ? '针对商品优惠券' : '针对类别优惠券' }}</span>
-        </el-form-item>
-        <el-form-item label="" class="bigitem">
-          <span>（指定id）{{ orderDetail.targetId }}</span>
-          <span>（指定类型）{{ orderDetail.targetType===1 ? '商品id' : '专题id' }}</span>
-        </el-form-item>
-        <el-form-item label="" class="bigitem">
-          <span>（过期时间）{{ orderDetail.expireDate | formatDate }}</span>
-          <span>（领取时间）{{ orderDetail.addTime | formatDate }}</span>
-          <span>（备注）{{ orderDetail.content ? orderDetail.content : '无' }}</span>
-        </el-form-item>
+        <div class="flex itemtogether">
+          <el-form-item label="用户id：">
+              <span>{{orderDetail.userId}}</span>
+          </el-form-item>
+          <el-form-item label="姓名：">
+            <span>{{ orderDetail.cardName }}</span>
+          </el-form-item>
+          <el-form-item label="手机号：">
+            <span>{{ orderDetail.mobile }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+          <el-form-item label="指定id：">
+            <span>{{orderDetail.targetId}}</span>
+          </el-form-item>
+          <el-form-item label="指定类型：">
+            <span>{{ orderDetail.targetType===1 ? '商品id' : '专题id' }}</span>
+          </el-form-item>
+          <el-form-item label="">
+            <span></span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+          <el-form-item label="过期时间：">
+            <span>{{ orderDetail.expireDate | formatDate }}</span>
+          </el-form-item>
+          <el-form-item label="领取时间：">
+            <span>{{ orderDetail.addTime | formatDate }}</span>
+          </el-form-item>
+          <el-form-item label="备注：">
+            <span>{{ orderDetail.content ? orderDetail.content : '无' }}</span>
+          </el-form-item>
+        </div>
       </el-form>
     </el-dialog>
   </div>
