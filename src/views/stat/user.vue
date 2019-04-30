@@ -1,5 +1,22 @@
 <template>
   <div class="app-container calendar-list-container">
+    <div id="select">
+      <!--查询时间段：-->
+      <!--<el-select :default-active="$route.path" @change="chickDay" v-model="searchDay" filterable placeholder="请输入/请选择" class="h-m-select">-->
+        <!--<el-option v-for="item in days" :key="item.value" :label="item.label" v-model="item.value">-->
+        <!--</el-option>-->
+      <!--</el-select>-->
+      <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+      选择时间段：
+      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      认证状态：
+      <el-select :default-active="$route.path" @change="chickAuth" v-model="searchAuth" filterable placeholder="请输入/请选择" class="h-m-select">
+        <el-option v-for="item in auths" :key="item.value" :label="item.label" v-model="item.value">
+        </el-option>
+      </el-select>
+    </div>
+
     <ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>
   </div>
 </template>
@@ -7,32 +24,106 @@
 <script>
 import { statUser } from '@/api/stat'
 import VeHistogram from 'v-charts/lib/histogram'
+import DatePicker from 'vue2-datepicker'
 
 export default {
-  components: { VeHistogram },
+  components: { VeHistogram, DatePicker },
   data() {
     return {
+      timePeriod: [null],
+      lang: {
+        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+        placeholder: {
+          date: 'Select Date',
+          dateRange: 'Select Date Range'
+        }
+      },
+      shortcuts: [
+        {
+          text: 'Today',
+          onClick: () => {
+            this.timePeriod = [new Date(), new Date()]
+          }
+        }
+      ],
       chartData: {},
       chartSettings: {},
-      chartExtend: {}
+      chartExtend: {},
+      query: {
+        dayNum: 30,
+        auth: 2,
+        timePeriod: [null]
+      },
+      // days: [
+      //   {
+      //     value: '1',
+      //     label: '当天'
+      //   }, {
+      //     value: '3',
+      //     label: '最近3天'
+      //   }, {
+      //     value: '7',
+      //     label: '最近7天'
+      //   }, {
+      //     value: '30',
+      //     label: '最近30天'
+      //   }
+      // ],
+      auths: [{
+        value: '2',
+        label: '全部'
+      },
+      {
+        value: '0',
+        label: '未认证'
+      }, {
+        value: '1',
+        label: '已认证'
+      }],
+      searchDay: '',
+      searchAuth: ''
     }
   },
   created() {
-    statUser().then(response => {
-      this.chartData = response.data.data
-      this.chartSettings = {
-        labelMap: {
-          'users': '用户增长数'
+    this.data(30, 2)
+  },
+  methods: {
+    data() {
+      statUser(this.query).then(response => {
+        this.chartData = response.data.data
+        this.chartSettings = {
+          labelMap: {
+            'users': '用户增长数'
+          }
         }
-      }
-      this.chartExtend = {
-        xAxis: { boundaryGap: true },
-        series: {
-          label: { show: true, position: 'top' }
+        this.chartExtend = {
+          xAxis: { boundaryGap: true },
+          series: {
+            label: { show: true, position: 'top' }
+          }
         }
-      }
-    })
+      })
+    },
+    // chickDay() {
+    //   this.query.dayNum = this.searchDay
+    //   this.data()
+    // },
+    chickAuth() {
+      this.query.auth = this.searchAuth
+      this.data()
+    },
+    selectDate() {
+      this.query.timePeriod = this.timePeriod
+      this.data()
+    }
   }
 
 }
 </script>
+<style scoped>
+  .h-m-select{
+    margin-top: 10px ;
+  }
+</style>
