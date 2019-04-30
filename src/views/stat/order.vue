@@ -26,7 +26,7 @@ export default {
     return {
       searchStatus: '',
       query: {
-        status: 2,
+        status: 0,
         timePeriod: [null]
       },
       statues: [{
