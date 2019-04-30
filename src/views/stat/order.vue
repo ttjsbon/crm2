@@ -91,6 +91,9 @@ export default {
       this.data()
     },
     selectDate() {
+      if (this.timePeriod[0] == null) {
+        this.timePeriod = [null]
+      }
       this.query.timePeriod = this.timePeriod
       this.data()
     }
