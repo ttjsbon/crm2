@@ -12,6 +12,7 @@
     </div>
 
     <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
+    <!--<ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>-->
   </div>
 </template>
 
