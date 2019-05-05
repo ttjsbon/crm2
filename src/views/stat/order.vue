@@ -11,8 +11,9 @@
       </el-select>
     </div>
 
-    <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
-    <!--<ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>-->
+    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
+    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2"></ve-line>
+    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3"></ve-line>
   </div>
 </template>
 
@@ -20,11 +21,15 @@
 import { statOrder } from '@/api/stat'
 import VeLine from 'v-charts/lib/line'
 import DatePicker from 'vue2-datepicker'
+import VeHistogram from 'v-charts/lib/histogram'
 
 export default {
-  components: { VeLine, DatePicker },
+  components: { VeHistogram, VeLine, DatePicker },
   data() {
     return {
+      dataShow: true,
+      amountShow: false,
+      parseShow: false,
       searchStatus: '',
       query: {
         status: 0,
@@ -33,16 +38,12 @@ export default {
       statues: [{
         value: '0',
         label: '全部'
-      },
-      {
-        value: '1',
-        label: '已成交'
       }, {
         value: '2',
         label: '审核通过'
       }, {
-        value: '3',
-        label: '审核拒绝'
+        value: '4',
+        label: '订单总额'
       }],
       timePeriod: [null],
       lang: {
@@ -63,8 +64,26 @@ export default {
         }
       ],
       chartData: {},
-      chartSettings: {},
-      chartExtend: {}
+      chartData2: {},
+      chartData3: {},
+      chartSettings: {
+        labelMap: {
+          'orders': '订单量',
+          'customers': '成交量'
+        }
+      },
+      chartSettings2: {
+        labelMap: {
+          'amount': '订单总额'
+        }},
+      chartSettings3: {
+        labelMap: {
+          'orders': '成交量',
+          'customers': '审核通过'
+        }},
+      chartExtend: {
+        xAxis: { boundaryGap: true }
+      }
     }
   },
   created() {
@@ -73,17 +92,24 @@ export default {
   methods: {
     data() {
       statOrder(this.query).then(response => {
-        this.chartData = response.data.data
-        this.chartSettings = {
-          labelMap: {
-            'orders': '订单量',
-            'customers': '下单用户',
-            'amount': '订单总额',
-            'pcr': '客单价'
+        if (this.searchStatus === 4) {
+          this.chartData2 = response.data.data
+          this.dataShow = false
+          this.parseShow = false
+          this.amountShow = true
+        } else {
+          if (this.searchStatus === 2) {
+            this.chartSettings = this.chartSettings3
+            this.parseShow = true
+            this.dataShow = false
+            this.amountShow = false
+            this.chartData3 = response.data.data
+          } else {
+            this.parseShow = false
+            this.dataShow = true
+            this.amountShow = false
+            this.chartData = response.data.data
           }
-        }
-        this.chartExtend = {
-          xAxis: { boundaryGap: true }
         }
       })
     },
@@ -102,3 +128,4 @@ export default {
 
 }
 </script>
+

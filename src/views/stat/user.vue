@@ -1,12 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
     <div id="select">
-      <!--查询时间段：-->
-      <!--<el-select :default-active="$route.path" @change="chickDay" v-model="searchDay" filterable placeholder="请输入/请选择" class="h-m-select">-->
-        <!--<el-option v-for="item in days" :key="item.value" :label="item.label" v-model="item.value">-->
-        <!--</el-option>-->
-      <!--</el-select>-->
-      <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
       选择时间段：
       <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -17,17 +11,19 @@
       </el-select>
     </div>
 
-    <ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>
+    <!--<ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>-->
+    <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
   </div>
 </template>
 
 <script>
 import { statUser } from '@/api/stat'
 import VeHistogram from 'v-charts/lib/histogram'
+import VeLine from 'v-charts/lib/line'
 import DatePicker from 'vue2-datepicker'
 
 export default {
-  components: { VeHistogram, DatePicker },
+  components: { VeLine, VeHistogram, DatePicker },
   data() {
     return {
       timePeriod: [null],
