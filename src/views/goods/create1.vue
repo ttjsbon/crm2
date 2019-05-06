@@ -247,8 +247,8 @@
           </div>
           <div class="flex tenancybox">
             <span class="tenancylabel">租期</span>
-            <el-checkbox-group v-model="attributeFormLease.num" @change="changetenancyLease">
-              <el-checkbox v-for="item in options" :key="item.periods" :label="item.periods" name="type">
+            <el-checkbox-group v-model="leaseTermLease" @change="changetenancyLease">
+              <el-checkbox v-for="item in options" :key="item.periods" :label="item.periods" name="num">
                 <div>{{item.periods}}期</div>
               </el-checkbox>
             </el-checkbox-group>
@@ -978,7 +978,6 @@
           }
         }
         this.attributesLease.push(this.attributeFormLease)
-        console.log(this.attributesLease)
         this.attributeVisiableLease = false
       },
       handleAttributeDelete(row) {
@@ -1084,26 +1083,10 @@
             value: `${item.periods}${txt}`
           })
         })
+        this.attributeFormLease.num = val[0]
         this.products.forEach(item => {
           item.productFinances = this.checkedLease
         })
-        // var arr = val
-        // this.specifications = this.specifications.filter(item => {
-        //   return item.specification !== '租期'
-        // })
-        // arr.forEach(item => {
-        //   var obj = {}
-        //   obj.specification = '租期'
-        //   obj.value = item
-        //   this.specifications.push(obj)
-        // })
-
-        // var checkArr = this.specifications.filter(item => {
-        //   return (item.specification !== '租期' && item.specification !== '分期类型')
-        // })
-        // if (checkArr.length) {
-        //   this.specToProduct()
-        // }
       },
       changetenancyType(val) {
         this.options = this.financeData.filter(item => {
