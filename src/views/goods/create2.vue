@@ -32,6 +32,13 @@
             <el-radio :label="true">热卖</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- <el-form-item label="是否在售" prop="isOnSale">
+          <el-radio-group v-model="goods.isOnSale">
+            <el-radio :label="true">在售</el-radio>
+            <el-radio :label="false">未售</el-radio>
+          </el-radio-group>
+        </el-form-item> -->
+
         <el-form-item label="是否支持续租" prop="isRelet">
           <el-radio-group v-model="goods.isRelet">
             <el-radio :label="true">支持</el-radio>
@@ -175,21 +182,29 @@
       <div class="flex tenancybox">
         <span class="tenancylabel">分期类型</span>
         <el-radio-group v-model="stagingType" @change="changetenancyType">
-          <!--<el-radio :label="1">按月</el-radio>-->
-          <el-radio :label="2">按日</el-radio>
-          <!--<el-radio :label="3">按周</el-radio>-->
-          <!--<el-radio :label="4">按季</el-radio>-->
-          <!--<el-radio :label="5">按年</el-radio>-->
+          <el-radio :label="1">按月</el-radio>
+           <el-radio :label="2" >按天</el-radio>
+           <el-radio :label="3" >按周</el-radio>
+           <el-radio :label="4" >按季</el-radio>
+           <el-radio :label="5" >按年</el-radio>
         </el-radio-group>
       </div>
       <div class="flex tenancybox">
         <span class="tenancylabel">租期</span>
         <el-checkbox-group v-model="leaseTerm" @change="changetenancy">
           <el-checkbox v-for="item in options" :key="item.periods" :label="item.periods" name="type">
-            <div>{{item.label}}</div>
+            <div>{{item.periods}}期</div>
           </el-checkbox>
         </el-checkbox-group>
       </div>
+      <!-- <div class="flex tenancybox">
+        <span class="tenancylabel">违约金系数</span>
+        <el-input  disabled   value="5%"></el-input>
+      </div>
+      <div class="flex tenancybox">
+        <span class="tenancylabel">违约缓冲天数</span>
+        <el-input  disabled  value="1"></el-input>
+      </div> -->
       <div class="flex tenancybox">
         <span class="tenancylabel">意外保险</span>
         <el-switch v-model="isInsure"></el-switch>
@@ -208,59 +223,7 @@
       </div>
 
     </el-card>
-    <el-card class="box-card">
-      <h3>租期配置</h3>
-      <el-button :plain="true" @click="handleAttributeShowLease" type="primary">添加</el-button>
-      <el-table :data="attributesLease">
-        <el-table-column property="type" label="租期类型（1-按月 2-按日 3-按周 4-按季 5-按年）">
-        </el-table-column>
-        <el-table-column property="num" label="期数">
-        </el-table-column>
-        <el-table-column property="value" label="价格">
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <div class="flex">
-              <el-button type="danger" size="mini" @click="handleAttributeDeleteLease(scope.row)">删除</el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
 
-      <el-dialog title="设置租期租金" :visible.sync="attributeVisiableLease">
-        <el-form ref="attributeFormLease" :model="attributeFormLease" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-          <div class="flex tenancybox">
-            <span class="tenancylabel">分期类型</span>
-            <el-radio-group v-model="attributeFormLease.type" @change="changetenancyTypeLease">
-              <el-radio :label="1">按月</el-radio>
-              <el-radio :label="2">按日</el-radio>
-              <el-radio :label="3">按周</el-radio>
-              <el-radio :label="4">按季</el-radio>
-              <el-radio :label="5">按年</el-radio>
-            </el-radio-group>
-          </div>
-          <div class="flex tenancybox">
-            <span class="tenancylabel">租期</span>
-            <el-checkbox-group v-model="leaseTermLease" @change="changetenancy">
-              <el-checkbox v-for="item in options" :key="item.periods" :label="item.periods" name="num">
-                <div>{{item.periods}}期</div>
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-          <div class="flex tenancybox">
-            <span class="tenancylabel">设置分期价格</span>
-            <el-input placeholder="输入金额，如：0.00" v-model="attributeFormLease.value">
-            <!--<el-input placeholder="输入保险金额，如：0.00" v-model="installmentLease">-->
-              <template slot="append">元</template>
-            </el-input>
-          </div>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="attributeVisiableLease = false">取消</el-button>
-          <el-button type="primary" @click="handleAttributeAddLease">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-card>
     <el-card class="box-card">
       <h3>货品信息</h3>
       <el-table :data="products">
@@ -385,6 +348,7 @@
 
   </div>
 </template>
+
 
 <style lang='scss'>
   .el-card {
@@ -568,18 +532,11 @@
         }],
         financeSpecifications: [],
         attributeVisiable: false,
-        attributeVisiableLease: false,
         attributeForm: {
           attribute: '',
           value: ''
         },
-        attributeFormLease: {
-          type: '',
-          num: '',
-          value: ''
-        },
         attributes: [],
-        attributesLease: [],
         copyspecifications: [],
         rules: {
           goodsSn: [{
@@ -613,39 +570,32 @@
           }
         },
         leaseTerm: [],
-        leaseTermLease: [],
         stagingType: 1,
-        stagingTypeLease: 1,
         productLeaseVisi: false,
         options: [{
           periods: 1,
-          label: '按天'
-        },
-        {
-          periods: 2,
-          label: '按周'
+          label: '1期'
         },
         {
           periods: 3,
-          label: '按月'
+          label: '3期'
         },
         {
-          periods: 4,
-          label: '按季'
+          periods: 6,
+          label: '6期'
         },
         {
-          periods: 5,
-          label: '按年'
-        }],
+          periods: 12,
+          label: '12期'
+        }
+        ],
         checkedLease: [],
         isInsure: false,
         financeData: [],
         financeAttachData: [],
         mallGoodsFinances: [],
         installment: null,
-        installmentLease: null,
-        once: null,
-        onceLease: null
+        once: null
       }
     },
     created() {
@@ -667,7 +617,6 @@
         getfinanceProduct().then(response => {
           this.financeData = response.data.data
           this.changetenancyType(this.stagingType)
-          this.changetenancyTypeLease(this.stagingTypeLease)
         })
       },
       handleCategoryChange(value) {
@@ -843,6 +792,9 @@
           })
         }
         this.copyspecifications = arrM
+        // this.copyspecifications = this.copyspecifications.filter(item => {
+        //   return (item.specification !== '租期' && item.specification !== '分期类型')
+        // })
         this.specVisiable = false
         this.specToProduct()
       },
@@ -853,12 +805,20 @@
         this.specifications = this.specifications.filter(item => {
           return item.specification !== keys
         })
+        // var arr = this.specifications.filter(item => {
+        //   return (item.specification !== '租期' && item.specification !== '分期类型')
+        // })
+        // if (arr.length) {
         this.specToProduct()
+        // } else {
+        //   this.products = []
+        // }
       },
       specToProduct() {
         if (this.specifications.length === 0) {
           return
         }
+        // 根据specifications创建临时规格列表
         var specValues = []
         var spec = this.specifications[0].specification
         var values = []
@@ -877,6 +837,9 @@
           }
         }
         specValues.push(values)
+
+        // 根据临时规格列表生产货品规格
+        // 算法基于 https://blog.csdn.net/tyhj_sf/article/details/53893125
         var productsIndex = 0
         var products = []
         var combination = []
@@ -921,8 +884,7 @@
         } while (isContinue)
 
         this.products = products
-        this.changetenancy(this.leaseTermLease)
-        this.changetenancyLease(this.leaseTermLease)
+        this.changetenancy(this.leaseTerm)
       },
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
@@ -945,32 +907,20 @@
         this.attributeForm = {}
         this.attributeVisiable = true
       },
-      handleAttributeShowLease() {
-        this.attributeFormLease = {}
-        this.attributeVisiableLease = true
-      },
       handleAttributeAdd() {
         this.attributes.push(this.attributeForm)
         this.attributeVisiable = false
       },
-      handleAttributeAddLease() {
-        this.attributesLease.push(this.attributeFormLease)
-        this.leaseTermLease = []
-        this.attributeVisiableLease = false
-      },
       handleAttributeDelete(row) {
         const index = this.attributes.indexOf(row)
         this.attributes.splice(index, 1)
-      },
-      handleAttributeDeleteLease(row) {
-        const index = this.attributesLease.indexOf(row)
-        this.attributesLease.splice(index, 1)
       },
       attributeUp(index) {
         if (index === 0) {
           return
         }
         var temp = this.attributes[index - 1]
+        // [this.attributes[index], this.attributes[index - 1]] = [this.attributes[index - 1], this.attributes[index]]
         this.$set(this.attributes, index - 1, this.attributes[index])
         this.$set(this.attributes, index, temp)
       },
@@ -979,6 +929,7 @@
           return
         }
         var temp = this.attributes[index + 1]
+        // [this.attributes[index], this.attributes[index + 1]] = [this.attributes[index + 1], this.attributes[index]]
         this.$set(this.attributes, index + 1, this.attributes[index])
         this.$set(this.attributes, index, temp)
       },
@@ -1013,49 +964,28 @@
         this.products.forEach(item => {
           item.productFinances = this.checkedLease
         })
-      },
-      changetenancyLease(val) {
-        this.financeSpecifications = []
-        var arr = []
-        var arr2 = []
-        var that = this
-        var txt = this.stagingType === 1 ? '个月' : '天'
-        val.forEach(item1 => {
-          arr2 = that.options.filter(item2 => {
-            return item1 === item2.periods
-          })
-          arr = [...arr, ...arr2]
-        })
-        arr = this.sortKey(arr, 'periods')
-        this.checkedLease = arr
-        this.checkedLease.forEach(item => {
-          item.price = ''
-          item.periodType = this.stagingType
-          this.financeData.forEach(item2 => {
-            if (item.periods === item2.periods) {
-              item.financeProductId = item2.id
-            }
-          })
+        // var arr = val
+        // this.specifications = this.specifications.filter(item => {
+        //   return item.specification !== '租期'
+        // })
+        // arr.forEach(item => {
+        //   var obj = {}
+        //   obj.specification = '租期'
+        //   obj.value = item
+        //   this.specifications.push(obj)
+        // })
 
-          this.financeSpecifications.push({
-            specification: '租期',
-            value: `${item.periods}${txt}`
-          })
-        })
-        this.attributeFormLease.num = val[0]
-        this.products.forEach(item => {
-          item.productFinances = this.checkedLease
-        })
+        // var checkArr = this.specifications.filter(item => {
+        //   return (item.specification !== '租期' && item.specification !== '分期类型')
+        // })
+        // if (checkArr.length) {
+        //   this.specToProduct()
+        // }
       },
       changetenancyType(val) {
-        // this.options = this.financeData.filter(item => {
-        //   return item.periodType === val
-        // })
-      },
-      changetenancyTypeLease(val) {
-        // this.options = this.financeData.filter(item => {
-        //   return item.periodType === val
-        // })
+        this.options = this.financeData.filter(item => {
+          return item.periodType === val
+        })
       },
       handlelease(row) {
         this.productForm = JSON.parse(JSON.stringify(row))
