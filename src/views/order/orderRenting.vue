@@ -7,18 +7,11 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-<<<<<<< HEAD
       <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
-=======
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
-      </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
-      </el-input>
->>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
@@ -324,12 +317,8 @@
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
-<<<<<<< HEAD
           mobile: undefined,
           timePeriod: [null]
-=======
-          mobile: undefined
->>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         },
         statusMap,
         orderDialogVisible: false,

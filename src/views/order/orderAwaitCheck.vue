@@ -7,18 +7,11 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-<<<<<<< HEAD
       <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
-=======
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
-      </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
-      </el-input>
->>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
@@ -204,7 +197,6 @@
           <span>（支付渠道）支付宝</span>
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
-<<<<<<< HEAD
               <template slot-scope="scope" >
                 <span>  {{ scope.row.createTime.substring(0, 10)}}</span>
               </template>
@@ -221,24 +213,6 @@
             </el-table-column>
             <el-table-column  align="center" :label="'支付状态'" width="160px">
               <template slot-scope="scope" >
-=======
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.createTime.substring(0, 10)}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付时间'" width="160px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'无'}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付订单'" width="195px">
-              <template slot-scope="scope" >
-                <span>  {{ scope.row.payOrderId?scope.row.payOrderId:'无'}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  align="center" :label="'支付状态'" width="160px">
-              <template slot-scope="scope" >
->>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
               </template>
             </el-table-column>
@@ -483,12 +457,8 @@
           order: 'desc',
           overdue: 1,
           name: undefined,
-<<<<<<< HEAD
           mobile: undefined,
           timePeriod: [null]
-=======
-          mobile: undefined
->>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         },
         statusMap,
         orderDialogVisible: false,
