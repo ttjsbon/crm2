@@ -3,6 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
+<<<<<<< HEAD
       <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
@@ -12,6 +13,16 @@
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+=======
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+      </el-input>
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
       <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
@@ -125,6 +136,7 @@
 
         <div class="flex itemtogether">
 
+<<<<<<< HEAD
           <el-form-item label="增值服务总额">
             <template slot-scope="scope">
               <span>{{orderDetail.attach.actualPrice}}</span>
@@ -140,6 +152,8 @@
 
         <div class="flex itemtogether">
 
+=======
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
           <el-form-item label="豁免押金">
             <template slot-scope="scope">
               <span>{{orderDetail.order.freeDeposit}}</span>
@@ -358,10 +372,17 @@
 
 <script>
   import {
+<<<<<<< HEAD
     listOrder2,
     shipOrder,
     refundOrder,
     detailOrder2,
+=======
+    listOrder,
+    shipOrder,
+    refundOrder,
+    detailOrder,
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
     auditOrder,
     freeDepositOrder,
     returnConfirmOrder,
@@ -371,7 +392,10 @@
   import {
     parseTime
   } from '@/utils/index'
+<<<<<<< HEAD
   import DatePicker from 'vue2-datepicker'
+=======
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
   const statusMap = {
     201: '已付款',
     301: '审核通过',
@@ -382,6 +406,7 @@
   }
 
   export default {
+<<<<<<< HEAD
     components: { DatePicker },
     name: 'Order',
     data() {
@@ -404,6 +429,11 @@
             }
           }
         ],
+=======
+    name: 'Order',
+    data() {
+      return {
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -416,16 +446,24 @@
           sort: 'add_time',
           order: 'desc,',
           overdue: 0,
+<<<<<<< HEAD
           mobile: undefined,
           timePeriod: [null]
+=======
+          mobile: undefined
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         },
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
           order: {},
           user: {},
+<<<<<<< HEAD
           orderGoods: [],
           attach: {}
+=======
+          orderGoods: []
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         },
         shipForm: {
           orderId: undefined,
@@ -468,7 +506,11 @@
     methods: {
       getList() {
         this.listLoading = true
+<<<<<<< HEAD
         listOrder2(this.listQuery).then(response => {
+=======
+        listOrder(this.listQuery).then(response => {
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -491,7 +533,11 @@
         this.getList()
       },
       handleDetail(row) {
+<<<<<<< HEAD
         detailOrder2(row.id).then(response => {
+=======
+        detailOrder(row.id).then(response => {
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

@@ -4,3 +4,7 @@
 .idea
 /node_modules
 /dist
+<<<<<<< HEAD
+=======
+/config
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7

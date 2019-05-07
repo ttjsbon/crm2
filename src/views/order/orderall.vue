@@ -7,12 +7,20 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
+<<<<<<< HEAD
       <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
 
       <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
+=======
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+      </el-input>
+      <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
       </el-select>
@@ -205,10 +213,6 @@
 
         <el-form-item label="支付信息">
           <span>（支付渠道）支付宝</span>
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
@@ -437,8 +441,12 @@
           order: 'desc',
           overdue: 1,
           name: undefined,
+<<<<<<< HEAD
           mobile: undefined,
           timePeriod: [null]
+=======
+          mobile: undefined
+>>>>>>> 78787b33c931471022f52d63f5218efdd1dd35d7
         },
         statusMap,
         orderDialogVisible: false,
