@@ -505,6 +505,7 @@
           this.shipForm.orderId = row.id
           this.shipForm.shipChannel = row.shipChannel
           this.shipForm.shipSn = row.shipSn
+
           this.shipDialogVisible = true
           this.$nextTick(() => {
             this.$refs['shipForm'].clearValidate()
