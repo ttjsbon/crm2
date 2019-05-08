@@ -264,14 +264,14 @@
     </el-dialog>
 
     <el-dialog title="支付宝交易号" :visible.sync="dialogFormVisibleAmount" >
-      <el-form>
-        <el-form-item label="支付宝交易号">
-          <el-input v-model="amount"></el-input>
-        </el-form-item>
-      </el-form>
+      <!--<el-form>-->
+        <!--<el-form-item label="支付宝交易号">-->
+          <!--<el-input v-model="amount"></el-input>-->
+        <!--</el-form-item>-->
+      <!--</el-form>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAmount = false">取 消</el-button>
-        <el-button type="primary" @click="enterTheAmountOfCompensation(amount)">确 定</el-button>
+        <el-button type="primary" @click="enterTheAmountOfCompensation()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -483,9 +483,9 @@
         this.dialogFormVisibleAmount = true
         this.editRow = row
       },
-      enterTheAmountOfCompensation(row) {
+      enterTheAmountOfCompensation() {
         this.dialogFormVisibleAmount = false
-        refund(this.editRow.id, this.amount).then(response => {
+        refund(this.editRow.id).then(response => {
           this.shipDialogVisible = false
           this.$notify({
             title: '成功',
