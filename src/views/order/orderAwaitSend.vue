@@ -263,7 +263,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="支付宝交易号" :visible.sync="dialogFormVisibleAmount" >
+    <el-dialog title="真的确认退款么？" :visible.sync="dialogFormVisibleAmount" >
       <!--<el-form>-->
         <!--<el-form-item label="支付宝交易号">-->
           <!--<el-input v-model="amount"></el-input>-->
@@ -510,7 +510,9 @@
             this.$refs['shipForm'].clearValidate()
           })
         }).catch(() => {
-          this.bulletBoxAndAmount(row)
+          this.editRow = row
+          this.enterTheAmountOfCompensation(row)
+          // this.bulletBoxAndAmount(row)
         })
       }
     }
