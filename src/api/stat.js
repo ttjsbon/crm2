@@ -31,3 +31,19 @@ export function statGoods(query) {
     params: query
   })
 }
+
+export function statOrderV1_3_0(query) {
+  return request({
+    url: '/stat/v1.3.0/order',
+    method: 'get',
+    params: query
+  })
+}
+
+export function statAmountV1_3_0(query) {
+  return request({
+    url: '/stat/v1.3.0/amount',
+    method: 'get',
+    params: query
+  })
+}

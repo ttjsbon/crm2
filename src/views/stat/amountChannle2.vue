@@ -12,7 +12,8 @@
 </template>
 
 <script>
-  import { statAmount } from '@/api/stat'
+  // import { statAmount } from '@/api/stat'
+	import { statAmountV1_3_0 } from '@/api/stat' 
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
 
@@ -24,6 +25,7 @@
         query: {
           status: 0,
           selectDate: [null],
+					channleName: '测试渠道2'
         },
         timePeriod: [null],
         startM: null,
@@ -63,9 +65,12 @@
     },
     methods: {
       data() {
-        statAmount(this.query).then(response => {
-          this.chartData = response.data.data
-        })
+        // statAmount(this.query).then(response => {
+        //   this.chartData = response.data.data
+        // })
+				statAmountV1_3_0(this.query).then(response => {
+				  this.chartData = response.data.data
+				})
       },
       selectDate() {
         if (this.timePeriod[0] == null) {

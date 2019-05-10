@@ -18,7 +18,8 @@
 </template>
 
 <script>
-  import { statOrder } from '@/api/stat'
+  // import { statOrder } from '@/api/stat'
+	import { statOrderV1_3_0 } from '@/api/stat'
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
   import VeHistogram from 'v-charts/lib/histogram'
@@ -32,8 +33,9 @@
         parseShow: false,
         searchStatus: '',
         query: {
-          status: 0,
+          status: 1,
           timePeriod: [null],
+					channleName: '测试渠道2'
         },
         statues: [{
           value: '1',
@@ -66,6 +68,7 @@
         chartData: {},
         chartData2: {},
         chartData3: {},
+				chartData4: {},
         chartSettings: {
           labelMap: {
             'orders': '订单量',
@@ -97,27 +100,56 @@
     },
     methods: {
       data() {
-        statOrder(this.query).then(response => {
-          if (this.searchStatus === 4) {
-            this.chartData2 = response.data.data
-            this.dataShow = false
-            this.parseShow = false
-            this.amountShow = true
-          } else {
-            if (this.searchStatus === 2) {
-              this.chartSettings = this.chartSettings3
-              this.parseShow = true
-              this.dataShow = false
-              this.amountShow = false
-              this.chartData3 = response.data.data
-            } else {
-              this.parseShow = false
-              this.dataShow = true
-              this.amountShow = false
-              this.chartData = response.data.data
-            }
-          }
-        })
+        // statOrder(this.query).then(response => {
+        //   if (this.searchStatus === 4) {
+        //     this.chartData2 = response.data.data
+        //     this.dataShow = false
+        //     this.parseShow = false
+        //     this.amountShow = true
+        //   } else {
+        //     if (this.searchStatus === 2) {
+        //       this.chartSettings = this.chartSettings3
+        //       this.parseShow = true
+        //       this.dataShow = false
+        //       this.amountShow = false
+        //       this.chartData3 = response.data.data
+        //     } else {
+        //       this.parseShow = false
+        //       this.dataShow = true
+        //       this.amountShow = false
+        //       this.chartData = response.data.data
+        //     }
+        //   }
+        // })
+				statOrderV1_3_0(this.query).then(response => {
+				  if (this.searchStatus === 4) {
+						this.chartSettings = this.chartSettings2
+				    this.chartData2 = response.data.data
+				    this.dataShow = false
+				    this.parseShow = false
+				    this.amountShow = true
+				  } else {
+				    if (this.searchStatus === 2) {
+				      this.chartSettings = this.chartSettings3
+				      this.parseShow = true
+				      this.dataShow = false
+				      this.amountShow = false
+				      this.chartData3 = response.data.data
+				    } else if(this.searchStatus === 1){
+							this.chartSettings = this.chartSettings4
+							this.parseShow = false
+							this.dataShow = false
+							this.amountShow = false
+							this.chartData4 = response.data.data
+						}else {
+							this.chartSettings = this.chartSettings
+				      this.parseShow = false
+				      this.dataShow = true
+				      this.amountShow = false
+				      this.chartData = response.data.data
+				    }
+				  }
+				})
       },
       chickAuth() {
         this.query.status = this.searchStatus

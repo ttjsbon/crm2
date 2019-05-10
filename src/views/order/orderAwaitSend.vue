@@ -251,6 +251,16 @@
         <el-form-item label="快递编号" prop="shipSn">
           <el-input v-model="shipForm.shipSn" placeholder="请输入快递编号"></el-input>
         </el-form-item>
+				
+				<el-form-item label="采购价格" prop="purchasingPrice">
+				  <el-input v-model="shipForm.purchasingPrice" placeholder="请输入采购价格"></el-input>
+				</el-form-item>
+				<el-form-item label="渠道名称" prop="channleName">
+				  <el-select v-model="shipForm.channleName" @change="onLevelChange">
+				    <el-option v-for="item in channleAllAdmin" :value="item.channleName" :label="item.channleName" :key="item.id"></el-option>
+				  </el-select>
+				</el-form-item>
+				
         <el-form-item label="设备id">
           <el-button type="primary" @click="addId">添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in shipForm.deviceId' v-model="shipForm.deviceId[index]"
@@ -259,7 +269,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="shipDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmShip">确定</el-button>
+        <!-- <el-button type="primary" @click="confirmShip">确定</el-button> -->
+				<el-button type="primary" @click="confirmShipV1_3">确定</el-button>
       </div>
     </el-dialog>
 
@@ -303,7 +314,9 @@
     listOrder2,
     shipOrder,
     detailOrder2,
-    refund
+    refund,
+		channleAllAdmin,
+		shipOrderV1_3
   } from '@/api/order'
   import {
     parseTime
@@ -328,6 +341,7 @@
     name: 'Order',
     data() {
       return {
+				channleAllAdmin:"",
         timePeriod: '',
         lang: {
           days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -374,6 +388,8 @@
           orderId: undefined,
           shipChannel: undefined,
           shipSn: undefined,
+					purchasingPrice: undefined,
+					channleName: undefined,
           deviceId: []
         },
         shipDialogVisible: false,
@@ -435,10 +451,21 @@
         this.shipForm.orderId = row.id
         this.shipForm.shipChannel = row.shipChannel
         this.shipForm.shipSn = row.shipSn
+				this.shipForm.purchasingPrice = row.purchasingPrice
+				this.shipForm.channleName = row.channleName
         this.shipDialogVisible = true
         this.$nextTick(() => {
           this.$refs['shipForm'].clearValidate()
         })
+				// 获取渠道名称
+				channleAllAdmin().then(response => {
+				  this.listLoading = true
+				  this.channleAllAdmin = response.data.data.items
+				  this.listLoading = false
+				}).catch(() => {
+				  this.item = []
+				  this.listLoading = false
+				})
       },
       confirmShip() {
         this.shipForm.deviceId = this.shipForm.deviceId.filter(item => {
@@ -512,7 +539,33 @@
         }).catch(() => {
           this.bulletBoxAndAmount(row)
         })
-      }
+      },
+			onLevelChange: function(value) {
+				
+			  if (value === 'L1') {
+			    this.pid = undefined
+			  }
+			},
+			confirmShipV1_3() {
+			  this.shipForm.deviceId = this.shipForm.deviceId.filter(item => {
+			    return item !== ''
+			  })
+			  this.$refs['shipForm'].validate((valid) => {
+			    if (valid) {
+			      shipOrderV1_3(this.shipForm).then(response => {
+			        this.shipDialogVisible = false
+			        this.$notify({
+			          title: '成功',
+			          message: '确认发货成功',
+			          type: 'success',
+			          duration: 2000
+			        })
+			        this.getList()
+			      })
+			    }
+			  })
+			},
+			
     }
   }
 
