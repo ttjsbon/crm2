@@ -428,15 +428,6 @@ export const asyncRouterMap = [{
     }
   },
   {
-    path: 'amount',
-    component: _import('stat/amount'),
-    name: 'statAmount',
-    meta: {
-      title: '租金统计',
-      noCache: true
-    }
-  },
-  {
     path: 'amountChannle1',
     component: _import('stat/amountChannle1'),
     name: 'statAmountChannle1',
