@@ -274,15 +274,15 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="支付宝交易号" :visible.sync="dialogFormVisibleAmount" >
-      <el-form>
-        <el-form-item label="支付宝交易号">
-          <el-input v-model="amount"></el-input>
-        </el-form-item>
-      </el-form>
+    <el-dialog title="真的确认退款么？" :visible.sync="dialogFormVisibleAmount" >
+      <!--<el-form>-->
+        <!--<el-form-item label="支付宝交易号">-->
+          <!--<el-input v-model="amount"></el-input>-->
+        <!--</el-form-item>-->
+      <!--</el-form>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAmount = false">取 消</el-button>
-        <el-button type="primary" @click="enterTheAmountOfCompensation(amount)">确 定</el-button>
+        <el-button type="primary" @click="enterTheAmountOfCompensation()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -510,9 +510,9 @@
         this.dialogFormVisibleAmount = true
         this.editRow = row
       },
-      enterTheAmountOfCompensation(row) {
+      enterTheAmountOfCompensation() {
         this.dialogFormVisibleAmount = false
-        refund(this.editRow.id, this.amount).then(response => {
+        refund(this.editRow.id).then(response => {
           this.shipDialogVisible = false
           this.$notify({
             title: '成功',
@@ -532,12 +532,15 @@
           this.shipForm.orderId = row.id
           this.shipForm.shipChannel = row.shipChannel
           this.shipForm.shipSn = row.shipSn
+
           this.shipDialogVisible = true
           this.$nextTick(() => {
             this.$refs['shipForm'].clearValidate()
           })
         }).catch(() => {
-          this.bulletBoxAndAmount(row)
+          this.editRow = row
+          this.enterTheAmountOfCompensation(row)
+          // this.bulletBoxAndAmount(row)
         })
       },
 			onLevelChange: function(value) {
