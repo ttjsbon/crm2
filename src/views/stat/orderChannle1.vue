@@ -11,9 +11,10 @@
       </el-select>
     </div>
 
-    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
-    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2"></ve-line>
-    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3"></ve-line>
+    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
+    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2" :colors="colors"></ve-line>
+    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3" :colors="colors"></ve-line>
+
   </div>
 </template>
 
@@ -27,6 +28,7 @@
   export default {
     components: { VeHistogram, VeLine, DatePicker },
     data() {
+      this.colors = ['#29B9EF', '#2CF5B5', 'red']
       return {
         dataShow: false,
         amountShow: false,
