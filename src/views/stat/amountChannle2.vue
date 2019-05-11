@@ -2,9 +2,9 @@
   <div class="app-container calendar-list-container">
     <div id="select">
       选择时间段：
-      <!--<date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>-->
-      <date-picker v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
-      <date-picker v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
+      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+      <!--<date-picker v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>-->
+      <!--<date-picker v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>-->
     </div>
 
     <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
@@ -25,7 +25,7 @@
         query: {
           status: 0,
           selectDate: [null],
-          channleName: '测试渠道2'
+          channleName: 'B'
         },
         timePeriod: [null],
         startM: null,

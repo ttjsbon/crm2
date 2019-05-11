@@ -37,7 +37,7 @@
         query: {
           status: 1,
           timePeriod: [null],
-          channleName: '测试渠道1'
+          channleName: 'A'
         },
         statues: [{
           value: '1',
