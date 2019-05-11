@@ -14,7 +14,7 @@
 
 <script>
   // import { statAmount } from '@/api/stat'
-	import { statAmountV1_3_0 } from '@/api/stat' 
+  import { statAmountV1_3_0 } from '@/api/stat'
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
 
