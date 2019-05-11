@@ -1,6 +1,5 @@
-import { loginByUsername, logout, getUserInfo } from '@/api/login'
+import { loginByUsername, logout, getUserInfo, getUserPri } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
 const user = {
   state: {
     user: '',
@@ -40,6 +39,15 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_MENUID: (state, menuid) => {
+      state.menuid = menuid
+    },
+    SET_MENU: (state, menu) => {
+      state.menu = menu
+    },
+    SET_SUBLIST: (state, sublist) => {
+      state.sublist = sublist
     }
   },
 
@@ -68,6 +76,22 @@ const user = {
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 获取用户权限信息
+    GetUserPri({ commit },userInfo) {
+      const adminName = userInfo.adminName.trim()
+      return new Promise((resolve, reject) => {
+        getUserPri(adminName).then(response => {
+          const data = response.data.data
+          commit('SET_MENUID', data.menuid)
+          commit('SET_MENU', data.menu)
+          commit('SET_SUBLIST', data.sublist)
           resolve(response)
         }).catch(error => {
           reject(error)

@@ -10,10 +10,10 @@
         </el-option>
       </el-select>
     </div>
+    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
+    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2" :colors="colors"></ve-line>
+    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3" :colors="colors"></ve-line>
 
-    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
-    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2"></ve-line>
-    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3"></ve-line>
   </div>
 </template>
 
@@ -26,8 +26,9 @@ import VeHistogram from 'v-charts/lib/histogram'
 export default {
   components: { VeHistogram, VeLine, DatePicker },
   data() {
+    this.colors = ['#29B9EF', '#2CF5B5', 'red']
     return {
-      dataShow: true,
+      dataShow: false,
       amountShow: false,
       parseShow: false,
       searchStatus: '',
@@ -36,7 +37,7 @@ export default {
         timePeriod: [null]
       },
       statues: [{
-        value: '0',
+        value: '1',
         label: '全部'
       }, {
         value: '2',
@@ -80,6 +81,12 @@ export default {
         labelMap: {
           'orders': '成交量',
           'customers': '审核通过'
+        }},
+      chartSettings4: {
+        labelMap: {
+          'orders': '成交量',
+          'customers': '审核通过',
+          'amount': '订单总额'
         }},
       chartExtend: {
         xAxis: { boundaryGap: true }

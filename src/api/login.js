@@ -28,3 +28,14 @@ export function getUserInfo(token) {
     }
   })
 }
+
+export function getUserPri(adminName) {
+  return request({
+    url: '/login/adminPrivilegesMenu',
+    //url: '/login/selectMens',
+    method: 'post',
+    params: {
+      adminName: adminName
+    }
+  })
+}
