@@ -39,3 +39,22 @@ export function deleteAdmin(data) {
     data
   })
 }
+
+export function selectMens(data) {
+  return request({
+    url: '/login/selectMens',
+    method: 'post',
+    data
+  })
+}
+
+export function adminPrivileges(menuIds, adminName) {
+  return request({
+    url: '/login/adminPrivileges',
+    method: 'post',
+    params: {
+      menuIds: menuIds,
+      adminName: adminName
+    }
+  })
+}

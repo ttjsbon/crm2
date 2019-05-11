@@ -411,7 +411,6 @@
           this.item = []
           this.listLoading = false
         })
-
       },
       confirmShip() {
         this.shipForm.deviceId = this.shipForm.deviceId.filter(item => {
@@ -453,7 +452,6 @@
         this.shipForm.deviceId = []
       },
       onLevelChange: function(value) {
-
         if (value === 'L1') {
           this.pid = undefined
         }

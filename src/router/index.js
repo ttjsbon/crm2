@@ -74,7 +74,8 @@ export const asyncRouterMap = [{
   name: 'userManage',
   meta: {
     title: '用户管理',
-    icon: 'chart'
+    icon: 'chart',
+    roles: ['admin']
   },
   children: [{
     path: 'user',
@@ -82,7 +83,8 @@ export const asyncRouterMap = [{
     name: 'user',
     meta: {
       title: '会员管理',
-      noCache: true
+      noCache: true,
+      roles: ['admin']
     }
   },
   {
@@ -100,7 +102,8 @@ export const asyncRouterMap = [{
     name: 'collect',
     meta: {
       title: '会员收藏',
-      noCache: true
+      noCache: true,
+      roles: ['admin']
     }
   },
   {
@@ -109,7 +112,8 @@ export const asyncRouterMap = [{
     name: 'footprint',
     meta: {
       title: '会员足迹',
-      noCache: true
+      noCache: true,
+      roles: ['admin']
     }
   },
   {
@@ -118,7 +122,8 @@ export const asyncRouterMap = [{
     name: 'history',
     meta: {
       title: '搜索历史',
-      noCache: true
+      noCache: true,
+      roles: ['admin']
     }
   }
   ]
@@ -131,7 +136,8 @@ export const asyncRouterMap = [{
   name: 'mallManage',
   meta: {
     title: '商城管理',
-    icon: 'chart'
+    icon: 'chart',
+    roles: ['admin']
   },
   children: [{
     path: 'region',
@@ -139,7 +145,8 @@ export const asyncRouterMap = [{
     name: 'region',
     meta: {
       title: '行政区域',
-      noCache: true
+      noCache: true,
+      roles: ['admin']
     }
   },
   {

@@ -57,6 +57,16 @@
 						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
+
+        
+        <div v-for="(item,index) in checkList" :key="index">
+          <el-checkbox :indeterminate="isIndeterminate" v-model="item.checkAll" @change="handleCheckAllChange(item.checkAll, index)">{{item.name}}</el-checkbox>
+          <div style="margin: 15px 0;"></div>
+          <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange(checkedCities, index)">
+            <el-checkbox v-for="(item,index) in item.subList" :label="item.id" :key="index">{{item.name}}</el-checkbox>
+          </el-checkbox-group>
+        </div>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -95,7 +105,7 @@
 </style>
 
 <script>
-import { listAdmin, createAdmin, updateAdmin, deleteAdmin } from '@/api/admin'
+import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges } from '@/api/admin'
 import { uploadPath } from '@/api/storage'
 
 export default {
@@ -121,6 +131,9 @@ export default {
       }
     }
     return {
+      checkList: [],
+      checkedCities: [],
+      isIndeterminate: true,
       uploadPath,
       list: null,
       total: null,
@@ -163,6 +176,45 @@ export default {
     this.getList()
   },
   methods: {
+    handleCheckAllChange(val, index) {
+      if (val) {
+        this.checkedCities.push(this.checkList[index].id)
+        this.checkList[index].subList.forEach((value) => {
+          this.checkedCities.push(value.id)
+        })
+      } else {
+        for (let i = 0; i < this.checkedCities.length; i++) {
+          if (this.checkList[index].id === this.checkedCities[i]) {
+            this.checkedCities.splice(i, 1)
+            i--
+          }
+        }
+        this.checkList[index].subList.forEach((value, num) => {
+          for (let i = 0; i < this.checkedCities.length; i++) {
+            if (value.id === this.checkedCities[i]) {
+              this.checkedCities.splice(i, 1)
+              i--
+            }
+          }
+        })
+      }
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange(value, index) {
+      this.checkedCities = value
+      const choose = this.checkList[index].subList.every((value) => {
+        return !this.checkedCities.includes(value.id)
+      })
+      if (!choose) {
+        this.checkList[index].checkAll = true
+        if (this.checkedCities.indexOf(this.checkList[index].id) < 0) {
+          this.checkedCities.push(this.checkList[index].id)
+        }
+      } else {
+        this.checkedCities.splice(this.checkedCities.indexOf(this.checkList[index].id), 1)
+        this.checkList[index].checkAll = false
+      }
+    },
     getList() {
       this.listLoading = true
       listAdmin(this.listQuery).then(response => {
@@ -206,6 +258,18 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+      this.selectMens()
+    },
+    selectMens() {
+      selectMens().then(response => {
+        this.checkList = response.data.data
+        this.checkList.forEach((value) => {
+          value['checkAll'] = false
+          value.subList.forEach((element) => {
+            value.subList['checkAll'] = false
+          })
+        })
+      })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -219,8 +283,17 @@ export default {
               type: 'success',
               duration: 2000
             })
+            this.adminPrivileges(response.data.data.username)
           })
         }
+      })
+    },
+    adminPrivileges(username) {
+      let checkedCities = JSON.stringify(this.checkedCities)
+      checkedCities = checkedCities.replace('[', '')
+      checkedCities = checkedCities.replace(']', '')
+      adminPrivileges(checkedCities, username).then(response => {
+        this.checkedCities = []
       })
     },
     handleUpdate(row) {
@@ -230,6 +303,7 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+      this.selectMens()
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
