@@ -95,10 +95,11 @@ export default {
           }
         }
         this.chartExtend = {
-          xAxis: { boundaryGap: true },
-          series: {
-            label: { show: true, position: 'top' }
-          }
+          xAxis: { boundaryGap: true }
+          // ,
+          // series: {
+          //   label: { show: true, position: 'top' }
+          // }
         }
       })
     },

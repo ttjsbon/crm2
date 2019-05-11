@@ -98,3 +98,18 @@ export function getCheckInfo(orderId, userId) {
     }
   })
 }
+export function channleAllAdmin() {
+  return request({
+    url: '/channle/queryChannleAll',
+    method: 'get'
+
+  })
+}
+
+export function shipOrderV1_3(data) {
+  return request({
+    url: '/order/v1.3/ship',
+    method: 'post',
+    data
+  })
+}
