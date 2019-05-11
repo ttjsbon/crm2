@@ -96,9 +96,9 @@
           }
           this.chartExtend = {
             xAxis: { boundaryGap: true },
-            series: {
-              label: { show: true, position: 'top' }
-            }
+            // series: {
+            //   label: { show: true, position: 'top' }
+            // }
           }
         })
       },
