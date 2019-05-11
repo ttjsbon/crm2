@@ -1,63 +1,129 @@
-import router from './router'
-import store from './store'
-import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css'// progress bar style
-import { getToken } from '@/utils/auth' // getToken from cookie
+import {asyncRouterMap, constantRouterMap} from '@/router'
 
-NProgress.configure({ showSpinner: false })// NProgress Configuration
-
-// permissiom judge function
-function hasPermission(roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
-  if (!permissionRoles) return true
-  return roles.some(role => permissionRoles.indexOf(role) >= 0)
+/**
+ * 通过meta.role判断是否与当前用户权限匹配
+ * @param roles
+ * @param route
+ */
+function hasPermission(roles, route) {
+  if (route.meta && route.meta.roles) {
+    return roles.some(role => route.meta.roles.indexOf(role) >= 0)
+  } else {
+    // return true
+    return false
+  }
 }
 
-const whiteList = ['/login']// no redirect whitelist
+function hasPermission_new(privs, route) {
+  if (route.path === `/${privs}` || route.path === privs) {
+    return true
+  }
+  else {
+    return false
+  }
+}
 
-router.beforeEach((to, from, next) => {
-  NProgress.start() // start progress bar
-  if (getToken()) { // determine if there has token
-    /* has token*/
-    if (to.path === '/login') {
-      next({ path: '/' })
-      NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
-    } else {
-      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetUserInfo').then(res => { // 拉取user_info
-          const roles = res.data.data.roles // note: roles must be a array! such as: ['editor','develop']
-          store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-          })
-        }).catch(() => {
-          store.dispatch('FedLogOut').then(() => {
-            Message.error('验证失败，请输入正确的用户名和密码')
-            next({ path: '/login' })
-          })
-        })
-      } else {
-        // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (hasPermission(store.getters.roles, to.meta.roles)) {
-          next()//
-        } else {
-          next({ path: '/401', replace: true, query: { noGoBack: true }})
+function getName(route_all) {
+  let arr_name = []
+  route_all.forEach(route => {
+    arr_name.push(`/${route.menu}`)
+    if (route.subList && route.subList.length) {
+      route.subList.forEach(val => {
+        arr_name.push(`/${val.menu}`)
+      })
+    }
+  });
+  console.log(arr_name)
+  return arr_name
+}//拿到name
+/**
+ * 递归过滤异步路由表，返回符合用户角色权限的路由表
+ * @param asyncRouterMap
+ * @param roles
+ */
+function filterAsyncRouter(asyncRouterMap, roles) {
+  const accessedRouters = asyncRouterMap.filter(route => {
+    if (hasPermission(roles, route)) {
+      if (route.children && route.children.length) {
+        route.children = filterAsyncRouter(route.children, roles)
+      }
+      return true
+    }
+    return false
+  })
+  return accessedRouters
+}
+
+function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
+  const accessedRouters = asyncRouterMap.filter(route => {
+    if (child) {
+      if (privs.includes(route.path)) {
+        if (route.children && route.children.length) {
+          route.children = filterAsyncRouter_new(route.children, privs, false, route.path)
         }
-        // 可删 ↑
+        return true
+      }
+      else {
+        return false
       }
     }
-  } else {
-    /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
-      next()
-    } else {
-      next('/login') // 否则全部重定向到登录页
-      NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
+    else {
+      if (privs.includes(`${parentNode}/${route.path}`)) {
+        return true
+      }
+      else {
+        return false
+      }
+    }
+  })
+  console.log(accessedRouters)
+  return accessedRouters
+}
+
+const permission = {
+  state: {
+    routers: constantRouterMap,
+    addRouters: []
+  },
+  mutations: {
+    SET_ROUTERS: (state, routers) => {
+      state.addRouters = routers
+      state.routers = constantRouterMap.concat(routers)
+    }
+  },
+  actions: {
+    GenerateRoutes({commit}, data) {
+      return new Promise(resolve => {
+        const {roles} = data
+        let accessedRouters
+        /*if (roles.indexOf('admin') >= 0) {
+          accessedRouters = asyncRouterMap
+        } else {
+          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        }*/
+        //accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        commit('SET_ROUTERS', accessedRouters)
+        resolve()
+      })
+    },
+    GenerateRoutes_new({commit}, data) {
+      return new Promise(resolve => {
+        //const pathAll=["/user", "/user/user", "/user/address", "/user/collect", "/user/footprint", "/user/history", "/mall", "/mall/region", "/mall/brand", "/mall/category", "/mall/issue", "/mall/keyword", "/order", "/order/orderall", "/order/orderNew", "/order/orderAwaitCheck", "/order/orderAwaitRefund", "/order/orderAwaitSend", "/order/orderReceived", "/order/orderRenting", "/order/orderOverdue", "/order/orderReturning", "/goods", "/goods/list", "/goods/create", "/goods/edit", "/goods/comment", "/promotion", "/promotion/ad", "/promotion/topic", "/sys", "/sys/admin", "/sys/os", "/stat", "/stat/user", "/stat/order", "/stat/amount", "/stat/goods", "*"]
+        const {privs} = data
+        //let accessedRouters = filterAsyncRouter_new(asyncRouterMap, privs_test.data)
+        let pathUser = getName(privs)
+        let accessedRouters = filterAsyncRouter_new(asyncRouterMap, pathUser, true)
+        /*if (roles.indexOf('admin') >= 0) {
+          accessedRouters = asyncRouterMap
+        } else {
+          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        }*/
+        //accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        commit('SET_ROUTERS', accessedRouters)
+        resolve()
+      })
     }
   }
-})
+}
 
-router.afterEach(() => {
-  NProgress.done() // finish progress bar
-})
+export default permission
