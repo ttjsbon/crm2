@@ -22,7 +22,7 @@
         <template slot-scope="scope">
           <img :src="scope.row.avatar" width="40" v-if="scope.row.avatar"/>
         </template>
-      </el-table-column>        
+      </el-table-column>
 
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -35,7 +35,7 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -50,13 +50,23 @@
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPassword">
           <el-input type="password" v-model="dataForm.checkPassword" auto-complete="off"></el-input>
-        </el-form-item>                
+        </el-form-item>
         <el-form-item label="管理员头像" prop="avatar">
           <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadAvatar">
-			      <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
-						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
+
+
+        <div v-for="(item,index) in checkList" :key="index">
+          <el-checkbox :indeterminate="isIndeterminate" v-model="item.checkAll" @change="handleCheckAllChange(item.checkAll, index)">{{item.name}}</el-checkbox>
+          <div style="margin: 15px 0;"></div>
+          <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange(checkedCities, index)">
+            <el-checkbox v-for="(item,index) in item.subList" :label="item.id" :key="index">{{item.name}}</el-checkbox>
+          </el-checkbox-group>
+        </div>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -70,210 +80,274 @@
 
 <style>
   .avatar-uploader .el-upload {
-	  border: 1px dashed #d9d9d9;
-	  border-radius: 6px;
-	  cursor: pointer;
-	  position: relative;
-	  overflow: hidden;
-	}
-	.avatar-uploader .el-upload:hover {
-	  border-color: #20a0ff;
-	}
-	.avatar-uploader-icon {
-	    font-size: 28px;
-	    color: #8c939d;
-	    width: 120px;
-	    height: 120px;
-	    line-height: 120px;
-	    text-align: center;
-	}
-	.avatar {
-	    width: 120px;
-	    height: 120px;
-	    display: block;
-	}
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+    display: block;
+  }
 </style>
 
 <script>
-import { listAdmin, createAdmin, updateAdmin, deleteAdmin } from '@/api/admin'
-import { uploadPath } from '@/api/storage'
+  import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges } from '@/api/admin'
+  import { uploadPath } from '@/api/storage'
 
-export default {
-  name: 'Admin',
-  data() {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.dataForm.checkPassword !== '') {
-          this.$refs.dataForm.validateField('checkPassword')
+  export default {
+    name: 'Admin',
+    data() {
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else {
+          if (this.dataForm.checkPassword !== '') {
+            this.$refs.dataForm.validateField('checkPassword')
+          }
+          callback()
         }
-        callback()
       }
-    }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.dataForm.password) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.dataForm.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
       }
-    }
-    return {
-      uploadPath,
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        username: undefined,
-        sort: 'add_time',
-        order: 'desc'
-      },
-      dataForm: {
-        id: undefined,
-        username: undefined,
-        password: undefined,
-        checkPassword: undefined,
-        avatar: undefined
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
-      },
-      rules: {
-        username: [{ required: true, message: '管理员名称不能为空', trigger: 'blur' }],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        checkPassword: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass2, trigger: 'blur' }
-        ]
-      },
-      downloadLoading: false
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      this.listLoading = true
-      listAdmin(this.listQuery).then(response => {
-        this.list = response.data.data.items
-        this.total = response.data.data.total
-        this.listLoading = false
-      }).catch(() => {
-        this.list = []
-        this.total = 0
-        this.listLoading = false
-      })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.getList()
-    },
-    resetForm() {
-      this.dataForm = {
-        id: undefined,
-        username: undefined,
-        password: undefined,
-        checkPassword: undefined,
-        avatar: undefined
+      return {
+        checkList: [],
+        checkedCities: [],
+        isIndeterminate: true,
+        uploadPath,
+        list: null,
+        total: null,
+        listLoading: true,
+        listQuery: {
+          page: 1,
+          limit: 20,
+          username: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        },
+        dataForm: {
+          id: undefined,
+          username: undefined,
+          password: undefined,
+          checkPassword: undefined,
+          avatar: undefined
+        },
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: '编辑',
+          create: '创建'
+        },
+        rules: {
+          username: [{ required: true, message: '管理员名称不能为空', trigger: 'blur' }],
+          password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            { validator: validatePass, trigger: 'blur' }
+          ],
+          checkPassword: [
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            { validator: validatePass2, trigger: 'blur' }
+          ]
+        },
+        downloadLoading: false
       }
     },
-    uploadAvatar: function(response) {
-      this.dataForm.avatar = response.data.url
+    created() {
+      this.getList()
     },
-    handleCreate() {
-      this.resetForm()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          createAdmin(this.dataForm).then(response => {
-            this.list.unshift(response.data.data)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
+    methods: {
+      handleCheckAllChange(val, index) {
+        if (val) {
+          this.checkedCities.push(this.checkList[index].id)
+          this.checkList[index].subList.forEach((value) => {
+            this.checkedCities.push(value.id)
           })
-        }
-      })
-    },
-    handleUpdate(row) {
-      this.dataForm = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          updateAdmin(this.dataForm).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.dataForm.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.dataForm)
-                break
+        } else {
+          for (let i = 0; i < this.checkedCities.length; i++) {
+            if (this.checkList[index].id === this.checkedCities[i]) {
+              this.checkedCities.splice(i, 1)
+              i--
+            }
+          }
+          this.checkList[index].subList.forEach((value, num) => {
+            for (let i = 0; i < this.checkedCities.length; i++) {
+              if (value.id === this.checkedCities[i]) {
+                this.checkedCities.splice(i, 1)
+                i--
               }
             }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
           })
         }
-      })
-    },
-    handleDelete(row) {
-      deleteAdmin(row).then(response => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+        this.isIndeterminate = false
+      },
+      handleCheckedCitiesChange(value, index) {
+        this.checkedCities = value
+        const choose = this.checkList[index].subList.every((value) => {
+          return !this.checkedCities.includes(value.id)
         })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['管理员ID', '管理员名称', '管理员头像']
-        const filterVal = ['id', 'username', 'avatar']
-        excel.export_json_to_excel2(tHeader, this.list, filterVal, '管理员信息')
-        this.downloadLoading = false
-      })
+        if (!choose) {
+          this.checkList[index].checkAll = true
+          if (this.checkedCities.indexOf(this.checkList[index].id) < 0) {
+            this.checkedCities.push(this.checkList[index].id)
+          }
+        } else {
+          this.checkedCities.splice(this.checkedCities.indexOf(this.checkList[index].id), 1)
+          this.checkList[index].checkAll = false
+        }
+      },
+      getList() {
+        this.listLoading = true
+        listAdmin(this.listQuery).then(response => {
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
+        }).catch(() => {
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
+      resetForm() {
+        this.dataForm = {
+          id: undefined,
+          username: undefined,
+          password: undefined,
+          checkPassword: undefined,
+          avatar: undefined
+        }
+      },
+      uploadAvatar: function(response) {
+        this.dataForm.avatar = response.data.url
+      },
+      handleCreate() {
+        this.resetForm()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+        this.selectMens()
+      },
+      selectMens() {
+        selectMens().then(response => {
+          this.checkList = response.data.data
+          this.checkList.forEach((value) => {
+            value['checkAll'] = false
+            value.subList.forEach((element) => {
+              value.subList['checkAll'] = false
+            })
+          })
+        })
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            createAdmin(this.dataForm).then(response => {
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.adminPrivileges(response.data.data.username)
+            })
+          }
+        })
+      },
+      adminPrivileges(username) {
+        let checkedCities = JSON.stringify(this.checkedCities)
+        checkedCities = checkedCities.replace('[', '')
+        checkedCities = checkedCities.replace(']', '')
+        adminPrivileges(checkedCities, username).then(response => {
+          this.checkedCities = []
+        })
+      },
+      handleUpdate(row) {
+        this.dataForm = Object.assign({}, row)
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+        this.selectMens()
+      },
+      updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            updateAdmin(this.dataForm).then(() => {
+              for (const v of this.list) {
+                if (v.id === this.dataForm.id) {
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
+                }
+              }
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDelete(row) {
+        deleteAdmin(row).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
+        })
+      },
+      handleDownload() {
+        this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['管理员ID', '管理员名称', '管理员头像']
+          const filterVal = ['id', 'username', 'avatar']
+          excel.export_json_to_excel2(tHeader, this.list, filterVal, '管理员信息')
+          this.downloadLoading = false
+        })
+      }
     }
   }
-}
 </script>
