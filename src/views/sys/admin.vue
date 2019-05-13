@@ -107,6 +107,7 @@
 <script>
 import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges } from '@/api/admin'
 import { uploadPath } from '@/api/storage'
+import res from "../../mock/res";
 
 export default {
   name: 'Admin',
@@ -288,6 +289,13 @@ export default {
               duration: 2000
             })
             this.adminPrivileges(response.data.data.username)
+          }).catch(err => {
+            this.$notify({
+              title: err.data.errmsg,
+              message: err.data.errmsg,
+              type: 'warning',
+              duration: 2000
+            })
           })
         }
       })
