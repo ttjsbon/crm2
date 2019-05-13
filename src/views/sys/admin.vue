@@ -288,6 +288,13 @@
                 duration: 2000
               })
               this.adminPrivileges(response.data.data.username)
+            }).catch(err => {
+              this.$notify({
+                title: err.data.errmsg,
+                message: err.data.errmsg,
+                type: 'warning',
+                duration: 2000
+              })
             })
           }
         })
