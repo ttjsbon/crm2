@@ -146,6 +146,8 @@
       },
       chickAuth() {
         this.query.status = this.searchStatus
+				this.query.timePeriod[0] = this.timePeriod[0]
+		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       },
       selectDate() {
