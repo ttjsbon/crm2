@@ -24,8 +24,8 @@
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
-        <span>管理员用户名 : admin123</span>
-        <span>管理员密码 : admin123</span>
+        <!--<span>管理员用户名 : admin123</span>-->
+        <!--<span>管理员密码 : admin123</span>-->
       </div>
     </el-form>
 
@@ -52,8 +52,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin123',
-        password: 'admin123'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -79,6 +79,12 @@ export default {
             this.loading = false
             this.$router.push({ path: '/' })
           }).catch(() => {
+            this.$message({
+              title: '失败',
+              message: '账号或密码错误',
+              type: 'error',
+              duration: 2000
+            })
             this.loading = false
           })
         } else {
