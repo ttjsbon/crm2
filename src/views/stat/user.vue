@@ -87,6 +87,19 @@
     },
     methods: {
       data() {
+			if (this.timePeriod.length === 2) {
+					if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
+						var dat = new Date(new Date(this.query.timePeriod[0]).getTime()+3600*24*1000)
+						this.query.timePeriod[0] = dat
+						var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime()+3600*24*1000)
+						this.query.timePeriod[1] = dat1				
+					}
+					else{
+						this.query.timePeriod=[]
+						this.query.timePeriod.push(null)
+					}
+			
+      }
         statUser(this.query).then(response => {
           this.chartData = response.data.data
           this.chartSettings = {
@@ -108,13 +121,18 @@
       // },
       chickAuth() {
         this.query.auth = this.searchAuth
+        this.query.timePeriod[0] = this.timePeriod[0]
+		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       },
       selectDate() {
-        if (this.timePeriod[0] == null) {
-          this.timePeriod = [null]
-        }
-        this.query.timePeriod = this.timePeriod
+        // if (this.timePeriod[0] == null) {
+        //   this.timePeriod = [null]
+        // }
+        // this.query.timePeriod = this.timePeriod
+        // this.data()
+				this.query.timePeriod[0] = this.timePeriod[0]
+		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       }
     }
