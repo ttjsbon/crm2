@@ -25,7 +25,7 @@
         query: {
           status: 0,
           selectDate: [null],
-          channleName: 'A'
+          channleName: '机合科技'
         },
         timePeriod: [null],
         startM: null,

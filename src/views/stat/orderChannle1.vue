@@ -36,7 +36,7 @@
         query: {
           status: 1,
           timePeriod: [null],
-          channleName: 'A'
+          channleName: '机合科技'
         },
         statues: [{
           value: '1',
