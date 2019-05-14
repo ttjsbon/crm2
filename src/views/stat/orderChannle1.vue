@@ -101,27 +101,19 @@
     },
     methods: {
       data() {
-        // statOrder(this.query).then(response => {
-        //   if (this.searchStatus === 4) {
-        //     this.chartData2 = response.data.data
-        //     this.dataShow = false
-        //     this.parseShow = false
-        //     this.amountShow = true
-        //   } else {
-        //     if (this.searchStatus === 2) {
-        //       this.chartSettings = this.chartSettings3
-        //       this.parseShow = true
-        //       this.dataShow = false
-        //       this.amountShow = false
-        //       this.chartData3 = response.data.data
-        //     } else {
-        //       this.parseShow = false
-        //       this.dataShow = true
-        //       this.amountShow = false
-        //       this.chartData = response.data.data
-        //     }
-        //   }
-        // })
+				if (this.timePeriod.length === 2) {
+					if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
+						var dat = new Date(new Date(this.query.timePeriod[0]).getTime()+3600*24*1000)
+						this.query.timePeriod[0] = dat
+						var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime()+3600*24*1000)
+						this.query.timePeriod[1] = dat1				
+					}
+					else{
+						this.query.timePeriod=[]
+						this.query.timePeriod.push(null)
+					}
+			
+        }
 				statOrderV1_3_0(this.query).then(response => {
 				  if (this.searchStatus === 4) {
 						this.chartSettings = this.chartSettings2
@@ -157,10 +149,13 @@
         this.data()
       },
       selectDate() {
-        if (this.timePeriod[0] == null) {
-          this.timePeriod = [null]
-        }
-        this.query.timePeriod = this.timePeriod
+        // if (this.timePeriod[0] == null) {
+        //   this.timePeriod = [null]
+        // }
+        // this.query.timePeriod = this.timePeriod
+        // this.data()
+				this.query.timePeriod[0] = this.timePeriod[0]
+		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       }
     }
