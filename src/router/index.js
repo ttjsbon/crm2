@@ -409,15 +409,15 @@ export const asyncRouterMap = [{
       noCache: true
     }
   },
-  // {
-  //   path: 'amount',
-  //   component: _import('stat/amount'),
-  //   name: 'statAmount',
-  //   meta: {
-  //     title: '租金统计',
-  //     noCache: true
-  //   }
-  // },
+  {
+    path: 'amount',
+    component: _import('stat/amount'),
+    name: 'statAmount',
+    meta: {
+      title: '租金统计',
+      noCache: true
+    }
+  },
   {
     path: 'orderChannle1',
     component: _import('stat/orderChannle1'),
@@ -427,15 +427,15 @@ export const asyncRouterMap = [{
       noCache: true
     }
   },
-  {
-    path: 'orderChannle2',
-    component: _import('stat/orderChannle2'),
-    name: 'statOrderChannle2',
-    meta: {
-      title: '订单B统计',
-      noCache: true
-    }
-  },
+  // {
+  //   path: 'orderChannle2',
+  //   component: _import('stat/orderChannle2'),
+  //   name: 'statOrderChannle2',
+  //   meta: {
+  //     title: '订单B统计',
+  //     noCache: true
+  //   }
+  // },
   {
     path: 'amountChannle1',
     component: _import('stat/amountChannle1'),
@@ -445,15 +445,15 @@ export const asyncRouterMap = [{
       noCache: true
     }
   },
-  {
-    path: 'amountChannle2',
-    component: _import('stat/amountChannle2'),
-    name: 'statAmountChannle2',
-    meta: {
-      title: '租金B统计',
-      noCache: true
-    }
-  },
+  // {
+  //   path: 'amountChannle2',
+  //   component: _import('stat/amountChannle2'),
+  //   name: 'statAmountChannle2',
+  //   meta: {
+  //     title: '租金B统计',
+  //     noCache: true
+  //   }
+  // },
   {
     path: 'goods',
     component: _import('stat/goods'),

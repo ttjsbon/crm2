@@ -14,7 +14,6 @@
     <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
     <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2" :colors="colors"></ve-line>
     <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3" :colors="colors"></ve-line>
-
   </div>
 </template>
 
@@ -37,7 +36,7 @@
         query: {
           status: 1,
           timePeriod: [null],
-          channleName: 'A'
+          channleName: '机合科技'
         },
         statues: [{
           value: '1',
@@ -90,7 +89,7 @@
           labelMap: {
             'orders': '成交量',
             'customers': '审核通过',
-            'amount': '订单总额'
+            'amount': '订单总额',
           }},
         chartExtend: {
           xAxis: { boundaryGap: true }
@@ -102,27 +101,19 @@
     },
     methods: {
       data() {
-        // statOrder(this.query).then(response => {
-        //   if (this.searchStatus === 4) {
-        //     this.chartData2 = response.data.data
-        //     this.dataShow = false
-        //     this.parseShow = false
-        //     this.amountShow = true
-        //   } else {
-        //     if (this.searchStatus === 2) {
-        //       this.chartSettings = this.chartSettings3
-        //       this.parseShow = true
-        //       this.dataShow = false
-        //       this.amountShow = false
-        //       this.chartData3 = response.data.data
-        //     } else {
-        //       this.parseShow = false
-        //       this.dataShow = true
-        //       this.amountShow = false
-        //       this.chartData = response.data.data
-        //     }
-        //   }
-        // })
+        if (this.timePeriod.length === 2) {
+          if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
+            var dat = new Date(new Date(this.query.timePeriod[0]).getTime()+3600*24*1000)
+            this.query.timePeriod[0] = dat
+            var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime()+3600*24*1000)
+            this.query.timePeriod[1] = dat1
+          }
+          else{
+            this.query.timePeriod=[]
+            this.query.timePeriod.push(null)
+          }
+
+        }
         statOrderV1_3_0(this.query).then(response => {
           if (this.searchStatus === 4) {
             this.chartSettings = this.chartSettings2
@@ -137,13 +128,13 @@
               this.dataShow = false
               this.amountShow = false
               this.chartData3 = response.data.data
-            } else if (this.searchStatus === 1) {
+            } else if(this.searchStatus === 1){
               this.chartSettings = this.chartSettings4
               this.parseShow = false
               this.dataShow = false
               this.amountShow = false
               this.chartData4 = response.data.data
-            } else {
+            }else {
               this.chartSettings = this.chartSettings
               this.parseShow = false
               this.dataShow = true
@@ -155,16 +146,22 @@
       },
       chickAuth() {
         this.query.status = this.searchStatus
+        this.query.timePeriod[0] = this.timePeriod[0]
+        this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       },
       selectDate() {
-        if (this.timePeriod[0] == null) {
-          this.timePeriod = [null]
-        }
-        this.query.timePeriod = this.timePeriod
+        // if (this.timePeriod[0] == null) {
+        //   this.timePeriod = [null]
+        // }
+        // this.query.timePeriod = this.timePeriod
+        // this.data()
+        this.query.timePeriod[0] = this.timePeriod[0]
+        this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       }
     }
 
   }
 </script>
+
