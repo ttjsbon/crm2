@@ -370,7 +370,7 @@
           limit: 20,
           id: undefined,
           name: undefined,
-          orderStatusArray: [301, 202],
+          orderStatusArray: [301, 202, 204],
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
