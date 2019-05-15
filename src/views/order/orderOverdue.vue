@@ -373,12 +373,8 @@
   } from '@/utils/index'
   import DatePicker from 'vue2-datepicker'
   const statusMap = {
-    201: '已付款',
-    301: '审核通过',
-    401: '已发货',
     501: '租赁中',
-    600: '归还中',
-    900: '已完成'
+    600: '归还中'
   }
 
   export default {
