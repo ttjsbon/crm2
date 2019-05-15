@@ -30,7 +30,7 @@ function getName(route_all) {
       })
     }
   })
-  console.log(arr_name)
+  //console.log(arr_name)
   return arr_name
 }// 拿到name
 /**
@@ -51,8 +51,10 @@ function getName(route_all) {
 //   return accessedRouters
 // }
 function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
+  //console.log(asyncRouterMap)
   const accessedRouters = asyncRouterMap.filter(route => {
     if (child) {
+      //console.log(route)
       if (privs.includes(route.path)) {
         if (route.children && route.children.length) {
           route.children = filterAsyncRouter_new(route.children, privs, false, route.path)
@@ -69,7 +71,7 @@ function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
       }
     }
   })
-  console.log(accessedRouters)
+  //console.log(accessedRouters)
   return accessedRouters
 }
 
@@ -99,6 +101,7 @@ const permission = {
         const { privs } = data
         // let accessedRouters = filterAsyncRouter_new(asyncRouterMap, privs_test.data)
         const pathUser = getName(privs)
+        //console.log(pathUser)
         const accessedRouters = filterAsyncRouter_new(asyncRouterMap, pathUser, true)
         // if (roles.indexOf('admin') >= 0) {
         //   accessedRouters = asyncRouterMap
