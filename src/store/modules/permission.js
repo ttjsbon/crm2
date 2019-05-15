@@ -13,27 +13,26 @@ function hasPermission(roles, route) {
   }
 }
 function hasPermission_new(privs, route) {
-  if(route.path===`/${privs}`||route.path===privs){
+  if (route.path === `/${privs}` || route.path === privs) {
     return true
-  }
-  else{
+  } else {
     return false
   }
 }
 
-function getName(route_all){
-  let arr_name=[]
+function getName(route_all) {
+  const arr_name = []
   route_all.forEach(route => {
     arr_name.push(`/${route.menu}`)
-    if(route.subList&&route.subList.length){
-      route.subList.forEach(val=>{
+    if (route.subList && route.subList.length) {
+      route.subList.forEach(val => {
         arr_name.push(`/${val.menu}`)
       })
     }
-  });
+  })
   console.log(arr_name)
   return arr_name
-}//拿到name
+}// 拿到name
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
  * @param asyncRouterMap
@@ -51,24 +50,21 @@ function filterAsyncRouter(asyncRouterMap, roles) {
   })
   return accessedRouters
 }
-function filterAsyncRouter_new(asyncRouterMap,privs,child,parentNode) {
+function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
   const accessedRouters = asyncRouterMap.filter(route => {
-    if(child){
-      if(privs.includes(route.path)){
-        if(route.children&&route.children.length){
-          route.children=filterAsyncRouter_new(route.children,privs,false,route.path)
+    if (child) {
+      if (privs.includes(route.path)) {
+        if (route.children && route.children.length) {
+          route.children = filterAsyncRouter_new(route.children, privs, false, route.path)
         }
         return true
-      }
-      else{
+      } else {
         return false
       }
-    }
-    else{
-      if(privs.includes(`${parentNode}/${route.path}`)){
+    } else {
+      if (privs.includes(`${parentNode}/${route.path}`)) {
         return true
-      }
-      else{
+      } else {
         return false
       }
     }
@@ -91,31 +87,25 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
+        // const { roles } = data
         let accessedRouters
-        /*if (roles.indexOf('admin') >= 0) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }*/
-        //accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })
     },
     GenerateRoutes_new({ commit }, data) {
       return new Promise(resolve => {
-        //const pathAll=["/user", "/user/user", "/user/address", "/user/collect", "/user/footprint", "/user/history", "/mall", "/mall/region", "/mall/brand", "/mall/category", "/mall/issue", "/mall/keyword", "/order", "/order/orderall", "/order/orderNew", "/order/orderAwaitCheck", "/order/orderAwaitRefund", "/order/orderAwaitSend", "/order/orderReceived", "/order/orderRenting", "/order/orderOverdue", "/order/orderReturning", "/goods", "/goods/list", "/goods/create", "/goods/edit", "/goods/comment", "/promotion", "/promotion/ad", "/promotion/topic", "/sys", "/sys/admin", "/sys/os", "/stat", "/stat/user", "/stat/order", "/stat/amount", "/stat/goods", "*"]
+        // const pathAll=["/user", "/user/user", "/user/address", "/user/collect", "/user/footprint", "/user/history", "/mall", "/mall/region", "/mall/brand", "/mall/category", "/mall/issue", "/mall/keyword", "/order", "/order/orderall", "/order/orderNew", "/order/orderAwaitCheck", "/order/orderAwaitRefund", "/order/orderAwaitSend", "/order/orderReceived", "/order/orderRenting", "/order/orderOverdue", "/order/orderReturning", "/goods", "/goods/list", "/goods/create", "/goods/edit", "/goods/comment", "/promotion", "/promotion/ad", "/promotion/topic", "/sys", "/sys/admin", "/sys/os", "/stat", "/stat/user", "/stat/order", "/stat/amount", "/stat/goods", "*"]
         const { privs } = data
-        //let accessedRouters = filterAsyncRouter_new(asyncRouterMap, privs_test.data)
-        let pathUser=getName(privs)
-        let accessedRouters = filterAsyncRouter_new(asyncRouterMap,pathUser,true)
-        /*if (roles.indexOf('admin') >= 0) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }*/
-        //accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        // let accessedRouters = filterAsyncRouter_new(asyncRouterMap, privs_test.data)
+        const pathUser = getName(privs)
+        const accessedRouters = filterAsyncRouter_new(asyncRouterMap, pathUser, true)
+        // if (roles.indexOf('admin') >= 0) {
+        //   accessedRouters = asyncRouterMap
+        // } else {
+        //   accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        // }
+        // accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })

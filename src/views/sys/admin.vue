@@ -276,6 +276,15 @@
         })
       },
       createData() {
+        if (this.checkedCities.length <= 0) {
+          return this.$notify({
+            title: '创建失败',
+            message: '请选择至少一个页面',
+            type: 'none',
+            duration: 2000
+          })
+        }
+
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             createAdmin(this.dataForm).then(response => {
