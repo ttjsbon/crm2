@@ -90,7 +90,6 @@
       selectDate() {
         this.query.selectDate[0] = this.timePeriod[0]
 				this.query.selectDate[1] = this.timePeriod[1]
-				console.log(this.query.selectDate)
         this.data()
       },
       selectStart() {

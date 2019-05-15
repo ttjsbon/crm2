@@ -41,22 +41,23 @@ export const constantRouterMap = [{
   path: '/401',
   component: _import('error/401'),
   hidden: true
-},
-{
-  path: '',
-  component: Layout,
-  redirect: 'dashboard',
-  children: [{
-    path: 'dashboard',
-    component: _import('dashboard/index'),
-    name: 'dashboard',
-    meta: {
-      title: '首页',
-      icon: 'dashboard',
-      noCache: true
-    }
-  }]
 }
+// ,
+// {
+//   path: '',
+//   component: Layout,
+//   redirect: 'dashboard',
+//   children: [{
+//     path: 'dashboard',
+//     component: _import('dashboard/index'),
+//     name: 'dashboard',
+//     meta: {
+//       title: '首页',
+//       icon: 'dashboard',
+//       noCache: true
+//     }
+//   }]
+// }
 ]
 
 export default new Router({
@@ -68,6 +69,21 @@ export default new Router({
 })
 
 export const asyncRouterMap = [{
+  path: '/dashboard',
+  component: Layout,
+  redirect: 'dashboard',
+  children: [{
+    path: 'index',
+    component: _import('dashboard/index'),
+    name: 'dashboard',
+    meta: {
+      title: '首页',
+      icon: 'dashboard',
+      noCache: true
+    }
+  }]
+},
+{
   path: '/user',
   component: Layout,
   redirect: 'noredirect',

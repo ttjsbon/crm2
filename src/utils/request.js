@@ -23,7 +23,6 @@ service.interceptors.request.use(config => {
   return config
 }, error => {
   // Do something with request error
-  console.log(error) // for debug
   Promise.reject(error)
 })
 
@@ -61,7 +60,6 @@ service.interceptors.response.use(
       return response
     }
   }, error => {
-    console.log('err' + error) // for debug
     Message({
       message: '登录连接超时（后台不能连接，请联系系统管理员）',
       type: 'error',
