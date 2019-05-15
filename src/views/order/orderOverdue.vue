@@ -358,7 +358,7 @@
 
 <script>
   import {
-    listOrder2,
+    listOrderV1_2_4,
     shipOrder,
     refundOrder,
     detailOrder2,
@@ -468,7 +468,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder2(this.listQuery).then(response => {
+        listOrderV1_2_4(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

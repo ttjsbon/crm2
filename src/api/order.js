@@ -141,8 +141,7 @@ export function refund(orderId) {
 export function channleAllAdmin() {
   return request({
     url: '/channle/queryChannleAll',
-    method: 'get',
-    
+    method: 'get'
   })
 }
 
@@ -151,5 +150,12 @@ export function shipOrderV1_3(data) {
     url: '/order/v1.3/ship',
     method: 'post',
     data
+  })
+}
+export function listOrderV1_2_4(query) {
+  return request({
+    url: '/order/v1.2.4/list',
+    method: 'get',
+    params: query
   })
 }
