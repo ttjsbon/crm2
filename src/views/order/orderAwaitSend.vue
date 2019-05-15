@@ -59,8 +59,8 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-if="scope.row.orderStatus!==202" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
-          <el-button v-if="scope.row.orderStatus===202" type="primary" size="mini" @click="handleRefund(scope.row)">确认退款</el-button>
+          <el-button v-if="scope.row.orderStatus!==204" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
+          <el-button v-if="scope.row.orderStatus===204" type="primary" size="mini" @click="handleRefund(scope.row)">确认退款</el-button>
         </template>
       </el-table-column>
     </el-table>
