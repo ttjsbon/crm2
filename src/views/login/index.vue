@@ -8,14 +8,14 @@
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="password" />
+        <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="密码" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
@@ -24,8 +24,8 @@
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
-        <span>管理员用户名 : admin123</span>
-        <span>管理员密码 : admin123</span>
+        <!--<span>管理员用户名 : admin123</span>-->
+        <!--<span>管理员密码 : admin123</span>-->
       </div>
     </el-form>
 
@@ -52,8 +52,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin123',
-        password: 'admin123'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -79,6 +79,12 @@ export default {
             this.loading = false
             this.$router.push({ path: '/' })
           }).catch(() => {
+            this.$message({
+              title: '失败',
+              message: '账号或密码错误',
+              type: 'error',
+              duration: 2000
+            })
             this.loading = false
           })
         } else {

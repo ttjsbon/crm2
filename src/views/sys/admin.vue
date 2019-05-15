@@ -107,6 +107,7 @@
 <script>
 import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges } from '@/api/admin'
 import { uploadPath } from '@/api/storage'
+import res from "../../mock/res";
 
 export default {
   name: 'Admin',
@@ -114,6 +115,8 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
       } else {
         if (this.dataForm.checkPassword !== '') {
           this.$refs.dataForm.validateField('checkPassword')
@@ -126,6 +129,8 @@ export default {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.dataForm.password) {
         callback(new Error('两次输入密码不一致!'))
+      } else if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
       } else {
         callback()
       }
@@ -292,6 +297,13 @@ export default {
               duration: 2000
             })
             this.adminPrivileges(response.data.data.username)
+          }).catch(err => {
+            this.$notify({
+              title: err.data.errmsg,
+              message: err.data.errmsg,
+              type: 'warning',
+              duration: 2000
+            })
           })
         }
       })

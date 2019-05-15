@@ -2,9 +2,9 @@
   <div class="app-container calendar-list-container">
     <div id="select">
       选择时间段：
-      <!--<date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>-->
-      <date-picker v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
-      <date-picker v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
+      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+      <!--<date-picker v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>-->
+      <!--<date-picker v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>-->
     </div>
 
     <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
@@ -25,7 +25,7 @@
         query: {
           status: 0,
           selectDate: [null],
-          channleName: '测试渠道1'
+          channleName: '机合科技'
         },
         timePeriod: [null],
         startM: null,
@@ -43,14 +43,17 @@
             text: 'Today',
             onClick: () => {
               this.timePeriod = [new Date(), new Date()]
+              console.log(this.query.selectDate, 2)
             }
           }
         ],
         chartData: {},
         chartSettings: {
+          metrics: ['orders'],
           labelMap: {
-            'orders': '应收租金',
-            'customers': '实收租金'
+            'orders': '应收租金'
+            // ,
+            // 'customers': '实收租金'
           }},
         chartExtend: {
           xAxis: { boundaryGap: true }
@@ -68,15 +71,26 @@
         // statAmount(this.query).then(response => {
         //   this.chartData = response.data.data
         // })
+        if (this.timePeriod.length === 2) {
+          if(this.query.selectDate[0] && this.query.selectDate[0].getTime()>1000000000000){
+            var dat = new Date(new Date(this.query.selectDate[0]).getTime()+3600*24*1000)
+            this.query.selectDate[0] = dat
+            var dat1 = new Date(new Date(this.query.selectDate[1]).getTime()+3600*24*1000)
+            this.query.selectDate[1] = dat1
+          }
+          else{
+            this.query.selectDate=[]
+            this.query.selectDate.push(null)
+          }
+
+        }
         statAmountV1_3_0(this.query).then(response => {
           this.chartData = response.data.data
         })
       },
       selectDate() {
-        if (this.timePeriod[0] == null) {
-          this.timePeriod = [null]
-        }
-        this.query.selectDate = this.timePeriod
+        this.query.selectDate[0] = this.timePeriod[0]
+        this.query.selectDate[1] = this.timePeriod[1]
         this.data()
       },
       selectStart() {
