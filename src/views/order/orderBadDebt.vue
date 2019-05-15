@@ -12,6 +12,10 @@
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+      <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
+        <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
@@ -47,19 +51,14 @@
       <el-table-column align="center" label="期数" prop="periods">
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" prop="payTime">
-      </el-table-column>
-
-      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
-      <!--</el-table-column>-->
-
-      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
-      <!--</el-table-column>-->
-
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleFree(scope.row)">豁免押金</el-button>
+          <el-button type="primary" size="mini" @click="handleCheck(scope.row)" v-if="scope.row.orderStatus==201">审核</el-button>
+          <el-button type="primary" size="mini" @click="handleFree(scope.row)" v-if="scope.row.orderStatus==101">豁免押金</el-button>
+          <el-button type="primary" size="mini" @click="handleShip(scope.row)" v-if="scope.row.orderStatus==301">发货</el-button>
+          <el-button type="primary" size="mini" @click="handleRefund(scope.row)" v-if="scope.row.orderStatus==302">退款</el-button>
+          <el-button type="primary" size="mini" @click="handleReturn(scope.row)" v-if="scope.row.orderStatus==600">确认归还</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -193,12 +192,9 @@
             (积分减免){{ orderDetail.order.integralPrice }}元
           </span>
         </el-form-item>
+
         <el-form-item label="支付信息">
           <span>（支付渠道）支付宝</span>
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
@@ -241,6 +237,88 @@
       </el-form>
     </el-dialog>
 
+    <!-- 发货对话框 -->
+    <el-dialog title="发货" :visible.sync="shipDialogVisible" @close='resetId' :close-on-click-modal='false'>
+      <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+        <el-form-item label="快递公司" prop="shipChannel">
+          <el-input v-model="shipForm.shipChannel" placeholder="请输入快递公司"></el-input>
+        </el-form-item>
+        <el-form-item label="快递编号" prop="shipSn">
+          <el-input v-model="shipForm.shipSn" placeholder="请输入快递编号"></el-input>
+        </el-form-item>
+        <el-form-item label="设备id">
+          <el-button type="primary" @click="addId">添加</el-button>
+          <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in shipForm.deviceId' v-model="shipForm.deviceId[index]"
+                    :key="index" placeholder="请输入设备ID"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="shipDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmShip">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 退款对话框 -->
+    <el-dialog title="退款" :visible.sync="refundDialogVisible">
+      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+        <el-form-item label="退款金额" prop="refundMoney">
+          <el-input v-model="refundForm.refundMoney" :disabled="true"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="refundDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmRefund">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 审核对话框 -->
+    <el-dialog title="审核" :visible.sync="checkDialogVisible">
+      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+        <el-form-item label="是否通过" prop="refundMoney">
+          <el-radio-group v-model="checkpass">
+            <el-radio label="true">通过</el-radio>
+            <el-radio label="false">不通过</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="refundMoney">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
+          <div v-html='showCheckData.creditScore'>
+            <!-- {{showCheckData}} -->
+          </div>
+        </el-form-item>
+        <el-form-item label="信用分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.creditScore)'>
+          ''
+        </el-form-item>
+        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='showCheckData&&showCheckData.score'>
+          {{showCheckData.score}}
+        </el-form-item>
+        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.score)'>
+          ''
+        </el-form-item>
+        <el-form-item label="风控建议" prop="refundMoney" v-if='showCheckData&&showCheckData.decision'>
+          {{showCheckData.decision}}
+        </el-form-item>
+        <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>
+          ''
+        </el-form-item>
+        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
+          <div v-html='showCheckData.result'>
+            <!-- {{showCheckData}} -->
+          </div>
+        </el-form-item>
+        <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>
+          ''
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="checkDialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmCheck">确定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 豁免金额对话框 -->
     <el-dialog title="豁免" :visible.sync="freeDialogVisible">
       <el-form ref="freeForm" :model="freeForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
@@ -253,6 +331,7 @@
         <el-button type="primary" @click="confirmFree">确定</el-button>
       </div>
     </el-dialog>
+
 
   </div>
 </template>
@@ -279,27 +358,23 @@
 
 <script>
   import {
-    listOrder2,
+    listOrderV1_2_4,
+    shipOrder,
+    refundOrder,
+    detailOrder2,
+    auditOrder,
     freeDepositOrder,
-    detailOrder2
+    returnConfirmOrder,
+    getCheckInfo
   } from '@/api/order'
+
   import {
     parseTime
   } from '@/utils/index'
   import DatePicker from 'vue2-datepicker'
   const statusMap = {
-    101: '已下单',
-    102: '已取消',
-    201: '已付款',
-    202: '退款中',
-    203: '已退款',
-    204: '申请退款',
-    301: '审核通过',
-    302: '审核拒绝',
-    401: '已发货',
     501: '租赁中',
-    600: '归还中',
-    900: '已完成'
+    600: '归还中'
   }
 
   export default {
@@ -333,9 +408,9 @@
           limit: 20,
           id: undefined,
           name: undefined,
-          orderStatusArray: [101],
+          orderStatusArray: [],
           sort: 'add_time',
-          order: 'desc',
+          order: 'desc,',
           overdue: 1,
           mobile: undefined,
           timePeriod: [null]
@@ -348,12 +423,33 @@
           orderGoods: [],
           attach: {}
         },
+        shipForm: {
+          orderId: undefined,
+          shipChannel: undefined,
+          shipSn: undefined,
+          deviceId: []
+        },
+        shipDialogVisible: false,
+        refundForm: {
+          orderId: undefined,
+          refundMoney: undefined
+        },
+        refundDialogVisible: false,
+        checkForm: {
+          orderId: null,
+          isPass: undefined,
+          remark: ''
+        },
+        checkpass: undefined,
+        checkDialogVisible: false,
         freeForm: {
           orderId: undefined,
           freeDeposit: undefined
         },
         freeDialogVisible: false,
+
         downloadLoading: false,
+        showCheckData: null,
         userdata: null
       }
     },
@@ -368,7 +464,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder2(this.listQuery).then(response => {
+        listOrderV1_2_4(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -407,6 +503,97 @@
       closeDetail() {
         this.userdata = null
       },
+      handleShip(row) {
+        this.shipForm.orderId = row.id
+        this.shipForm.shipChannel = row.shipChannel
+        this.shipForm.shipSn = row.shipSn
+
+        this.shipDialogVisible = true
+        this.$nextTick(() => {
+          this.$refs['shipForm'].clearValidate()
+        })
+      },
+      confirmShip() {
+        this.shipForm.deviceId = this.shipForm.deviceId.filter(item => {
+          return item !== ''
+        })
+        this.$refs['shipForm'].validate((valid) => {
+          if (valid) {
+            shipOrder(this.shipForm).then(response => {
+              this.shipDialogVisible = false
+              this.$notify({
+                title: '成功',
+                message: '确认发货成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            })
+          }
+        })
+      },
+      handleRefund(row) {
+        this.refundForm.orderId = row.id
+        this.refundForm.refundMoney = row.actualPrice
+
+        this.refundDialogVisible = true
+        this.$nextTick(() => {
+          this.$refs['refundForm'].clearValidate()
+        })
+      },
+      confirmRefund() {
+        this.$refs['refundForm'].validate((valid) => {
+          if (valid) {
+            refundOrder(this.refundForm).then(response => {
+              this.refundDialogVisible = false
+              this.$notify({
+                title: '成功',
+                message: '确认退款成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            })
+          }
+        })
+      },
+      handleCheck(row) {
+        getCheckInfo(row.id, row.userId).then(res => {
+          this.showCheckData = res.data.data
+          this.changeJson(this.showCheckData, 'result')
+          this.changeJson(this.showCheckData, 'creditScore')
+        })
+        this.checkForm.orderId = row.id
+        this.checkDialogVisible = true
+      },
+      confirmCheck() {
+        if (!this.checkpass) {
+          return
+        } else {
+          this.checkForm.isPass = this.checkpass === 'true'
+          this.$refs['checkForm'].validate((valid) => {
+            if (valid) {
+              auditOrder(this.checkForm).then(response => {
+                this.checkDialogVisible = false
+                this.$notify({
+                  title: '成功',
+                  message: '已审核',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.checkpass = null
+                this.checkForm = {
+                  orderId: null,
+                  isPass: undefined,
+                  remark: ''
+                }
+                this.showCheckData = null
+                this.getList()
+              })
+            }
+          })
+        }
+      },
       handleFree(row) {
         this.freeForm.orderId = row.id
         this.freeDialogVisible = true
@@ -436,6 +623,29 @@
           })
         }
       },
+      handleReturn(row) {
+        this.$confirm('确认已成功归还?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'primary'
+        }).then(() => {
+          returnConfirmOrder(row.id).then(response => {
+            this.checkDialogVisible = false
+            this.$notify({
+              title: '成功',
+              message: '已确认归还',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+      },
       handleDownload() {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
@@ -444,8 +654,40 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
+      },
+      addId() {
+        if (this.shipForm.deviceId.length === 4) {
+          this.$message.warning('已达到最大数量')
+        } else {
+          this.shipForm.deviceId.push('')
+          this.$nextTick()
+        }
+      },
+      resetId() {
+        this.shipForm.deviceId = []
+      },
+      changeJson(val, result) {
+        if (val && val[result]) {
+          const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
+          val[result] = Str
+        }
+      },
+      dateFormat(row, column) {
+        const daterc = row[column.property]
+        if (daterc != null) {
+          const dateMat = new Date(parseInt(daterc.replace('/Date(', '').replace(')/', ''), 14))
+          const year = dateMat.getFullYear()
+          const month = dateMat.getMonth() + 1
+          const day = dateMat.getDate()
+          const hh = dateMat.getHours()
+          const mm = dateMat.getMinutes()
+          const ss = dateMat.getSeconds()
+          const timeFormat = year + '-' + month + '-' + day + ' ' + hh + ':' + mm + ':' + ss
+          return timeFormat
+        }
       }
     }
   }
 
 </script>
+

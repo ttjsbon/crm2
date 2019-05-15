@@ -22,7 +22,7 @@
         <template slot-scope="scope">
           <img :src="scope.row.avatar" width="40" v-if="scope.row.avatar"/>
         </template>
-      </el-table-column>        
+      </el-table-column>
 
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -50,7 +50,7 @@
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPassword">
           <el-input type="password" v-model="dataForm.checkPassword" auto-complete="off"></el-input>
-        </el-form-item>                
+        </el-form-item>
         <el-form-item label="管理员头像" prop="avatar">
           <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadAvatar">
 			      <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
@@ -58,7 +58,7 @@
           </el-upload>
         </el-form-item>
 
-        
+
         <div v-for="(item,index) in checkList" :key="index">
           <el-checkbox :indeterminate="isIndeterminate" v-model="item.checkAll" @change="handleCheckAllChange(item.checkAll, index)">{{item.name}}</el-checkbox>
           <div style="margin: 15px 0;"></div>
@@ -277,6 +277,14 @@ export default {
       })
     },
     createData() {
+      if (this.checkedCities.length <= 0) {
+        return this.$notify({
+          title: '创建失败',
+          message: '请选择至少一个页面',
+          type: 'none',
+          duration: 2000
+        })
+      }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           createAdmin(this.dataForm).then(response => {

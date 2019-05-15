@@ -8,6 +8,32 @@ export function listOrder(query) {
   })
 }
 
+export function listOrderV1_2_4(query) {
+  return request({
+    url: '/order/v1.2.4/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function listOrder2(query) {
+  return request({
+    url: '/order/v1.2/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function detailOrder2(id) {
+  return request({
+    url: '/order/v1.2/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
 export function detailOrder(id) {
   return request({
     url: '/order/detail',

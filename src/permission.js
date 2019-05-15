@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
-          store.dispatch('GetUserPri',{adminName:res.data.data.name}).then(res => { // 拉取用户权限信息
+          store.dispatch('GetUserPri', { adminName: res.data.data.name }).then(res => { // 拉取用户权限信息
             const privs = res.data.data
             store.dispatch('GenerateRoutes_new', { privs }).then(() => { // 根据roles权限生成可访问的路由表 
               let routeGet= store.getters.addRouters      

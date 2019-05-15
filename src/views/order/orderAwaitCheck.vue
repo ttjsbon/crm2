@@ -3,21 +3,22 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn">
       </el-table-column>
@@ -49,11 +50,11 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
-      <el-table-column align="center" label="物流单号" prop="shipSn">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
+      <!--</el-table-column>-->
 
-      <el-table-column align="center" label="物流渠道" prop="shipChannel">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -66,8 +67,8 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
 
@@ -120,6 +121,21 @@
           </el-form-item>
           <el-form-item label="全部租金">
             <span>{{ orderDetail.order.actualPrice }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
           </el-form-item>
         </div>
 
@@ -179,6 +195,10 @@
         </el-form-item>
         <el-form-item label="支付信息">
           <span>（支付渠道）支付宝</span>
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
@@ -230,6 +250,9 @@
             <el-radio label="false">不通过</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="预授权" prop="preAuthorization" v-if='showCheckData'>
+          {{showCheckData.preAuthorization==true?'已通过':'未通过'}}（该订单是否通过支付宝预授权）
+        </el-form-item>
         <el-form-item label="备注" prop="refundMoney">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
           </el-input>
@@ -237,37 +260,37 @@
         <!--&lt;!&ndash; TODO 列表直接从接口获取 &ndash;&gt;-->
         <!--<div v-for="risk in showCheckData">-->
 
-          <!--<el-form-item label="信用渠道" prop="refundMoney" v-if='risk&&risk.channel'>-->
-            <!--{{risk.channel}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='risk&&risk.creditScore'>-->
-            <!--<div v-html='risk.creditScore'>-->
-              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
-            <!--</div>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='!(risk&&risk.creditScore)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='risk&&risk.score'>-->
-            <!--{{risk.score}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(risk&&risk.score)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='risk&&risk.decision'>-->
-            <!--{{risk.decision}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='!(risk&&risk.decision)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='risk&&risk.result'>-->
-            <!--<div v-html='risk.result'>-->
-              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
-            <!--</div>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='!(risk&&risk.result)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
+        <!--<el-form-item label="信用渠道" prop="refundMoney" v-if='risk&&risk.channel'>-->
+        <!--{{risk.channel}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="信用分数" prop="refundMoney" v-if='risk&&risk.creditScore'>-->
+        <!--<div v-html='risk.creditScore'>-->
+        <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+        <!--</div>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="信用分数" prop="refundMoney" v-if='!(risk&&risk.creditScore)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='risk&&risk.score'>-->
+        <!--{{risk.score}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(risk&&risk.score)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控建议" prop="refundMoney" v-if='risk&&risk.decision'>-->
+        <!--{{risk.decision}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控建议" prop="refundMoney" v-if='!(risk&&risk.decision)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='risk&&risk.result'>-->
+        <!--<div v-html='risk.result'>-->
+        <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+        <!--</div>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='!(risk&&risk.result)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
         <!--</div>-->
         <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
           <div v-html='showCheckData.creditScore'>
@@ -289,10 +312,61 @@
         <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>
           ''
         </el-form-item>
-        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
+          <div v-html='showCheckData.result'>
+            {{showCheckData}}
+          </div>
+        </el-form-item>-->
+        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">
           <div v-html='showCheckData.result'>
             <!-- {{showCheckData}} -->
           </div>
+          <!--<span v-if="checkTongDun.INFOANALYSIS.id_age" >年龄：{{ checkTongDun.INFOANALYSIS.id_age }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.id_gender">性别：{{ checkTongDun.INFOANALYSIS.id_gender === 'F' ? '女' : '男' }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address_province">移动地址省份：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address_province }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address_city">移动地址市区：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address_city }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address">移动地址：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_province">身份证省份：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_province }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_city">身份证市区：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_city }}<br></span>
+          <span v-if="checkTongDun.INFOANALYSIS.address_detect.id_card_address">身份证地址：{{ checkTongDun.INFOANALYSIS.address_detect.id_card_address }}<br></span>
+          <span v-if="checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.credit_score">信用分：{{ checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.credit_score }}<br></span>
+          <span v-if="checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.model_version">版本：{{ checkTongDun.DEFAULT_MODEL.b1a14f3fe5013fe3.model_version }}<br></span>
+          <span v-if="checkTongDun.RENT.final_decision">是否通过：{{ checkTongDun.RENT.final_decision }}<br></span>
+          <span v-if="checkTongDun.RENT.final_score">反欺诈分数：{{ checkTongDun.RENT.final_score }}<br></span>
+          <span v-if="checkTongDun.RENT.risk_items">风控异常信息<br></span>
+          <div v-if="checkTongDun.RENT.risk_items" style="margin-left: 25px" v-for="item in checkTongDun.RENT.risk_items">
+            <span v-if="item.rule_id">规则ID：{{ item.rule_id }}<br></span>
+            <span v-if="item.policy_score">政策评分：{{ item.policy_score }}<br></span>
+            <span v-if="item.score">分数：{{ item.score }}<br></span>
+            <span v-if="item.policy_mode">政策模式：{{ item.policy_mode }}<br></span>
+            <span v-if="item.decision">决策：{{ item.decision }}<br></span>
+            <span v-if="item.policy_decision">决策：{{ item.policy_decision }}<br></span>
+            <span v-if="item.policy_name">政策名称：{{ item.policy_name }}<br></span>
+            <span v-if="item.risk_name">风险名称：{{ item.risk_name }}<br></span>
+            <span v-if="item.risk_detail">风控异常详情<br></span>
+            <div v-if="item.risk_detail" v-for="risk_detail in item.risk_detail" style="margin-left: 25px">
+              <span v-if="risk_detail.hit_type_display_name">证件类型：{{risk_detail.hit_type_display_name}}<br></span>
+              <span v-if="risk_detail.fraud_type_display_name">欺诈类型：{{risk_detail.fraud_type_display_name}}<br></span>
+              <span v-if="risk_detail.description">描述：{{risk_detail.description}}<br></span>
+              <span v-if="risk_detail.type">所在名单：{{risk_detail.type}}<br></span>
+              <div v-if="risk_detail.grey_list_details" v-for="grey_list_details in risk_detail.grey_list_details" style="margin-left: 25px">
+                <span v-if="grey_list_details.evidence_time">时间：{{grey_list_details.evidence_time}}<br></span>
+                <span v-if="grey_list_details.fraud_type">欺诈类型：{{grey_list_details.fraud_type}}<br></span>
+                <span v-if="grey_list_details.fraud_type_display_name">欺诈类型：{{grey_list_details.fraud_type_display_name}}<br></span>
+                <span v-if="grey_list_details.risk_level">风险等级：{{grey_list_details.risk_level}}<br></span>
+                <span v-if="grey_list_details.value">值：{{grey_list_details.value}}<br></span>
+              </div>
+
+
+              <div >
+                <span>明细清单</span>
+                <div v-if="risk_detail.frequency_detail_list" v-for="frequency_detail_list in risk_detail.frequency_detail_list" style="margin-left: 25px">
+                  <span v-if="frequency_detail_list.detail">详情：{{frequency_detail_list.detail}}<br></span>
+                </div>
+              </div>
+              <span v-if="risk_detail.frequency_detail_list.type">所在名单：{{risk_detail.frequency_detail_list.type}}<br></span>
+            </div>
+          </div>-->
         </el-form-item>
         <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>
           ''
@@ -327,9 +401,11 @@
 </style>
 
 <script>
+  import DatePicker from 'vue2-datepicker'
+
   import {
-    listOrder,
-    detailOrder,
+    listOrder2,
+    detailOrder2,
     auditOrder,
     getCheckInfo
   } from '@/api/order'
@@ -342,6 +418,7 @@
     201: '已付款',
     202: '退款中',
     203: '已退款',
+    204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
     401: '已发货',
@@ -351,9 +428,28 @@
   }
 
   export default {
+    components: { DatePicker },
     name: 'Order',
     data() {
       return {
+        timePeriod: '',
+        lang: {
+          days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+          placeholder: {
+            date: 'Select Date',
+            dateRange: 'Select Date Range'
+          }
+        },
+        shortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.timePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -366,14 +462,16 @@
           order: 'desc',
           overdue: 1,
           name: undefined,
-          mobile: undefined
+          mobile: undefined,
+          timePeriod: [null]
         },
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         checkForm: {
           orderId: null,
@@ -399,7 +497,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder(this.listQuery).then(response => {
+        listOrder2(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -422,7 +520,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -443,6 +541,7 @@
           // var da = [res.data.data]
           // this.showCheckData = da
           this.showCheckData = res.data.data
+          this.checkTongDun = JSON.parse(this.showCheckData.result)
           this.changeJson(this.showCheckData, 'result')
           this.changeJson(this.showCheckData, 'creditScore')
         })

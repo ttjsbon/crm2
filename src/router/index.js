@@ -263,6 +263,14 @@ export const asyncRouterMap = [{
       noCache: true
     }
   }, {
+    path: 'orderBadDebt',
+    component: _import('order/orderBadDebt'),
+    name: 'orderBadDebt',
+    meta: {
+      title: '坏账',
+      noCache: true
+    }
+  }, {
     path: 'orderReturning',
     component: _import('order/orderReturning'),
     name: 'orderReturning',
