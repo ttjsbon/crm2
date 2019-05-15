@@ -3,25 +3,27 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
+      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
       </el-select>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
+      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+      <el-button class="filter-item" type="primary" icon="el-icon-search"  @click="handleFilter">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download"  @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn">
       </el-table-column>
@@ -53,11 +55,11 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
-      <el-table-column align="center" label="物流单号" prop="shipSn">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
+      <!--</el-table-column>-->
 
-      <el-table-column align="center" label="物流渠道" prop="shipChannel">
-      </el-table-column>
+      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -74,8 +76,8 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
 
@@ -147,6 +149,21 @@
         </div>
 
         <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
           <el-form-item label="租赁开始时间" class="bigitem">
             <span>{{ orderDetail.order.beginTime }}</span>
           </el-form-item>
@@ -188,6 +205,10 @@
 
         <el-form-item label="支付信息">
           <span>（支付渠道）支付宝</span>
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
@@ -242,7 +263,7 @@
         <el-form-item label="设备id">
           <el-button type="primary" @click="addId">添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in shipForm.deviceId' v-model="shipForm.deviceId[index]"
-            :key="index" placeholder="请输入设备ID"></el-input>
+                    :key="index" placeholder="请输入设备ID"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -351,10 +372,10 @@
 
 <script>
   import {
-    listOrder,
+    listOrder2,
     shipOrder,
     refundOrder,
-    detailOrder,
+    detailOrder2,
     auditOrder,
     freeDepositOrder,
     returnConfirmOrder,
@@ -364,12 +385,16 @@
   import {
     parseTime
   } from '@/utils/index'
+
+  import DatePicker from 'vue2-datepicker'
+
   const statusMap = {
     101: '已下单',
     102: '已取消',
     201: '已付款',
     202: '退款中',
     203: '已退款',
+    204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
     401: '已发货',
@@ -379,9 +404,28 @@
   }
 
   export default {
+    components: { DatePicker },
     name: 'Order',
     data() {
       return {
+        timePeriod: '',
+        lang: {
+          days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+          placeholder: {
+            date: 'Select Date',
+            dateRange: 'Select Date Range'
+          }
+        },
+        shortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.timePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -394,14 +438,16 @@
           order: 'desc',
           overdue: 1,
           name: undefined,
-          mobile: undefined
+          mobile: undefined,
+          timePeriod: [null]
         },
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         shipForm: {
           orderId: undefined,
@@ -444,7 +490,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder(this.listQuery).then(response => {
+        listOrder2(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -467,7 +513,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

@@ -1,22 +1,51 @@
 <template>
   <div class="app-container calendar-list-container">
 
+
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入姓名" v-model="listQuery.name">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
+
+    <!-- 赔偿并解冻 -->
+    <el-dialog title="输入金额" :visible.sync="dialogFormVisible" >
+      <el-form>
+        <el-form-item label="金额">
+          <el-input v-model="amount"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="payAndThaw()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 待结算录入金额 -->
+    <el-dialog title="输入金额" :visible.sync="dialogFormVisibleAmount" >
+      <el-form>
+        <el-form-item label="金额">
+          <el-input v-model="amount"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAmount = false">取 消</el-button>
+        <el-button type="primary" @click="enterTheAmountOfCompensation()">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn">
       </el-table-column>
@@ -45,41 +74,36 @@
       <el-table-column align="center" label="期数" prop="periods">
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" prop="payTime">
+      <!--<el-table-column align="center" label="支付时间" prop="payTime">-->
+      <!--</el-table-column>-->
+
+      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
+      <!--</el-table-column>-->
+
+      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
+      <!--</el-table-column>-->
+
+      <el-table-column align="center" label="赔偿金额支付状态" prop="compensationAmountPayStatus">
+      </el-table-column>
+      <el-table-column align="center" label="赔偿金额" prop="compensationAmount">
       </el-table-column>
 
-      <el-table-column align="center" label="物流单号" prop="shipSn">
-      </el-table-column>
-
-      <el-table-column align="center" label="物流渠道" prop="shipChannel">
-      </el-table-column>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" @click="handleReturn(scope.row)" size="mini">确认归还</el-button>
           <el-button type="primary" @click="bulletBoxAndAmount(scope.row)" size="mini">赔偿并解冻</el-button>
-          <el-dialog title="输入金额" :visible.sync="dialogFormVisible">
-          <!--<el-dialog title="输入金额" :visible.sync="dialogFormVisible">-->
-            <el-form>
-              <el-form-item label="金额">
-                <el-input v-model="scope.row.amount" auto-complete="off"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="payAndThaw(scope.row)">确 定</el-button>
-            </div>
-          </el-dialog>
           <el-button type="primary" @click="thaw(scope.row)" size="mini">直接解冻</el-button>
+          <el-button v-if="scope.row.compensationAmountPayStatus==='未支付'" type="primary" @click="pendingSettlement(scope.row)" size="mini">待结算</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
     <!-- 订单详情对话框 -->
@@ -130,6 +154,21 @@
           </el-form-item>
           <el-form-item label="全部租金">
             <span>{{ orderDetail.order.actualPrice }}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach.actualPrice}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach.periodPrice }}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach.periods }}</span>
           </el-form-item>
         </div>
 
@@ -189,6 +228,10 @@
         </el-form-item>
         <el-form-item label="支付信息">
           <span>（支付渠道）支付宝</span>
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
+          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
+          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column  align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope" >
@@ -211,6 +254,18 @@
               </template>
             </el-table-column>
           </el-table>
+        </el-form-item>
+        <el-form-item label="赔偿支付信息">
+          <span>（支付渠道）支付宝</span>
+          <span v-if="(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）{{orderDetail.compensation.updateTime}} </span>
+          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）{{orderDetail.compensation.outTradeOrderId}} </span>
+          <span v-if="(orderDetail.compensation&&orderDetail.compensation.amount)">（支付金额）{{orderDetail.compensation.amount}}</span>
+          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）已支付</span>
+
+          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）暂无 </span>
+          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）暂无 </span>
+          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.amount)">（金额）暂无 </span>
+          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）未支付</span>
         </el-form-item>
         <el-form-item label="快递信息">
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
@@ -253,11 +308,13 @@
 
 </style>
 <script>
+  import DatePicker from 'vue2-datepicker'
   import {
-    listOrder,
-    detailOrder,
+    listOrder2,
+    detailOrder2,
     returnConfirmOrder,
     payAndThaw,
+    enterTheAmountOfCompensation,
     thaw
   } from '@/api/order'
   import {
@@ -269,6 +326,7 @@
     201: '已付款',
     202: '退款中',
     203: '已退款',
+    204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
     401: '已发货',
@@ -278,9 +336,28 @@
   }
 
   export default {
+    components: { DatePicker },
     name: 'Order',
     data() {
       return {
+        timePeriod: '',
+        lang: {
+          days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+          placeholder: {
+            date: 'Select Date',
+            dateRange: 'Select Date Range'
+          }
+        },
+        shortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.timePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -293,17 +370,20 @@
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
-          mobile: undefined
+          mobile: undefined,
+          timePeriod: [null]
         },
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
           order: {},
           user: {},
-          orderGoods: []
+          orderGoods: [],
+          attach: {}
         },
         downloadLoading: false,
         dialogFormVisible: false,
+        dialogFormVisibleAmount: false,
         userdata: null
       }
     },
@@ -318,7 +398,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder(this.listQuery).then(response => {
+        listOrder2(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -341,7 +421,7 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder(row.id).then(response => {
+        detailOrder2(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -390,14 +470,12 @@
         })
       },
       bulletBoxAndAmount(row) {
-        this.editRow = row
         this.dialogFormVisible = true
-        console.info(this.editRow)
+        this.editRow = row
       },
-      payAndThaw(row) {
+      payAndThaw() {
         this.dialogFormVisible = false
-        console.info(this.editRow)
-        payAndThaw(row.id, this.editRow.amount).then(response => {
+        payAndThaw(this.editRow.id, this.amount).then(response => {
           this.$notify({
             title: '成功',
             message: '已确认支付并解冻押金',
@@ -426,6 +504,49 @@
           this.$message({
             type: 'info',
             message: '已取消'
+          })
+        })
+      },
+      enterTheAmountOfCompensation(row) {
+        this.dialogFormVisibleAmount = false
+        enterTheAmountOfCompensation(this.editRow.id, this.amount).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '赔偿金额录入成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+      },
+      pendingSettlement(row) {
+        this.$confirm('是否需要赔偿', '选择', {
+          confirmButtonText: '需要赔偿',
+          cancelButtonText: '不需要赔偿',
+          type: 'primary'
+        }).then(() => {
+          this.editRow = row
+          this.dialogFormVisibleAmount = true
+        }).catch(() => {
+          this.$confirm('确定解冻押金么?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'primary'
+          }).then(() => {
+            thaw(row.id).then(response => {
+              this.$notify({
+                title: '成功',
+                message: response.data.data == null ? '已解冻押金成功' : response.data.data,
+                type: response.data.data == null ? 'success' : 'error',
+                duration: 2000
+              })
+              this.getList()
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })
           })
         })
       }
