@@ -38,18 +38,18 @@ function getName(route_all) {
  * @param asyncRouterMap
  * @param roles
  */
-// function filterAsyncRouter(asyncRouterMap, roles) {
-//   const accessedRouters = asyncRouterMap.filter(route => {
-//     if (hasPermission(roles, route)) {
-//       if (route.children && route.children.length) {
-//         route.children = filterAsyncRouter(route.children, roles)
-//       }
-//       return true
-//     }
-//     return false
-//   })
-//   return accessedRouters
-// }
+function filterAsyncRouter(asyncRouterMap, roles) {
+  const accessedRouters = asyncRouterMap.filter(route => {
+    if (hasPermission(roles, route)) {
+      if (route.children && route.children.length) {
+        route.children = filterAsyncRouter(route.children, roles)
+      }
+      return true
+    }
+    return false
+  })
+  return accessedRouters
+}
 function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
   const accessedRouters = asyncRouterMap.filter(route => {
     if (child) {

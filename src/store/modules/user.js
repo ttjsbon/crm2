@@ -84,7 +84,7 @@ const user = {
     },
 
     // 获取用户权限信息
-    GetUserPri({ commit },userInfo) {
+    GetUserPri({ commit }, userInfo) {
       const adminName = userInfo.adminName.trim()
       return new Promise((resolve, reject) => {
         getUserPri(adminName).then(response => {
