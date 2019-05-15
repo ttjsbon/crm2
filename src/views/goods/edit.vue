@@ -643,7 +643,6 @@
             this.galleryFileList.push({
               url: this.goods.gallery[i]
             })
-            console.log(this.galleryFileList)
           }
         })
 

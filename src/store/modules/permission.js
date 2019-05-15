@@ -30,7 +30,6 @@ function getName(route_all) {
       })
     }
   })
-  console.log(arr_name)
   return arr_name
 }// 拿到name
 /**
@@ -69,7 +68,6 @@ function filterAsyncRouter_new(asyncRouterMap, privs, child, parentNode) {
       }
     }
   })
-  console.log(accessedRouters)
   return accessedRouters
 }
 

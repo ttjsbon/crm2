@@ -44,7 +44,6 @@
             text: 'Today',
             onClick: () => {
 				this.timePeriod = [new Date(),new Date()]
-				  console.log(this.query.selectDate,2)
 			}
           }
         ],
