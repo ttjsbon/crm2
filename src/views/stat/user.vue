@@ -121,16 +121,15 @@
       // },
       chickAuth() {
         this.query.auth = this.searchAuth
-        this.query.timePeriod[0] = this.timePeriod[0]
-		    this.query.timePeriod[1] = this.timePeriod[1]
+				if(this.timePeriod.length === 1){
+					this.query.timePeriod[0] = this.timePeriod[0]
+				}else{
+					this.query.timePeriod[0] = this.timePeriod[0]
+					this.query.timePeriod[1] = this.timePeriod[1]
+				}
         this.data()
       },
       selectDate() {
-        // if (this.timePeriod[0] == null) {
-        //   this.timePeriod = [null]
-        // }
-        // this.query.timePeriod = this.timePeriod
-        // this.data()
 				this.query.timePeriod[0] = this.timePeriod[0]
 		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()

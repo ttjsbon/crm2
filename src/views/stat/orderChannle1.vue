@@ -1,8 +1,12 @@
 <template>
   <div class="app-container calendar-list-container">
     <div id="select">
-      选择时间段：
-      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+			<el-button type="primary" size="mini" @click="changeType" style="margin-right: 0.625rem;">日／月</el-button>
+      <span v-show="dataShow1">选择日时间段：</span>
+      <date-picker v-show="dataShow1" v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+			<span v-show="monthShow">选择月时间段：</span>
+			<date-picker v-show="monthShow" v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
+			<date-picker v-show="monthShow" v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       订单状态：
       <el-select :default-active="$route.path" @change="chickAuth" v-model="searchStatus" filterable placeholder="请输入/请选择" class="h-m-select">
@@ -18,8 +22,7 @@
 </template>
 
 <script>
-  // import { statOrder } from '@/api/stat'
-	import { statOrderV1_3_0 } from '@/api/stat'
+	import { statOrderV1_3_0, statMonthOrderByChannle } from '@/api/stat'
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
   import VeHistogram from 'v-charts/lib/histogram'
@@ -29,6 +32,8 @@
     data() {
 			this.colors = ['#29B9EF', '#2CF5B5', 'red']
       return {
+				dataShow1:true,
+				monthShow:false,
         dataShow: false,
         amountShow: false,
         parseShow: false,
@@ -41,14 +46,17 @@
         statues: [{
           value: '1',
           label: '全部'
-        }, {
-          value: '2',
-          label: '审核通过'
-        }, {
+        },
+				// {
+    //       value: '2',
+    //       label: '审核通过'
+    //     },
+				{
           value: '4',
           label: '订单总额'
         }],
         timePeriod: [null],
+				timePeriod_month: [null],
         lang: {
           days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
           months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -70,25 +78,31 @@
         chartData2: {},
         chartData3: {},
 				chartData4: {},
+        startM: null,
+        endM: null,
         chartSettings: {
+					// metrics: ['orders','customers'],
           labelMap: {
             'orders': '订单量',
             'customers': '成交量'
           }
         },
         chartSettings2: {
+					// metrics: ['amount'],
           labelMap: {
             'amount': '订单总额'
           }},
         chartSettings3: {
+					// metrics: ['orders'],
           labelMap: {
             'orders': '成交量',
-            'customers': '审核通过'
+            // 'customers': '审核通过'
           }},
 				chartSettings4: {
+					// metrics: ['orders','amount'],
 				  labelMap: {
 				    'orders': '成交量',
-				    'customers': '审核通过',
+				    // 'customers': '审核通过',
 						'amount': '订单总额',
 				  }},
         chartExtend: {
@@ -100,6 +114,10 @@
       this.data()
     },
     methods: {
+			changeType() {
+				this.dataShow1=!this.dataShow1
+				this.monthShow=!this.monthShow
+			},
       data() {
 				if (this.timePeriod.length === 2) {
 					if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
@@ -144,22 +162,103 @@
 				  }
 				})
       },
+			dataMonth(){
+				statMonthOrderByChannle(this.query).then(response => {
+				  if (this.searchStatus === 4) {
+						this.chartSettings = this.chartSettings2
+				    this.chartData2 = response.data.data
+				    this.dataShow = false
+				    this.parseShow = false
+				    this.amountShow = true
+				  } else {
+				    if (this.searchStatus === 2) {
+				      this.chartSettings = this.chartSettings3
+				      this.parseShow = true
+				      this.dataShow = false
+				      this.amountShow = false
+				      this.chartData3 = response.data.data
+				    } else if(this.searchStatus === 1){
+							this.chartSettings = this.chartSettings4
+							this.parseShow = false
+							this.dataShow = false
+							this.amountShow = false
+							this.chartData4 = response.data.data
+						}else {
+							this.chartSettings = this.chartSettings
+				      this.parseShow = false
+				      this.dataShow = true
+				      this.amountShow = false
+				      this.chartData = response.data.data
+				    }
+				  }
+				})
+			},
       chickAuth() {
-        this.query.status = this.searchStatus
+      		this.query.status = this.searchStatus
+					if(this.dataShow1){
+						if(this.timePeriod_month.length>this.timePeriod.length){
+								if(this.timePeriod_month.length === 1){
+										this.query.timePeriod[0] = this.timePeriod_month[0]
+								}else{
+									this.query.timePeriod[0] = this.timePeriod_month[0]
+									this.query.timePeriod[1] = this.timePeriod_month[1]			
+								}						
+						}
+						else{
+							if(this.timePeriod.length === 1){
+								  this.query.timePeriod[0] = this.timePeriod[0]
+							}else{
+								this.query.timePeriod[0] = this.timePeriod[0]
+								this.query.timePeriod[1] = this.timePeriod[1]			
+							}							
+						}
+
+						this.data()
+					}else{
+						if(this.timePeriod_month.length<this.timePeriod.length){
+								if(this.timePeriod.length === 1){
+										this.query.timePeriod[0] = this.timePeriod[0]
+								}else{
+									this.query.timePeriod[0] = this.timePeriod[0]
+									this.query.timePeriod[1] = this.timePeriod[1]			
+								}							
+						}
+						else{
+								if(this.timePeriod_month.length === 1){
+										this.query.timePeriod[0] = this.timePeriod_month[0]
+										//this.query.timePeriod[1] = this.timePeriod_month[1]
+								}else{
+									this.query.timePeriod[0] = this.timePeriod_month[0]
+									this.query.timePeriod[1] = this.timePeriod_month[1]			
+								}
+	
+						}
+						this.dataMonth()
+					}
+      		
+      },
+      selectDate() {
+        
 				this.query.timePeriod[0] = this.timePeriod[0]
 		    this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       },
-      selectDate() {
-        // if (this.timePeriod[0] == null) {
-        //   this.timePeriod = [null]
-        // }
-        // this.query.timePeriod = this.timePeriod
-        // this.data()
-				this.query.timePeriod[0] = this.timePeriod[0]
-		    this.query.timePeriod[1] = this.timePeriod[1]
-        this.data()
-      }
+			selectStart() {
+			  if (this.startM == null || this.endM == null) {
+			    var dat = new Date()
+			    dat.setMonth(dat.getMonth() + 1)
+			    this.timePeriod_month = [dat, dat]
+			  } else {
+			    var date = new Date(this.startM)
+			    date.setMonth(date.getMonth() + 1)
+			    this.timePeriod_month[0] = date
+			    var date1 = new Date(this.endM)
+			    date1.setMonth(date1.getMonth() + 1)
+			    this.timePeriod_month[1] = date1
+					this.query.timePeriod = this.timePeriod_month
+			    this.dataMonth()
+			  }
+			}
     }
 
   }
