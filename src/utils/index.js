@@ -103,7 +103,7 @@ export function param(json) {
   return cleanArray(Object.keys(json).map(key => {
     if (json[key] === undefined) return ''
     return encodeURIComponent(key) + '=' +
-            encodeURIComponent(json[key])
+      encodeURIComponent(json[key])
   })).join('&')
 }
 

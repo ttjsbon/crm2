@@ -358,7 +358,7 @@
 
 <script>
   import {
-    listOrder2,
+    listOrderV1_2_4,
     shipOrder,
     refundOrder,
     detailOrder2,
@@ -373,12 +373,8 @@
   } from '@/utils/index'
   import DatePicker from 'vue2-datepicker'
   const statusMap = {
-    201: '已付款',
-    301: '审核通过',
-    401: '已发货',
     501: '租赁中',
-    600: '归还中',
-    900: '已完成'
+    600: '归还中'
   }
 
   export default {
@@ -468,7 +464,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        listOrder2(this.listQuery).then(response => {
+        listOrderV1_2_4(this.listQuery).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

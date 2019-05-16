@@ -45,7 +45,7 @@
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn">
       </el-table-column>
@@ -102,8 +102,8 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
     <!-- 订单详情对话框 -->
@@ -161,14 +161,14 @@
 
           <el-form-item label="增值服务总额">
             <template slot-scope="scope">
-              <span>{{orderDetail.attach.actualPrice}}</span>
+              <span>{{orderDetail.attach !== null ?orderDetail.attach.actualPrice:'无'}}</span>
             </template>
           </el-form-item>
           <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach.periodPrice }}</span>
+            <span>{{ orderDetail.attach !== null ? orderDetail.attach.periodPrice : '无' }}</span>
           </el-form-item>
           <el-form-item label="增值服务期数">
-            <span>{{ orderDetail.attach.periods }}</span>
+            <span>{{ orderDetail.attach !== null ? orderDetail.attach.periods : '无'  }}</span>
           </el-form-item>
         </div>
 
@@ -326,6 +326,7 @@
     201: '已付款',
     202: '退款中',
     203: '已退款',
+    204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
     401: '已发货',

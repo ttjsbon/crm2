@@ -29,9 +29,10 @@ router.beforeEach((to, from, next) => {
           store.dispatch('GetUserPri',{adminName:res.data.data.name}).then(res => { // 拉取用户权限信息
             const privs = res.data.data
             store.dispatch('GenerateRoutes_new', { privs }).then(() => { // 根据roles权限生成可访问的路由表
-              console.log(store.getters.addRouters)
+              let routeGet= store.getters.addRouters
               router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+              next({ path:`${routeGet[0].path}/${routeGet[0].children[0].path}`, replace: true })
+              // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
             })
           }).catch((err) => {
           })

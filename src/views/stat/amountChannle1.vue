@@ -47,6 +47,7 @@
             onClick: () => {
 						this.timePeriod = [new Date(),new Date()]
 					}
+				
           }
         ],
         chartData: {},

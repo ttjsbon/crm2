@@ -18,7 +18,7 @@
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn">
       </el-table-column>
@@ -67,8 +67,8 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
 
@@ -260,37 +260,37 @@
         <!--&lt;!&ndash; TODO 列表直接从接口获取 &ndash;&gt;-->
         <!--<div v-for="risk in showCheckData">-->
 
-          <!--<el-form-item label="信用渠道" prop="refundMoney" v-if='risk&&risk.channel'>-->
-            <!--{{risk.channel}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='risk&&risk.creditScore'>-->
-            <!--<div v-html='risk.creditScore'>-->
-              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
-            <!--</div>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="信用分数" prop="refundMoney" v-if='!(risk&&risk.creditScore)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='risk&&risk.score'>-->
-            <!--{{risk.score}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(risk&&risk.score)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='risk&&risk.decision'>-->
-            <!--{{risk.decision}}-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控建议" prop="refundMoney" v-if='!(risk&&risk.decision)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='risk&&risk.result'>-->
-            <!--<div v-html='risk.result'>-->
-              <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
-            <!--</div>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="风控详情" prop="refundMoney" v-if='!(risk&&risk.result)'>-->
-            <!--''-->
-          <!--</el-form-item>-->
+        <!--<el-form-item label="信用渠道" prop="refundMoney" v-if='risk&&risk.channel'>-->
+        <!--{{risk.channel}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="信用分数" prop="refundMoney" v-if='risk&&risk.creditScore'>-->
+        <!--<div v-html='risk.creditScore'>-->
+        <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+        <!--</div>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="信用分数" prop="refundMoney" v-if='!(risk&&risk.creditScore)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='risk&&risk.score'>-->
+        <!--{{risk.score}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(risk&&risk.score)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控建议" prop="refundMoney" v-if='risk&&risk.decision'>-->
+        <!--{{risk.decision}}-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控建议" prop="refundMoney" v-if='!(risk&&risk.decision)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='risk&&risk.result'>-->
+        <!--<div v-html='risk.result'>-->
+        <!--&lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+        <!--</div>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="风控详情" prop="refundMoney" v-if='!(risk&&risk.result)'>-->
+        <!--''-->
+        <!--</el-form-item>-->
         <!--</div>-->
         <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
           <div v-html='showCheckData.creditScore'>
@@ -319,7 +319,7 @@
         </el-form-item>-->
         <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">
           <div v-html='showCheckData.result'>
-          <!-- {{showCheckData}} -->
+            <!-- {{showCheckData}} -->
           </div>
           <!--<span v-if="checkTongDun.INFOANALYSIS.id_age" >年龄：{{ checkTongDun.INFOANALYSIS.id_age }}<br></span>
           <span v-if="checkTongDun.INFOANALYSIS.id_gender">性别：{{ checkTongDun.INFOANALYSIS.id_gender === 'F' ? '女' : '男' }}<br></span>
@@ -418,6 +418,7 @@
     201: '已付款',
     202: '退款中',
     203: '已退款',
+    204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
     401: '已发货',
