@@ -565,6 +565,13 @@
                 duration: 2000
               })
               this.getList()
+            }).catch(err => {
+              this.$notify({
+                title: '失败',
+                message: err.data.errmsg,
+                type: 'error',
+                duration: 2000
+              })
             })
           }
         })
