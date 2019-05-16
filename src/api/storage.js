@@ -12,6 +12,7 @@ service.interceptors.response.use(
   response => {
     return response
   }, error => {
+    console.log('err' + error)// for debug
     Message({
       message: '对象存储服务访问超时，请检查链接是否能够访问。',
       type: 'error',
