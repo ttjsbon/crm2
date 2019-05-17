@@ -87,7 +87,8 @@
         chartSettings: {
           labelMap: {
             'orders': '订单量',
-            'customers': '成交量'
+            'customers': '成交量',
+            'jdOrders': '京东订单量'
           }
         },
         chartSettings2: {
