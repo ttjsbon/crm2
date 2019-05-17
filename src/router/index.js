@@ -453,7 +453,16 @@ export const asyncRouterMap = [{
       noCache: true
     }
   },
-  // {
+  {
+    path: 'amountMerchants',
+    component: _import('stat/amountMerchants'),
+    name: 'statAmountMerchants',
+    meta: {
+      title: '商家统计',
+      noCache: true
+    }
+  },
+    // {
   //   path: 'amountChannle2',
   //   component: _import('stat/amountChannle2'),
   //   name: 'statAmountChannle2',
