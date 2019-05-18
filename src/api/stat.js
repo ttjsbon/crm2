@@ -95,3 +95,19 @@ export function statMonthMerchantsAmountV1_3_0(query) {
     params: query
   })
 }
+
+export function statotherAmountV1_3_0(query) {
+  return request({
+    url: '/stat/v1.3.0/otherAmount',
+    method: 'get',
+    params: query
+  })
+}
+
+export function statotherAmountMonthV1_3_0(query) {
+  return request({
+    url: '/stat/v1.3.0/otherAmountMonth',
+    method: 'get',
+    params: query
+  })
+}

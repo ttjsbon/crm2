@@ -1,21 +1,19 @@
 <template>
   <div class="app-container calendar-list-container">
     <div id="select">
-    	<el-button type="primary" size="mini" @click="changeType" style="margin-right: 0.625rem;">日／月</el-button>
+			<el-button type="primary" size="mini" @click="changeType" style="margin-right: 0.625rem;">日／月</el-button>
       <span v-show="dataShow">选择日时间段：</span>
       <date-picker v-show="dataShow" v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
-    	<span v-show="monthShow">选择月时间段：</span>
+			<span v-show="monthShow">选择月时间段：</span>
       <date-picker v-show="monthShow" v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
       <date-picker v-show="monthShow" v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
-    </div>
-
-
-    <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
+		</div>
+    <ve-line :visible.sync="myShow" :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
   </div>
 </template>
 
-<script> 
-	import { statMerchantsAmountV1_3_0,statMonthMerchantsAmountV1_3_0 } from '@/api/stat' 
+<script>
+	import { statotherAmountV1_3_0,statotherAmountMonthV1_3_0 } from '@/api/stat'
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
 
@@ -25,11 +23,12 @@
       return {
 				dataShow:true,
 				monthShow:false,
+				channleShow: false,
         searchStatus: '',
         query: {
-          status: 0,
           selectDate: [null],
-					channleName: '商家'
+					merName: ["'商家'","'商家1'"],
+					channleName: ["'机合科技'","'渠道1'"],
         },
         timePeriod: [null],
 				timePeriod_month: [null],
@@ -47,17 +46,19 @@
           {
             text: 'Today',
             onClick: () => {
-							this.timePeriod = [new Date(),new Date()]
-								console.log(this.query.selectDate,2)
-						}
+						this.timePeriod = [new Date(),new Date()]
+					}
+				
           }
         ],
         chartData: {},
         chartSettings: {
-			metrics: ['orders'],
+					metrics: ['myAmount','merAmount','channleAmount','myAmountSum'],
           labelMap: {
-            'orders': '应收租金',
-            // 'customers': '实收租金'
+						'myAmount': '公司租金',
+            'merAmount': '商家租金',
+            'channleAmount': '渠道租金',
+						'myAmountSum': '公司租金总额'
           }},
         chartExtend: {
           xAxis: { boundaryGap: true }
@@ -71,30 +72,29 @@
       this.data()
     },
      methods: {
-			 changeType() {
-			 	this.dataShow=!this.dataShow
-			 	this.monthShow=!this.monthShow
-			 },
-      data() {
-					if (this.timePeriod.length === 2) {
-						if(this.query.selectDate[0] && this.query.selectDate[0].getTime()>1000000000000){
-							var dat = new Date(new Date(this.query.selectDate[0]).getTime()+3600*24*1000)
-							this.query.selectDate[0] = dat
-							var dat1 = new Date(new Date(this.query.selectDate[1]).getTime()+3600*24*1000)
-							this.query.selectDate[1] = dat1				
-						}
-						else{
-							this.query.selectDate=[]
-							this.query.selectDate.push(null)
-						}
-        }
-				statMerchantsAmountV1_3_0(this.query).then(response => {
+			changeType() {
+				this.dataShow=!this.dataShow
+				this.monthShow=!this.monthShow
+			},
+			data(){
+				if (this.timePeriod.length === 2) {
+					if(this.query.selectDate[0] && this.query.selectDate[0].getTime()>1000000000000){
+						var dat = new Date(new Date(this.query.selectDate[0]).getTime()+3600*24*1000)
+						this.query.selectDate[0] = dat
+						var dat1 = new Date(new Date(this.query.selectDate[1]).getTime()+3600*24*1000)
+						this.query.selectDate[1] = dat1				
+					}
+					else{
+						this.query.selectDate=[]
+						this.query.selectDate.push(null)
+					}
+				}
+				statotherAmountV1_3_0(this.query).then(response => {
 					this.chartData = response.data.data
-					console.log(this.chartData)
 				})
-      },
+			},
 			dataMonth(){
-				statMonthMerchantsAmountV1_3_0(this.query).then(response => {
+				statotherAmountMonthV1_3_0(this.query).then(response => {
 					this.chartData = response.data.data
 				})
 			},
