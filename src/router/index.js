@@ -479,7 +479,17 @@ export const asyncRouterMap = [{
       title: '商品统计',
       noCache: true
     }
-  }
+  },
+    {
+      path: 'amountOther',
+      component: _import('stat/amountOther'),
+      name: 'amountOther',
+      meta: {
+        title: '综合统计',
+        noCache: true
+      }
+    },
+
   ]
 },
 
