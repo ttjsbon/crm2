@@ -16,7 +16,7 @@
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
       </el-select>
-      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+      <!--<date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>-->
       <el-button class="filter-item" type="primary" icon="el-icon-search"  @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download"  @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>

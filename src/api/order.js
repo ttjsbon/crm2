@@ -18,7 +18,7 @@ export function listOrderV1_2_4(query) {
 
 export function listOrder2(query) {
   return request({
-    url: '/order/v1.2/list',
+    url: '/order/list',
     method: 'get',
     params: query
   })

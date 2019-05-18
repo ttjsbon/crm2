@@ -11,7 +11,7 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+      <!--<date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>-->
       <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>

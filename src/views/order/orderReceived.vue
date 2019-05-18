@@ -11,7 +11,7 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>
+      <!--<date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;" ></date-picker>-->
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
