@@ -29,7 +29,7 @@
         query: {
           status: 0,
           selectDate: [null],
-					channleName: '商家'
+          merName: ["'商家'","'商家1'"],
         },
         timePeriod: [null],
 				timePeriod_month: [null],
