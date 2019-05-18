@@ -26,7 +26,7 @@ export function listOrder2(query) {
 
 export function detailOrder2(id) {
   return request({
-    url: '/order/v1.2/detail',
+    url: '/order/detail',
     method: 'get',
     params: {
       id

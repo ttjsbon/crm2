@@ -124,20 +124,20 @@
           </el-form-item>
         </div>
 
-        <div class="flex itemtogether">
+        <!--<div class="flex itemtogether">-->
 
-          <el-form-item label="增值服务总额">
-            <template slot-scope="scope">
-              <span>{{orderDetail.attach.actualPrice}}</span>
-            </template>
-          </el-form-item>
-          <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach.periodPrice }}</span>
-          </el-form-item>
-          <el-form-item label="增值服务期数">
-            <span>{{ orderDetail.attach.periods }}</span>
-          </el-form-item>
-        </div>
+          <!--<el-form-item label="增值服务总额">-->
+            <!--<template slot-scope="scope">-->
+              <!--<span>{{orderDetail.attach.actualPrice}}</span>-->
+            <!--</template>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="增值服务分期金额">-->
+            <!--<span>{{ orderDetail.attach.periodPrice }}</span>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="增值服务期数">-->
+            <!--<span>{{ orderDetail.attach.periods }}</span>-->
+          <!--</el-form-item>-->
+        <!--</div>-->
 
         <div class="flex itemtogether">
 
@@ -250,9 +250,9 @@
             <el-radio label="false">不通过</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="预授权" prop="preAuthorization" v-if='showCheckData'>
-          {{showCheckData.preAuthorization==true?'已通过':'未通过'}}（该订单是否通过支付宝预授权）
-        </el-form-item>
+        <!--<el-form-item label="预授权" prop="preAuthorization" v-if='showCheckData'>-->
+          <!--{{showCheckData.preAuthorization==true?'已通过':'未通过'}}（该订单是否通过支付宝预授权）-->
+        <!--</el-form-item>-->
         <el-form-item label="备注" prop="refundMoney">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
           </el-input>

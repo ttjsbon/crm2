@@ -27,8 +27,8 @@
         searchStatus: '',
         query: {
           selectDate: [null],
-          merName: ["'商家'","'商家1'"],
-          channleName: ["'机合科技'","'渠道1'"],
+          merName: ["'趣租客'"],
+          channleName: ["'机合科技'"],
         },
         timePeriod: [null],
         timePeriod_month: [null],
