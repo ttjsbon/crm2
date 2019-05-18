@@ -18,6 +18,7 @@
     <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
     <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2" :colors="colors"></ve-line>
     <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3" :colors="colors"></ve-line>
+    <ve-line :visible.sync="totalShow" :extend="chartExtend" :data="chartData5" :settings="chartSettings5"></ve-line>
   </div>
 </template>
 
@@ -36,10 +37,11 @@
 		monthShow:false,
         dataShow: false,
         amountShow: false,
+        totalShow: false,
         parseShow: false,
         searchStatus: '',
         query: {
-          status: 0,
+          status: 1,
           timePeriod: [null],
         },
         statues: [{
@@ -51,7 +53,11 @@
         }, {
           value: '4',
           label: '订单总额'
-        }],
+        }, {
+          value: '5',
+          label: '订单总量'
+        }
+        ],
         timePeriod: [null],
 		timePeriod_month: [null],
         lang: {
@@ -73,6 +79,7 @@
         ],
         chartData: {},
         chartData2: {},
+        chartData5: {},
         chartData3: {},
 		startM: null,
 		endM: null,
@@ -96,8 +103,13 @@
 			labelMap: {
 			'orders': '成交量',
 			'customers': '审核通过',
-			'amount': '订单总额',
+			'amount': '订单总额'
 		}},
+        chartSettings5: {
+          labelMap: {
+            'total': '订单叠加量'
+          }
+        },
         chartExtend: {
           xAxis: { boundaryGap: true }
         }
@@ -111,76 +123,90 @@
 			this.dataShow1=!this.dataShow1
 			this.monthShow=!this.monthShow
 		},
-		data() {
-			if (this.timePeriod.length === 2) {
-				if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
-					var dat = new Date(new Date(this.query.timePeriod[0]).getTime()+3600*24*1000)
-					this.query.timePeriod[0] = dat
-					var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime()+3600*24*1000)
-					this.query.timePeriod[1] = dat1				
-				}
-				else{
-					this.query.timePeriod=[]
-					this.query.timePeriod.push(null)
-				}
-				
-		    }
+      data() {
+        if (this.timePeriod.length === 2) {
+          if (this.query.timePeriod[0] && this.query.timePeriod[0].getTime() > 1000000000000) {
+            var dat = new Date(new Date(this.query.timePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.query.timePeriod[0] = dat
+            var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime() + 3600 * 24 * 1000)
+            this.query.timePeriod[1] = dat1
+          }
+          else {
+            this.query.timePeriod = []
+            this.query.timePeriod.push(null)
+          }
+        }
         statOrder(this.query).then(response => {
-			
           if (this.searchStatus === 4) {
             this.chartData2 = response.data.data
             this.dataShow = false
             this.parseShow = false
+            this.totalShow = false
             this.amountShow = true
+          } else if (this.searchStatus === 5) {
+            this.chartSettings = this.chartSettings5
+            this.chartData5 = response.data.data
+            this.totalShow = true
+            this.parseShow = false
+            this.dataShow = false
+            this.amountShow = false
+          } else if (this.searchStatus === 2) {
+            this.chartSettings = this.chartSettings3
+            this.totalShow = false
+            this.parseShow = true
+            this.dataShow = false
+            this.amountShow = false
+            this.chartData3 = response.data.data
           } else {
-            if (this.searchStatus === 2) {
-              this.chartSettings = this.chartSettings3
-              this.parseShow = true
-              this.dataShow = false
-              this.amountShow = false
-              this.chartData3 = response.data.data
-            } else {
-              this.parseShow = false
-              this.dataShow = true
-              this.amountShow = false
-              this.chartData = response.data.data
-            }
+            this.totalShow = false
+            this.parseShow = false
+            this.dataShow = true
+            this.amountShow = false
+            this.chartData = response.data.data
           }
         })
       },
-	  dataMonth(){
-		  statMonthOrder(this.query).then(response => {
-			 if (this.searchStatus === 4) {
-			   this.chartSettings = this.chartSettings2
-			   this.chartData2 = response.data.data
-			   this.dataShow = false
-			   this.parseShow = false
-			   this.amountShow = true
-			 } else {
-			   if (this.searchStatus === 2) {
-			     this.chartSettings = this.chartSettings3
-			     this.parseShow = true
-			     this.dataShow = false
-			     this.amountShow = false
-			     this.chartData3 = response.data.data
-			   } else if(this.searchStatus === 1){
-			 		this.chartSettings = this.chartSettings4
-			 		this.parseShow = false
-			 		this.dataShow = false
-			 		this.amountShow = false
-			 		this.chartData4 = response.data.data
-			 	}else {
-			     this.chartSettings = this.chartSettings
-			     this.parseShow = false
-			     this.dataShow = false
-			     this.amountShow = false
-			     this.chartData = response.data.data
-				 
-			   }
-		    }
-		  })
-	  },
-	chickAuth() {
+      dataMonth() {
+        statMonthOrder(this.query).then(response => {
+          if (this.searchStatus === 4) {
+            this.chartSettings = this.chartSettings2
+            this.chartData2 = response.data.data
+            this.dataShow = false
+            this.totalShow = false
+            this.parseShow = false
+            this.amountShow = true
+          } else if (this.searchStatus === 5) {
+            this.chartSettings = this.chartSettings5
+            this.totalShow = true
+            this.parseShow = false
+            this.dataShow = false
+            this.amountShow = false
+            this.chartData5 = response.data.data
+          } else if (this.searchStatus === 2) {
+            this.chartSettings = this.chartSettings3
+            this.parseShow = true
+            this.totalShow = false
+            this.dataShow = false
+            this.amountShow = false
+            this.chartData3 = response.data.data
+          } else if (this.searchStatus === 1) {
+            this.chartSettings = this.chartSettings4
+            this.parseShow = false
+            this.totalShow = false
+            this.dataShow = false
+            this.amountShow = false
+            this.chartData4 = response.data.data
+          } else {
+            this.chartSettings = this.chartSettings
+            this.parseShow = false
+            this.dataShow = false
+            this.totalShow = false
+            this.amountShow = false
+            this.chartData = response.data.data
+          }
+        })
+      },
+      chickAuth() {
 	  	this.query.status = this.searchStatus
 	  	if(this.dataShow1){
 	  		if(this.timePeriod_month.length>this.timePeriod.length){
