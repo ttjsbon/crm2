@@ -29,7 +29,7 @@
         query: {
           status: 0,
           selectDate: [null],
-          merName: ["'商家'","'商家1'"],
+          merName: ["'趣租客'"],
         },
         timePeriod: [null],
 				timePeriod_month: [null],
