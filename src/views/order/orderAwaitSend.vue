@@ -417,6 +417,15 @@
           this.list = []
           this.total = 0
           this.listLoading = false
+        }),
+				// 获取渠道名称
+        channleAllAdmin().then(response => {
+          this.listLoading = true
+          this.channleAllAdmin = response.data.data.items
+          this.listLoading = false
+        }).catch(() => {
+          this.item = []
+          this.listLoading = false
         })
       },
       handleFilter() {

@@ -18,7 +18,7 @@
     <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
     <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2" :colors="colors"></ve-line>
     <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3" :colors="colors"></ve-line>
-    <ve-line :visible.sync="totalShow" :extend="chartExtend" :data="chartData5" :settings="chartSettings5"></ve-line>
+    <ve-line :visible.sync="totalShow" :extend="chartExtend" :data="chartData5" :settings="chartSettings5" :colors="colors"></ve-line>
   </div>
 </template>
 
@@ -31,7 +31,7 @@
   export default {
     components: { VeHistogram, VeLine, DatePicker },
     data() {
-	  this.colors = ['#29B9EF', '#2CF5B5', 'red']
+	  this.colors = ['#29B9EF', '#2CF5B5', 'red', '#008B8B']
       return {
 		dataShow1:true,
 		monthShow:false,
@@ -50,10 +50,12 @@
         }, {
           value: '2',
           label: '审核通过'
-        }, {
-          value: '4',
-          label: '订单总额'
-        }, {
+        },
+//		{
+//          value: '4',
+//          label: '订单总额'
+//        }, 
+		{
           value: '5',
           label: '订单总量'
         }
@@ -86,7 +88,7 @@
         chartSettings: {
           labelMap: {
             'orders': '订单量',
-            'customers': '成交量',
+            'customers': '审核通过',
             'jdOrders': '京东订单量'
           }
         },
@@ -96,7 +98,7 @@
           }},
         chartSettings3: {
           labelMap: {
-            // 'orders': '成交量',
+            'orders': '成交量',
             'customers': '审核通过'
           }},
 		chartSettings4: {
@@ -107,9 +109,8 @@
 		}},
         chartSettings5: {
           labelMap: {
-            'total': '订单叠加量'
-          }
-        },
+            'total': '订单叠加量',
+          }},
         chartExtend: {
           xAxis: { boundaryGap: true }
         }
@@ -144,7 +145,6 @@
             this.totalShow = false
             this.amountShow = true
           } else if (this.searchStatus === 5) {
-            this.chartSettings = this.chartSettings5
             this.chartData5 = response.data.data
             this.totalShow = true
             this.parseShow = false
@@ -176,7 +176,6 @@
             this.parseShow = false
             this.amountShow = true
           } else if (this.searchStatus === 5) {
-            this.chartSettings = this.chartSettings5
             this.totalShow = true
             this.parseShow = false
             this.dataShow = false
