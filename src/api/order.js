@@ -179,3 +179,13 @@ export function refundOrderV1_3_0(id) {
     }
   })
 }
+
+export function detailOrder3(id) {
+  return request({
+    url: '/order/v1.3/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
