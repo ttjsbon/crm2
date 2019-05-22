@@ -89,7 +89,8 @@
           labelMap: {
             'orders': '订单量',
             'customers': '审核通过',
-            'jdOrders': '京东订单量'
+            'jdOrders': '京东订单量',
+            'totalOrders': '日总单量'
           }
         },
         chartSettings2: {
