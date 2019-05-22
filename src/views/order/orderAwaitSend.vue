@@ -418,6 +418,14 @@
           this.total = 0
           this.listLoading = false
         })
+        channleAllAdmin().then(response => {
+          this.listLoading = true
+          this.channleAllAdmin = response.data.data.items
+          this.listLoading = false
+        }).catch(() => {
+          this.item = []
+          this.listLoading = false
+        })
       },
       handleFilter() {
         this.listQuery.page = 1

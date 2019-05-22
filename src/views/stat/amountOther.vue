@@ -58,7 +58,7 @@
             'myAmount': '公司租金',
             'merAmount': '商家租金',
             'channleAmount': '渠道租金',
-            'myAmountSum': '公司租金总额'
+            'myAmountSum': '公司收入'
           }},
         chartExtend: {
           xAxis: { boundaryGap: true }
