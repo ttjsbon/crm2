@@ -124,7 +124,7 @@
           </el-form-item>
         </div>
 
-        <div class="flex itemtogether">
+<!--        <div class="flex itemtogether">
 
           <el-form-item label="增值服务总额">
             <template slot-scope="scope">
@@ -136,6 +136,21 @@
           </el-form-item>
           <el-form-item label="增值服务期数">
             <span>{{ orderDetail.attach.periods }}</span>
+          </el-form-item>
+        </div> -->
+				
+        <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
           </el-form-item>
         </div>
 
@@ -340,6 +355,7 @@
           mobile: undefined,
           timePeriod: [null]
         },
+				timeper: {},
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
@@ -367,16 +383,29 @@
     },
     methods: {
       getList() {
-        this.listLoading = true
-        listOrder2(this.listQuery).then(response => {
-          this.list = response.data.data.items
-          this.total = response.data.data.total
-          this.listLoading = false
-        }).catch(() => {
-          this.list = []
-          this.total = 0
-          this.listLoading = false
-        })
+       this.timeper=JSON.parse(JSON.stringify(this.listQuery))
+       if (this.listQuery.timePeriod.length === 2) {
+       	if(this.listQuery.timePeriod[0] && this.listQuery.timePeriod[0].getTime()>1000000000000){
+       			this.listLoading = true
+       			this.timeper.timePeriod[0]=new Date(new Date(this.listQuery.timePeriod[0]).getTime()+3600*24*1000)
+       			this.timeper.timePeriod[1]=new Date(new Date(this.listQuery.timePeriod[1]).getTime()+3600*24*1000)	
+       	}
+       	else{
+       		this.listQuery.timePeriod=[]
+       		this.listQuery.timePeriod.push(null)
+       	}
+       }
+       
+       listOrder2(this.timeper).then(response => {
+         this.list = response.data.data.items
+         this.total = response.data.data.total
+         this.listLoading = false
+       }).catch(() => {
+         this.list = []
+         this.total = 0
+         this.listLoading = false
+       })
+       
       },
       handleFilter() {
         this.listQuery.page = 1

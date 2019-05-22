@@ -128,14 +128,14 @@
 
           <el-form-item label="增值服务总额">
             <template slot-scope="scope">
-              <span>{{orderDetail.attach.actualPrice}}</span>
+              <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
             </template>
           </el-form-item>
           <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach.periodPrice }}</span>
+            <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
           </el-form-item>
           <el-form-item label="增值服务期数">
-            <span>{{ orderDetail.attach.periods }}</span>
+            <span>{{  orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
           </el-form-item>
         </div>
 
@@ -282,7 +282,10 @@
   import {
     listOrder2,
     refundOrder,
-    detailOrder2
+    detailOrder2,
+		refundOrderAmount,
+		refundOrderV1_3_0,
+		refund
   } from '@/api/order'
   import {
     parseTime
@@ -341,6 +344,7 @@
           mobile: undefined,
           timePeriod: [null]
         },
+				timeper: {},
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
@@ -368,8 +372,20 @@
     },
     methods: {
       getList() {
-        this.listLoading = true
-        listOrder2(this.listQuery).then(response => {
+        this.timeper=JSON.parse(JSON.stringify(this.listQuery))
+        if (this.listQuery.timePeriod.length === 2) {
+        	if(this.listQuery.timePeriod[0] && this.listQuery.timePeriod[0].getTime()>1000000000000){
+        			this.listLoading = true
+        			this.timeper.timePeriod[0]=new Date(new Date(this.listQuery.timePeriod[0]).getTime()+3600*24*1000)
+        			this.timeper.timePeriod[1]=new Date(new Date(this.listQuery.timePeriod[1]).getTime()+3600*24*1000)	
+        	}
+        	else{
+        		this.listQuery.timePeriod=[]
+        		this.listQuery.timePeriod.push(null)
+        	}
+        }
+        
+        listOrder2(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -409,18 +425,20 @@
         this.userdata = null
       },
       handleRefund(row) {
-        this.refundForm.orderId = row.id
-        this.refundForm.refundMoney = row.actualPrice
-
-        this.refundDialogVisible = true
-        this.$nextTick(() => {
+				refundOrderAmount(row.id).then(response => {
+          this.refundForm = response.data.data
+					this.refundForm.orderId = row.id
+          this.refundForm.refundMoney = this.refundForm.refundAmount
+					})
+          this.refundDialogVisible = true
+          this.$nextTick(() => {
           this.$refs['refundForm'].clearValidate()
         })
       },
       confirmRefund() {
         this.$refs['refundForm'].validate((valid) => {
           if (valid) {
-            refundOrder(this.refundForm).then(response => {
+            302(this.refundForm.orderId).then(response => {
               this.refundDialogVisible = false
               this.$notify({
                 title: '成功',
