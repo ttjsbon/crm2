@@ -159,3 +159,23 @@ export function listOrderV1_2_4(query) {
     params: query
   })
 }
+
+export function refundOrderAmount(id) {
+  return request({
+    url: '/order/v1.3.0/getRefundAmount',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
+export function refundOrderV1_3_0(id) {
+  return request({
+    url: '/order/v1.3.0/refundV1_3_0',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
