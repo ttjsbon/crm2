@@ -234,6 +234,16 @@
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
               </template>
             </el-table-column>
+						<el-table-column  align="center" :label="'是否退款'" width="160px">
+              <template slot-scope="scope" >
+                <span>  {{ scope.row.status =='4' ? '已退款': '未退款'}}</span>
+              </template>
+            </el-table-column>
+						<el-table-column  align="center" :label="'退款时间'" width="160px">
+              <template slot-scope="scope" >
+								<span>  {{ scope.row.status =='4' ? scope.row.paySuccTime.substring(0, 10):'无'}}</span> 
+              </template>
+            </el-table-column>
           </el-table>
         </el-form-item>
         <el-form-item label="快递信息">
@@ -282,7 +292,8 @@
   import DatePicker from 'vue2-datepicker'
   import {
     listOrder2,
-    detailOrder2
+    detailOrder2,
+		detailOrder3
   } from '@/api/order'
   import {
     parseTime
@@ -398,7 +409,19 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder2(row.id).then(response => {
+        // detailOrder2(row.id).then(response => {
+        //   this.orderDetail = response.data.data
+        //   this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
+        //   if (this.orderDetail.order.beginTime) {
+        //     this.orderDetail.order.beginTime = parseTime(this.orderDetail.order.beginTime)
+        //   }
+        //   if (this.orderDetail.order.endTime) {
+        //     this.orderDetail.order.endTime = parseTime(this.orderDetail.order.endTime)
+        //   }
+        //   this.userdata = JSON.parse(this.orderDetail.user.feature)
+        // })
+				
+				detailOrder3(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
