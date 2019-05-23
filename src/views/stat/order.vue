@@ -4,31 +4,21 @@
       选择时间段：
       <el-button type="primary" size="mini" @click="changeType" style="margin-right: 0.625rem;">日／月</el-button>
       <span v-show="dataShow1">选择日时间段：</span>
-      <date-picker v-show="dataShow1" v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;"
-                   @change="selectDate"></date-picker>
+      <date-picker v-show="dataShow1" v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
       <span v-show="monthShow">选择月时间段：</span>
-      <date-picker v-show="monthShow" v-model="startM" lang="en" type="month" format="YYYY-MM"
-                   @change="selectStart"></date-picker>
-      <date-picker v-show="monthShow" v-model="endM" lang="en" type="month" format="YYYY-MM"
-                   @change="selectStart"></date-picker>
+      <date-picker v-show="monthShow" v-model="startM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
+      <date-picker v-show="monthShow" v-model="endM" lang="en" type="month" format="YYYY-MM"  @change="selectStart"></date-picker>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       订单状态：
-      <el-select :default-active="$route.path" @change="chickAuth" v-model="searchStatus" filterable
-                 placeholder="请输入/请选择" class="h-m-select">
+      <el-select :default-active="$route.path" @change="chickAuth" v-model="searchStatus" filterable  placeholder="请输入/请选择" class="h-m-select">
         <el-option v-for="item in statues" :key="item.value" :label="item.label" v-model="item.value">
         </el-option>
       </el-select>
     </div>
 
-    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings"
-             :colors="colors"></ve-line>
-    <ve-line :visible.sync="amountShow" :extend="chartExtend" :data="chartData2" :settings="chartSettings2"
-             :colors="colors"></ve-line>
-    <ve-line :visible.sync="parseShow" :extend="chartExtend" :data="chartData3" :settings="chartSettings3"
-             :colors="colors"></ve-line>
-    <ve-line :visible.sync="totalShow" :extend="chartExtend" :data="chartData5" :settings="chartSettings5" :colors="colors">
-
-    </ve-line> </div>
+    <ve-line :visible.sync="dataShow" :extend="chartExtend" :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
+    <ve-line :visible.sync="totalShow2" :extend="chartExtend" :data="chartData6" :settings="chartSettings6" :colors="colors"></ve-line>
+  </div>
 </template>
 
 <script>
@@ -38,31 +28,32 @@
   import VeHistogram from 'v-charts/lib/histogram'
 
   export default {
-    components: {VeHistogram, VeLine, DatePicker},
+    components: { VeHistogram, VeLine, DatePicker },
     data() {
       this.colors = ['#29B9EF', '#2CF5B5', 'red', '#008B8B']
       return {
         dataShow1: true,
         monthShow: false,
-        totalShow: false,
+        totalShow2: false,
         timePeriod_month: [null],
         startM: null,
         endM: null,
         dataShow: false,
-        amountShow: false,
-        parseShow: false,
+        // amountShow: false,
+        // parseShow: false,
         searchStatus: '',
         query: {
           status: 1,
-          timePeriod: [null],
+          timePeriod: [null]
         },
         statues: [{
           value: '1',
           label: '全部'
-        }, {
-          value: '2',
-          label: '审核通过'
         },
+        //   {
+        //   value: '2',
+        //   label: '审核通过'
+        // },
         //   {
         //   value: '4',
         //   label: '订单总额'
@@ -90,9 +81,9 @@
           }
         ],
         chartData: {},
-        chartData2: {},
-        chartData3: {},
-        chartData5: {},
+        // chartData2: {},
+        // chartData3: {},
+        chartData6: {},
         chartSettings: {
           labelMap: {
             'orders': '订单量',
@@ -101,31 +92,36 @@
             'totalOrders': '日总单量'
           }
         },
-        chartSettings2: {
-          labelMap: {
-            'amount': '订单总额'
-          }
-        },
-        chartSettings3: {
-          labelMap: {
-            'orders': '成交量',
-            'customers': '审核通过'
-          }
-        },
-        chartSettings4: {
-          labelMap: {
-            'orders': '成交量',
-            'customers': '审核通过',
-            'amount': '订单总额'
-          }
-        },
+        // chartSettings2: {
+        //   labelMap: {
+        //     'amount': '订单总额'
+        //   }
+        // },
+        // chartSettings3: {
+        //   labelMap: {
+        //     'orders': '成交量',
+        //     'customers': '审核通过'
+        //   }
+        // },
+        // chartSettings4: {
+        //   labelMap: {
+        //     'orders': '成交量',
+        //     'customers': '审核通过',
+        //     'amount': '订单总额'
+        //   }
+        // },
         chartSettings5: {
           labelMap: {
             'total': '订单叠加量'
           }
         },
+        chartSettings6: {
+          labelMap: {
+            'total': '发货量(小程序)'
+          }
+        },
         chartExtend: {
-          xAxis: {boundaryGap: true}
+          xAxis: { boundaryGap: true }
         }
       }
     },
@@ -144,76 +140,36 @@
             this.query.timePeriod[0] = dat
             var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime() + 3600 * 24 * 1000)
             this.query.timePeriod[1] = dat1
-          }
-          else {
+          } else {
             this.query.timePeriod = []
             this.query.timePeriod.push(null)
           }
         }
         statOrder(this.query).then(response => {
-          if (this.searchStatus === 4) {
-            this.chartData2 = response.data.data
-            this.dataShow = false
-            this.parseShow = false
-            this.totalShow = false
-            this.amountShow = true
-          } else if (this.searchStatus === 5) {
-            this.chartData5 = response.data.data
-            this.totalShow = true
-            this.parseShow = false
-            this.dataShow = false
-            this.amountShow = false
-          } else if (this.searchStatus === 2) {
-            this.totalShow = false
-            this.parseShow = true
-            this.dataShow = false
-            this.amountShow = false
-            this.chartData3 = response.data.data
-          } else {
-            this.totalShow = false
-            this.parseShow = false
+          if (this.searchStatus === '5') {
+            this.chartData = response.data.data.total
+            this.chartData6 = response.data.data.sendTotal
             this.dataShow = true
-            this.amountShow = false
+            this.totalShow2 = true
+          } else {
+            this.totalShow2 = false
+            this.dataShow = true
+            this.chartData6 = {}
             this.chartData = response.data.data
           }
         })
       },
       dataMonth() {
         statMonthOrder(this.query).then(response => {
-          if (this.searchStatus === 4) {
-            this.chartSettings = this.chartSettings2
-            this.chartData2 = response.data.data
-            this.dataShow = false
-            this.totalShow = false
-            this.parseShow = false
-            this.amountShow = true
-          } else if (this.searchStatus === 5) {
-            this.chartSettings = this.chartSettings5
-            this.totalShow = true
-            this.parseShow = false
-            this.dataShow = false
-            this.amountShow = false
-            this.chartData5 = response.data.data
-          } else if (this.searchStatus === 2) {
-            this.chartSettings = this.chartSettings3
-            this.parseShow = true
-            this.totalShow = false
-            this.dataShow = false
-            this.amountShow = false
-            this.chartData3 = response.data.data
-          } else if (this.searchStatus === 1) {
-            this.chartSettings = this.chartSettings4
-            this.parseShow = false
-            this.totalShow = false
-            this.dataShow = false
-            this.amountShow = false
-            this.chartData4 = response.data.data
+          if (this.searchStatus === '5') {
+            this.chartData = response.data.data.total
+            this.chartData6 = response.data.data.sendTotal
+            this.dataShow = true
+            this.totalShow2 = true
           } else {
-            this.chartSettings = this.chartSettings
-            this.parseShow = false
-            this.dataShow = false
-            this.totalShow = false
-            this.amountShow = false
+            this.totalShow2 = false
+            this.dataShow = true
+            this.chartData6 = {}
             this.chartData = response.data.data
           }
         })
