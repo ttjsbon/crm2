@@ -462,7 +462,7 @@
       confirmRefund() {
         this.$refs['refundForm'].validate((valid) => {
           if (valid) {
-            302(this.refundForm.orderId).then(response => {
+            refundOrderV1_3_0(this.refundForm.orderId).then(response => {
               this.refundDialogVisible = false
               this.$notify({
                 title: '成功',
