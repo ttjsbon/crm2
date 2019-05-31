@@ -16,7 +16,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="商品价格" prop="retailPrice">
-          <el-input v-model="goods.retailPrice" placeholder="输入商品价格，如：0.00">
+          <el-input v-model="goods.retailPrice" placeholder="商品价格，如：0.00">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
@@ -54,7 +54,7 @@
         </el-form-item>
 
         <el-form-item label="商品图片">
-          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false"
+          <el-upload class="avatar-uploader" :action='uploadPath' list-type="picture-card" :show-file-list="false"
                      accept=".jpg,.jpeg,.png,.gif" :on-success="uploadPicUrl">
             <img v-if="goods.picUrl" :src="goods.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -62,8 +62,9 @@
         </el-form-item>
 
         <el-form-item label="宣传画廊">
-          <el-upload :action="uploadPath" :limit="5" multiple accept=".jpg,.jpeg,.png,.gif" list-type="picture-card"
-                     :on-exceed="uploadOverrun" :on-success="handleGalleryUrl" :on-remove="handleRemove">
+          <el-upload :action='uploadPath' :limit='5' multiple accept=".jpg,.jpeg,.png,.gif" :file-list="galleryFileList"
+                     list-type="picture-card" :on-exceed='uploadOverrun' :on-success="handleGalleryUrl"
+                     :on-remove="handleRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
@@ -84,7 +85,8 @@
         </el-form-item>
 
         <el-form-item label="所属类目">
-          <el-cascader expand-trigger="hover" :options="categoryList" @change="handleCategoryChange"></el-cascader>
+          <el-cascader expand-trigger="hover" :options="categoryList" v-model="categoryIds"
+                       @change="handleCategoryChange"></el-cascader>
         </el-form-item>
 
         <el-form-item label="所属品牌商">
@@ -106,26 +108,13 @@
 
     <el-card class="box-card">
       <h3>商品规格</h3>
-      <el-row type="flex" align="middle" :gutter="20" style="padding:20px 0;">
-        <el-col :span="10">
-          <el-radio-group v-model="multipleSpec" @change="specChanged">
-            <el-radio-button :label="false">默认标准规格</el-radio-button>
-            <el-radio-button :label="true">多规格支持</el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="10" v-if="multipleSpec">
-          <el-button :plain="true" @click="handleSpecificationShow" type="primary">添加</el-button>
-        </el-col>
-      </el-row>
+      <el-button :plain="true" @click="handleSpecificationShow" type="primary">添加</el-button>
 
-      <el-table :data="multipleSpec==true?copyspecifications:specifications">
+      <el-table :data="copyspecifications">
         <el-table-column property="specification" label="规格名"></el-table-column>
         <el-table-column property="value" label="规格值">
           <template slot-scope="scope">
-            <el-tag type="primary" v-if="!multipleSpec">
-              {{scope.row.value}}
-            </el-tag>
-            <div v-else>
+            <div>
               <el-tag type="primary" v-for='(item, index) in scope.row.value' :key="index">
                 {{item}}
               </el-tag>
@@ -138,8 +127,7 @@
             <img :src="scope.row.picUrl" width="40" v-if="scope.row.picUrl"/>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width"
-                         v-if="multipleSpec">
+        <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">删除</el-button>
           </template>
@@ -186,10 +174,7 @@
         <span class="tenancylabel">分期类型</span>
         <!--        <el-radio-group v-model="stagingType" @change="changetenancyType">-->
         <!--          <el-radio :label="1">按月</el-radio>-->
-        <!--          <el-radio :label="2" >按天</el-radio>-->
-        <!--          <el-radio :label="3" >按周</el-radio>-->
-        <!--          <el-radio :label="4" >按季</el-radio>-->
-        <!--          <el-radio :label="5" >按年</el-radio>-->
+        <!--          &lt;!&ndash; <el-radio :label="2" >按天</el-radio> &ndash;&gt;-->
         <!--        </el-radio-group>-->
         <el-checkbox-group v-model="stagingType" @change="changetenancyType">
           <el-checkbox v-for="(item,index) in optionsType" :key="'travel' + index" :label="item.periodType" name="type">
@@ -199,6 +184,11 @@
       </div>
       <div class="flex tenancybox">
         <span class="tenancylabel">租期</span>
+        <!--        <el-checkbox-group v-model="leaseTerm" @change="changetenancy">-->
+        <!--          <el-checkbox v-for="item in options" :key="item.periods" :label="item.periods" name="type">-->
+        <!--            <div>{{item.periods}}期</div>-->
+        <!--          </el-checkbox>-->
+        <!--        </el-checkbox-group>-->
         <el-checkbox-group v-model="nperarr" @change="changetenancy">
           <el-checkbox v-for="item in leaseTerm" :key="item.periods" :label="item" name="type">
             <div>{{item.productName}}{{item.periods}}期</div>
@@ -229,7 +219,6 @@
           <template slot="append">元</template>
         </el-input>
       </div>
-
     </el-card>
 
     <el-card class="box-card">
@@ -269,12 +258,12 @@
             </el-tag>
           </el-form-item>
           <el-form-item label="货品售价" prop="price">
-            <el-input v-model="productForm.price" placeholder="输入货品售价">
+            <el-input v-model="productForm.price" placeholder="输入货品售价，如">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="货品数量" prop="number">
-            <el-input v-model="productForm.number" placeholder="输入货品数量，如10"></el-input>
+            <el-input v-model="productForm.number" placeholder="输入货品数量，如：10"></el-input>
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
             <el-upload class="avatar-uploader" :action='uploadPath' list-type="picture-card" :show-file-list="false"
@@ -296,6 +285,14 @@
             {{tag}}
           </el-tag>
         </div>
+        <!--                <div v-if='productForm.productFinances'>-->
+        <!--                  <div v-for="item in productForm.productFinances" :key="item.periods" class="flex mar-b">-->
+        <!--                    <span class="rentlabel">{{item.periods}}期:</span>-->
+        <!--                    <el-input v-model="item.price" placeholder="输入租金">-->
+        <!--                      <template slot="append">元</template>-->
+        <!--                    </el-input>-->
+        <!--                  </div>-->
+        <!--                </div>-->
         <div v-if="nperval.length > 0">
           <div v-for="item in nperval" :key="item.periods" class="flex mar-b">
             <span class="rentlabel">{{item.productName}}{{item.periods}}期:</span>
@@ -320,7 +317,7 @@
         </el-table-column>
         <el-table-column property="value" label="商品参数值">
         </el-table-column>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+        <el-table-column align="left" label="操作" width="240" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <div class="flex">
               <div class="movewarp" @click="attributeUp(scope.$index)">
@@ -354,626 +351,12 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button @click="handlePublish" type="primary">保存商品信息</el-button>
+      <el-button @click="handleEdit" type="primary">更新商品</el-button>
     </div>
 
   </div>
 </template>
 
-
-<script>
-  import {
-    publishGoods,
-    listCatAndBrand,
-    getfinanceProduct,
-    getfinanceAttach,
-    publishGoodsV1_4_0
-  } from '@/api/goods'
-  import {
-    createStorage,
-    uploadPath
-  } from '@/api/storage'
-  import Editor from '@tinymce/tinymce-vue'
-  import {
-    MessageBox
-  } from 'element-ui'
-
-  export default {
-    name: 'GoodsCreate',
-    components: {
-      Editor
-    },
-    data() {
-      return {
-        nperarr: [],
-        nperval: [],
-        radisTyep: {},
-        specificationValue: '',
-        uploadPath,
-        newKeywordVisible: false,
-        newKeyword: '',
-        keywords: [],
-        categoryList: [],
-        brandList: [],
-        goods: {
-          picUrl: '',
-          gallery: []
-        },
-        specVisiable: false,
-        specForm: {
-          specification: '',
-          value: [],
-          picUrl: ''
-        },
-        multipleSpec: false,
-        specifications: [{
-          specification: '规格',
-          value: '标准',
-          picUrl: ''
-        }],
-        productVisiable: false,
-        productForm: {
-          id: 0,
-          specifications: [],
-          price: 0.00,
-          number: 0,
-          url: ''
-        },
-        products: [{
-          id: 0,
-          specifications: ['标准'],
-          price: 0.00,
-          number: 0,
-          url: '',
-          productFinances: []
-        }],
-        financeSpecifications: [],
-        attributeVisiable: false,
-        attributeForm: {
-          attribute: '',
-          value: ''
-        },
-        attributes: [],
-        copyspecifications: [],
-        rules: {
-          goodsSn: [{
-            required: true,
-            message: '商品编号不能为空',
-            trigger: 'blur'
-          }],
-          name: [{
-            required: true,
-            message: '商品名称不能为空',
-            trigger: 'blur'
-          }]
-        },
-        editorInit: {
-          language: 'zh_CN',
-          plugins: [
-            'advlist anchor autolink autoresize autosave emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'
-          ],
-          toolbar: [
-            'bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ',
-            'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'
-          ],
-          images_upload_handler: function (blobInfo, success, failure) {
-            const formData = new FormData()
-            formData.append('file', blobInfo.blob())
-            createStorage(formData).then(res => {
-              success(res.data.data.url)
-            }).catch(() => {
-              failure('上传失败，请重新上传')
-            })
-          }
-        },
-        leaseTerm: [],
-        stagingType: [],
-        // stagingType: [],
-        productLeaseVisi: false,
-        options: [],
-        optionsType: [],
-        checkedLease: [],
-        isInsure: false,
-        financeData: [],
-        financeAttachData: [],
-        mallGoodsFinances: [],
-        installment: null,
-        once: null
-      }
-    },
-    created() {
-      this.init()
-    },
-    mounted() {
-      this.multipleSpec = true
-      this.specChanged(true)
-    },
-    methods: {
-      init() {
-        listCatAndBrand().then(response => {
-          this.categoryList = response.data.data.categoryList
-          this.brandList = response.data.data.brandList
-        }).catch()
-        getfinanceAttach().then(response => {
-          this.financeAttachData = response.data.data
-        })
-        getfinanceProduct().then(res => {
-          this.financeData = res.data.data
-          this.optionsType = res.data.data
-        })
-      },
-      handleCategoryChange(value) {
-        this.goods.categoryId = value[value.length - 1]
-      },
-      handleCancel: function () {
-        this.$router.push({
-          path: '/goods/goods'
-        })
-      },
-      handlePublish: function () {
-        this.editAttach()
-        this.goods.isOnSale = false
-        this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
-        const finalGoods = {
-          goods: this.goods,
-          specifications: this.specifications,
-          products: this.products,
-          attributes: this.attributes,
-          mallGoodsFinances: this.mallGoodsFinances,
-          financeSpecifications: this.financeSpecifications
-        }
-        // publishGoods(finalGoods).then(response => {
-        // 保存商品信息1.4.0接口
-        publishGoodsV1_4_0(finalGoods).then(response => {
-          if (response.data.errno === 0) {
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
-            this.$router.push({
-              path: '/goods/list'
-            })
-          }
-        }).catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
-            type: 'error'
-          })
-        })
-      },
-      handleClose(tag) {
-        this.keywords.splice(this.keywords.indexOf(tag), 1)
-        this.goods.keywords = this.keywords.toString()
-      },
-      showInput() {
-        this.newKeywordVisible = true
-        this.$nextTick(_ => {
-          this.$refs.newKeywordInput.$refs.input.focus()
-        })
-      },
-      handleInputConfirm() {
-        const newKeyword = this.newKeyword
-        if (newKeyword) {
-          this.keywords.push(newKeyword)
-          this.goods.keywords = this.keywords.toString()
-        }
-        this.newKeywordVisible = false
-        this.newKeyword = ''
-      },
-      uploadPicUrl: function (response) {
-        this.goods.picUrl = response.data.url
-      },
-      uploadOverrun: function () {
-        this.$message({
-          type: 'error',
-          message: '上传文件个数超出限制!最多上传5张图片!'
-        })
-      },
-      handleGalleryUrl(response, file, fileList) {
-        if (response.errno === 0) {
-          this.goods.gallery.push(response.data.url)
-        }
-      },
-      handleRemove: function (file, fileList) {
-        for (var i = 0; i < this.goods.gallery.length; i++) {
-          // 这里存在两种情况
-          // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
-          //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
-          // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
-          var url
-          if (file.response === undefined) {
-            url = file.url
-          } else {
-            url = file.response.data.url
-          }
-
-          if (this.goods.gallery[i] === url) {
-            this.goods.gallery.splice(i, 1)
-          }
-        }
-      },
-      specChanged: function (label) {
-        if (label === false) {
-          this.specifications = [{
-            specification: '规格',
-            value: '标准',
-            picUrl: ''
-          }]
-          this.products = [{
-            id: 0,
-            specifications: ['标准'],
-            price: 0.00,
-            number: 0,
-            url: ''
-          }]
-        } else {
-          this.specifications = []
-          this.products = []
-        }
-      },
-      uploadSpecPicUrl: function (response) {
-        this.specForm.picUrl = response.data.url
-      },
-      handleSpecificationShow() {
-        this.specificationValue = ''
-        this.specForm = {
-          specification: '',
-          value: [],
-          picUrl: ''
-        }
-        this.specVisiable = true
-      },
-      handleCloseTag(index) {
-        this.specForm.value.splice(index, 1)
-      },
-      addTag() {
-        if (!this.specificationValue) {
-          this.$message.error('请输入规格值')
-        } else {
-          this.specForm.value.push(this.specificationValue)
-          this.specificationValue = ''
-        }
-      },
-      handleSpecificationAdd() {
-        if (this.specForm.value.length) {
-          this.specForm.value.forEach(item => {
-            var obj = {
-              specification: this.specForm.specification,
-              value: item
-            }
-            if (this.specForm.picUrl) {
-              obj.picUrl = this.specForm.picUrl
-            }
-
-            var index = this.specifications.length - 1
-            for (var i = 0; i < this.specifications.length; i++) {
-              const v = this.specifications[i]
-              if (v.specification === this.specForm.specification) {
-                index = i
-              }
-            }
-            this.specifications.splice(index + 1, 0, obj)
-          })
-        }
-
-        this.copyspecifications = JSON.parse(JSON.stringify(this.specifications))
-        var tempMap = {}
-        for (var i = 0; i < this.copyspecifications.length; i++) {
-          var obj = this.copyspecifications[i]
-          var key = obj['specification']
-          if (tempMap[key] !== 0 && !tempMap[key]) {
-            tempMap[key] = obj['value']
-          } else {
-            tempMap[key] = tempMap[key] + ',' + obj['value']
-          }
-        }
-        var arrM = []
-        for (key in tempMap) {
-          arrM.push({
-            specification: key,
-            value: tempMap[key + ''].split(',')
-          })
-        }
-        this.copyspecifications = arrM
-        // this.copyspecifications = this.copyspecifications.filter(item => {
-        //   return (item.specification !== '租期' && item.specification !== '分期类型')
-        // })
-        this.specVisiable = false
-        this.specToProduct()
-      },
-      handleSpecificationDelete(row) {
-        const index = this.copyspecifications.indexOf(row)
-        var keys = row.specification
-        this.copyspecifications.splice(index, 1)
-        this.specifications = this.specifications.filter(item => {
-          return item.specification !== keys
-        })
-        // var arr = this.specifications.filter(item => {
-        //   return (item.specification !== '租期' && item.specification !== '分期类型')
-        // })
-        // if (arr.length) {
-        this.specToProduct()
-        // } else {
-        //   this.products = []
-        // }
-      },
-      specToProduct() {
-        if (this.specifications.length === 0) {
-          return
-        }
-        // 根据specifications创建临时规格列表
-        var specValues = []
-        var spec = this.specifications[0].specification
-        var values = []
-        values.push(0)
-
-        for (var i = 1; i < this.specifications.length; i++) {
-          const aspec = this.specifications[i].specification
-
-          if (aspec === spec) {
-            values.push(i)
-          } else {
-            specValues.push(values)
-            spec = aspec
-            values = []
-            values.push(i)
-          }
-        }
-        specValues.push(values)
-
-        // 根据临时规格列表生产货品规格
-        // 算法基于 https://blog.csdn.net/tyhj_sf/article/details/53893125
-        var productsIndex = 0
-        var products = []
-        var combination = []
-        var n = specValues.length
-        for (var s = 0; s < n; s++) {
-          combination[s] = 0
-        }
-        var index = 0
-        var isContinue = false
-        do {
-          var specifications = []
-          for (var x = 0; x < n; x++) {
-            var z = specValues[x][combination[x]]
-            specifications.push(this.specifications[z].value)
-          }
-          products[productsIndex] = {
-            id: productsIndex,
-            specifications: specifications,
-            price: 0.00,
-            number: 0,
-            url: ''
-          }
-          productsIndex++
-
-          index++
-          combination[n - 1] = index
-          for (var j = n - 1; j >= 0; j--) {
-            if (combination[j] >= specValues[j].length) {
-              combination[j] = 0
-              index = 0
-              if (j - 1 >= 0) {
-                combination[j - 1] = combination[j - 1] + 1
-              }
-            }
-          }
-          isContinue = false
-          for (var p = 0; p < n; p++) {
-            if (combination[p] !== 0) {
-              isContinue = true
-            }
-          }
-        } while (isContinue)
-
-        this.products = products
-        this.changetenancy(this.leaseTerm)
-      },
-      handleProductShow(row) {
-        this.productForm = Object.assign({}, row)
-        this.productVisiable = true
-      },
-      uploadProductUrl: function (response) {
-        this.productForm.url = response.data.url
-      },
-      handleProductEdit() {
-        for (var i = 0; i < this.products.length; i++) {
-          const v = this.products[i]
-          if (v.id === this.productForm.id) {
-            this.products.splice(i, 1, this.productForm)
-            break
-          }
-        }
-        this.productVisiable = false
-      },
-      handleAttributeShow() {
-        this.attributeForm = {}
-        this.attributeVisiable = true
-      },
-      handleAttributeAdd() {
-        this.attributes.push(this.attributeForm)
-        this.attributeVisiable = false
-      },
-      handleAttributeDelete(row) {
-        const index = this.attributes.indexOf(row)
-        this.attributes.splice(index, 1)
-      },
-      attributeUp(index) {
-        if (index === 0) {
-          return
-        }
-        var temp = this.attributes[index - 1]
-        // [this.attributes[index], this.attributes[index - 1]] = [this.attributes[index - 1], this.attributes[index]]
-        this.$set(this.attributes, index - 1, this.attributes[index])
-        this.$set(this.attributes, index, temp)
-      },
-      attributeDown(index) {
-        if (index === this.attributes.length - 1) {
-          return
-        }
-        var temp = this.attributes[index + 1]
-        // [this.attributes[index], this.attributes[index + 1]] = [this.attributes[index + 1], this.attributes[index]]
-        this.$set(this.attributes, index + 1, this.attributes[index])
-        this.$set(this.attributes, index, temp)
-      },
-      // changetenancy(val) {
-      //   this.financeSpecifications = []
-      //   var arr = []
-      //   var arr2 = []
-      //   var that = this
-      //   // var txt = this.stagingType === 1 ? '个月' : '天'
-      //   val.forEach(item1 => {
-      //     arr2 = that.leaseTerm.filter(item2 => {
-      //       return item1.periods === item2.periods
-      //     })
-      //     arr = [...arr, ...arr2]
-      //   })
-      //
-      //   arr = this.sortKey(arr, 'periods')
-      //   this.checkedLease = arr
-      //   this.checkedLease.forEach((item, index) => {
-      //     item.price = ''
-      //     item.periodType = this.stagingType[index]
-      //     this.financeData.forEach(item2 => {
-      //       if (item.periods === item2.periods) {
-      //         item.financeProductId = item2.id
-      //       }
-      //     })
-      //
-      //     this.financeSpecifications.push({
-      //       installmentRules: '分期规范',
-      //       installmentType: item.periodType,
-      //       specification: '租期',
-      //       value: `${item.periods}`
-      //     })
-      //   })
-      //   this.products.forEach(item => {
-      //     item.productFinances = this.checkedLease
-      //   })
-      //   var arr = val
-      //   this.specifications = this.specifications.filter(item => {
-      //     return item.specification !== '租期'
-      //   })
-      //   arr.forEach(item => {
-      //     var obj = {}
-      //     obj.specification = '租期'
-      //     obj.value = item
-      //     this.specifications.push(obj)
-      //   })
-      //
-      //   var checkArr = this.specifications.filter(item => {
-      //     return (item.specification !== '租期' && item.specification !== '分期类型')
-      //   })
-      //   if (checkArr.length) {
-      //     this.specToProduct()
-      //   }
-      // },
-      changetenancy(val) {
-        // console.log(val)
-        this.nperval = val
-        this.financeSpecifications = []
-        this.nperval.forEach((item1, index) => {
-          this.financeSpecifications.push({
-            installmentRules: '分期规范',
-            installmentType: item1.periodType,
-            specification: '租期',
-            value: item1.periods
-          })
-        });
-        var arr = []
-        arr = this.sortKey(arr, 'periods')
-        this.nperval.forEach((item, index) => {
-          item.price = ''
-          this.financeData.forEach(item2 => {
-            if (item.periods === item2.periods) {
-              item.financeProductId = item2.id
-            }
-          })
-          this.products.forEach(item => {
-            item.productFinances = this.nperval
-          })
-        })
-      },
-      changetenancyType(val) {
-        this.leaseTerm = []
-        for (let i = 0; i < val.length; i++) {
-          // console.log(this.optionsType)
-          let a = val[i] - 1
-          this.leaseTerm.push(this.optionsType[a])
-        }
-      }
-      ,
-      handlelease(row) {
-        this.productForm = JSON.parse(JSON.stringify(row))
-        this.productLeaseVisi = true
-      }
-      ,
-      handleLeaseEdit() {
-        // for (var i = 0; i < this.products.length; i++) {
-        //   const v = this.products[i]
-        //   if (v.id === this.productForm.id) {
-        //     this.products.splice(i, 1, this.productForm)
-        //     break
-        //   }
-        // }
-        this.productLeaseVisi = false
-      }
-      ,
-      cancel() {
-        this.productLeaseVisi = false
-        // this.checkedLease.forEach(item => {
-        //   item.rent = ''
-        // })
-      }
-      ,
-      sortKey(array, key) {
-        return array.sort(function (a, b) {
-          var x = a[key]
-          var y = b[key]
-          return ((x < y) ? -1 : (x > y) ? 1 : 0)
-        })
-      }
-      ,
-      editAttach() {
-        if (this.once) {
-          var obj = {}
-          this.financeAttachData.forEach(item => {
-            if (item.feeType === 1) {
-              obj.feeType = 1
-              obj.amount = parseFloat(this.once)
-              obj.feeName = item.name
-              obj.financeProductAttachId = item.id
-            }
-          })
-          this.mallGoodsFinances.push(obj)
-        }
-        if (this.installment) {
-          var obj2 = {}
-          this.financeAttachData.forEach(item => {
-            if (item.feeType === 2) {
-              obj2.feeType = 2
-              obj2.amount = parseFloat(this.installment)
-              obj2.feeName = item.name
-              obj2.financeProductAttachId = item.id
-            }
-          })
-          this.mallGoodsFinances.push(obj2)
-        }
-      }
-    },
-    watch: {
-      isInsure(newdata, olddata) {
-        if (!newdata) {
-          this.installment = null
-          this.once = null
-        }
-      }
-    }
-  }
-
-</script>
 <style lang='scss'>
   .el-card {
     margin-bottom: 10px;
@@ -1062,12 +445,6 @@
     line-height: 36px;
   }
 
-  .tenancybox .el-switch {
-    height: 36px;
-    line-height: 36px;
-    margin-right: 20px;
-  }
-
   .movewarp {
     width: 30px;
     line-height: 28px;
@@ -1091,3 +468,683 @@
   }
 
 </style>
+
+<script>
+  import {
+    detailGoods,
+    editGoods,
+    listCatAndBrand,
+    getfinanceProduct,
+    getfinanceAttach,
+    editGoodsV1_4_0,
+    detailGoodsV1_4_0
+  } from '@/api/goods'
+  import {
+    createStorage,
+    uploadPath
+  } from '@/api/storage'
+  import Editor from '@tinymce/tinymce-vue'
+  import {
+    MessageBox
+  } from 'element-ui'
+
+  export default {
+    name: 'GoodsEdit',
+    components: {
+      Editor
+    },
+    data() {
+      return {
+        nperarr: [],
+        nperval: [],
+        specificationValue: '',
+        uploadPath,
+        newKeywordVisible: false,
+        newKeyword: '',
+        keywords: [],
+        galleryFileList: [],
+        categoryList: [],
+        brandList: [],
+        categoryIds: [],
+        goods: {
+          gallery: []
+        },
+        specVisiable: false,
+        specForm: {
+          specification: '',
+          value: [],
+          picUrl: ''
+        },
+        specifications: [{
+          specification: '规格',
+          value: '标准',
+          picUrl: ''
+        }],
+        productVisiable: false,
+        productForm: {
+          id: 0,
+          specifications: [],
+          price: 0.00,
+          number: 0,
+          url: ''
+        },
+        products: [{
+          id: 0,
+          specifications: ['标准'],
+          price: 0.00,
+          number: 0,
+          url: '',
+          productFinances: [],
+          productFinanceDTOS: []
+        }],
+        financeSpecifications: [],
+        attributeVisiable: false,
+        attributeForm: {
+          attribute: '',
+          value: ''
+        },
+        attributes: [],
+        copyspecifications: [],
+        rules: {
+          goodsSn: [{
+            required: true,
+            message: '商品编号不能为空',
+            trigger: 'blur'
+          }],
+          name: [{
+            required: true,
+            message: '商品名称不能为空',
+            trigger: 'blur'
+          }]
+        },
+        editorInit: {
+          language: 'zh_CN',
+          plugins: [
+            'advlist anchor autolink autoresize autosave emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'
+          ],
+          toolbar: [
+            'bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ',
+            'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'
+          ],
+          images_upload_handler: function(blobInfo, success, failure) {
+            const formData = new FormData()
+            formData.append('file', blobInfo.blob())
+            createStorage(formData).then(res => {
+              success(res.data.data.url)
+            }).catch(() => {
+              failure('上传失败，请重新上传')
+            })
+          }
+        },
+        leaseTerm: [],
+        // stagingType: null,
+        stagingType: [],
+        productLeaseVisi: false,
+        optionsType: [],
+        checkedLease: [],
+        isInsure: false,
+        financeData: [],
+        financeAttachData: [],
+        mallGoodsFinances: [],
+        installment: null,
+        once: null
+      }
+    },
+    created() {
+      this.init()
+    },
+    methods: {
+      init: function() {
+        if (this.$route.query.id == null) {
+          return
+        }
+        getfinanceAttach().then(response => {
+          this.financeAttachData = response.data.data
+        })
+        getfinanceProduct().then(response => {
+          this.financeData = response.data.data
+          this.optionsType = response.data.data
+        })
+
+        const goodsId = this.$route.query.id
+        // detailGoods(goodsId).then(response => {
+        detailGoodsV1_4_0(goodsId).then(response => {
+          this.goods = response.data.data.goods
+          this.specifications = response.data.data.specifications
+          this.products = response.data.data.products
+          this.attributes = response.data.data.attributes
+          this.categoryIds = response.data.data.categoryIds
+          this.getFirstCopy()
+
+          // if (this.products.length && this.products[0].productFinances && this.products[0].productFinances.length
+          // ) {
+          // this.products[0].productFinances.forEach(item => {
+          this.products[0].productFinanceDTOS.forEach(item => {
+            this.stagingType.push(item.periodType)
+            this.nperarr.push(item)
+            this.leaseTerm.push(item)
+          })
+          // this.nperval = this.products[0].productFinances
+          this.nperval = this.products[0].productFinanceDTOS
+
+          // this.options = this.financeData.filter(item => {
+          //   return item.periodType === this.stagingType
+          // })
+          // this.products[0].productFinances.forEach((item, index) => {
+          //   this.financeSpecifications.push({
+          //     installmentRules: '分期规范',
+          //     installmentType: item.periodType,
+          //     specification: '租期',
+          //     value: item.periods
+          //   })
+          // })
+          // } else {
+          //   this.stagingType = 1
+          //   this.options = this.financeData.filter(item => {
+          //     return item.periodType === this.stagingType
+          //   })
+          // }
+
+          this.mallGoodsFinances = response.data.data.goodsFinances
+          if (this.mallGoodsFinances) {
+            this.mallGoodsFinances.forEach(item => {
+              if (item.feeType === 1) {
+                this.once = item.amount
+                this.isInsure = true
+              }
+              if (item.feeType === 2) {
+                this.installment = item.amount
+                this.isInsure = true
+              }
+            })
+          }
+          if (!this.mallGoodsFinances) {
+            this.mallGoodsFinances = []
+          }
+
+          this.galleryFileList = []
+          for (var i = 0; i < this.goods.gallery.length; i++) {
+            this.galleryFileList.push({
+              url: this.goods.gallery[i]
+            })
+          }
+        })
+        listCatAndBrand().then(response => {
+          this.categoryList = response.data.data.categoryList
+          this.brandList = response.data.data.brandList
+        })
+      },
+      getFirstCopy() {
+        this.copyspecifications = JSON.parse(JSON.stringify(this.specifications))
+        var tempMap = {}
+        for (var i = 0; i < this.copyspecifications.length; i++) {
+          var obj = this.copyspecifications[i]
+          var key = obj['specification']
+          if (tempMap[key] !== 0 && !tempMap[key]) {
+            tempMap[key] = obj['value']
+          } else {
+            tempMap[key] = tempMap[key] + ',' + obj['value']
+          }
+        }
+        var arrM = []
+        for (key in tempMap) {
+          arrM.push({
+            specification: key,
+            value: tempMap[key + ''].split(',')
+          })
+        }
+        this.copyspecifications = arrM
+      },
+      handleCategoryChange(value) {
+        this.goods.categoryId = value[value.length - 1]
+      },
+      handleCancel: function() {
+        this.$router.push({
+          path: '/goods/list'
+        })
+      },
+      handleEdit: function() {
+        this.editAttach()
+        this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
+        const finalGoods = {
+          goods: this.goods,
+          specifications: this.specifications,
+          products: this.products,
+          attributes: this.attributes,
+          mallGoodsFinances: this.mallGoodsFinances,
+          financeSpecifications: this.financeSpecifications
+        }
+        // editGoods(finalGoods).then(response => {
+        editGoodsV1_4_0(finalGoods).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.$router.push({
+            path: '/goods/list'
+          })
+        }).catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+      },
+      handleClose(tag) {
+        this.keywords.splice(this.keywords.indexOf(tag), 1)
+        this.goods.keywords = this.keywords.toString()
+      },
+      showInput() {
+        this.newKeywordVisible = true
+        this.$nextTick(_ => {
+          this.$refs.newKeywordInput.$refs.input.focus()
+        })
+      },
+      handleInputConfirm() {
+        const newKeyword = this.newKeyword
+        if (newKeyword) {
+          this.keywords.push(newKeyword)
+          this.goods.keywords = this.keywords.toString()
+        }
+        this.newKeywordVisible = false
+        this.newKeyword = ''
+      },
+      uploadPicUrl: function(response) {
+        this.goods.picUrl = response.data.url
+      },
+      uploadOverrun: function() {
+        this.$message({
+          type: 'error',
+          message: '上传文件个数超出限制!最多上传5张图片!'
+        })
+      },
+      handleGalleryUrl(response, file, fileList) {
+        if (response.errno === 0) {
+          this.goods.gallery.push(response.data.url)
+        }
+      },
+      handleRemove: function(file, fileList) {
+        for (var i = 0; i < this.goods.gallery.length; i++) {
+          // 这里存在两种情况
+          // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
+          //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
+          // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
+          var url
+          if (file.response === undefined) {
+            url = file.url
+          } else {
+            url = file.response.data.url
+          }
+
+          if (this.goods.gallery[i] === url) {
+            this.goods.gallery.splice(i, 1)
+          }
+        }
+      },
+      specChanged: function(label) {
+        if (label === false) {
+          this.specifications = [{
+            specification: '规格',
+            value: '标准',
+            picUrl: ''
+          }]
+          this.products = [{
+            id: 0,
+            specifications: ['标准'],
+            price: 0.00,
+            number: 0,
+            url: ''
+          }]
+        } else {
+          this.specifications = []
+          this.products = []
+        }
+      },
+      uploadSpecPicUrl: function(response) {
+        this.specForm.picUrl = response.data.url
+      },
+      handleSpecificationShow() {
+        this.specificationValue = ''
+        this.specForm = {
+          specification: '',
+          value: [],
+          picUrl: ''
+        }
+        this.specVisiable = true
+      },
+      handleCloseTag(index) {
+        this.specForm.value.splice(index, 1)
+      },
+      addTag() {
+        if (!this.specificationValue) {
+          this.$message.error('请输入规格值')
+        } else {
+          this.specForm.value.push(this.specificationValue)
+          this.specificationValue = ''
+        }
+      },
+      handleSpecificationAdd() {
+        if (this.specForm.value.length) {
+          this.specForm.value.forEach(item => {
+            var obj = {
+              specification: this.specForm.specification,
+              value: item
+            }
+            if (this.specForm.picUrl) {
+              obj.picUrl = this.specForm.picUrl
+            }
+
+            var index = this.specifications.length - 1
+            for (var i = 0; i < this.specifications.length; i++) {
+              const v = this.specifications[i]
+              if (v.specification === this.specForm.specification) {
+                index = i
+              }
+            }
+            this.specifications.splice(index + 1, 0, obj)
+          })
+        }
+
+        this.copyspecifications = JSON.parse(JSON.stringify(this.specifications))
+        var tempMap = {}
+        for (var i = 0; i < this.copyspecifications.length; i++) {
+          var obj = this.copyspecifications[i]
+          var key = obj['specification']
+          if (tempMap[key] !== 0 && !tempMap[key]) {
+            tempMap[key] = obj['value']
+          } else {
+            tempMap[key] = tempMap[key] + ',' + obj['value']
+          }
+        }
+        var arrM = []
+        for (key in tempMap) {
+          arrM.push({
+            specification: key,
+            value: tempMap[key + ''].split(',')
+          })
+        }
+        this.copyspecifications = arrM
+        this.specVisiable = false
+        this.specToProduct()
+      },
+      handleSpecificationDelete(row) {
+        const index = this.copyspecifications.indexOf(row)
+        var keys = row.specification
+        this.copyspecifications.splice(index, 1)
+        this.specifications = this.specifications.filter(item => {
+          return item.specification !== keys
+        })
+        this.specToProduct()
+      },
+      specToProduct() {
+        if (this.specifications.length === 0) {
+          return
+        }
+        // 根据specifications创建临时规格列表
+        var specValues = []
+        var spec = this.specifications[0].specification
+        var values = []
+        values.push(0)
+
+        for (var i = 1; i < this.specifications.length; i++) {
+          const aspec = this.specifications[i].specification
+
+          if (aspec === spec) {
+            values.push(i)
+          } else {
+            specValues.push(values)
+            spec = aspec
+            values = []
+            values.push(i)
+          }
+        }
+        specValues.push(values)
+
+        // 根据临时规格列表生产货品规格
+        // 算法基于 https://blog.csdn.net/tyhj_sf/article/details/53893125
+        var productsIndex = 0
+        var products = []
+        var combination = []
+        var n = specValues.length
+        for (var s = 0; s < n; s++) {
+          combination[s] = 0
+        }
+        var index = 0
+        var isContinue = false
+        do {
+          var specifications = []
+          for (var x = 0; x < n; x++) {
+            var z = specValues[x][combination[x]]
+            specifications.push(this.specifications[z].value)
+          }
+          products[productsIndex] = {
+            id: productsIndex,
+            specifications: specifications,
+            price: 0.00,
+            number: 0,
+            url: ''
+          }
+          productsIndex++
+
+          index++
+          combination[n - 1] = index
+          for (var j = n - 1; j >= 0; j--) {
+            if (combination[j] >= specValues[j].length) {
+              combination[j] = 0
+              index = 0
+              if (j - 1 >= 0) {
+                combination[j - 1] = combination[j - 1] + 1
+              }
+            }
+          }
+          isContinue = false
+          for (var p = 0; p < n; p++) {
+            if (combination[p] !== 0) {
+              isContinue = true
+            }
+          }
+        } while (isContinue)
+
+        this.products = products
+        this.changetenancy(this.leaseTerm)
+      },
+      handleProductShow(row) {
+        this.productForm = Object.assign({}, row)
+        this.productVisiable = true
+      },
+      uploadProductUrl: function(response) {
+        this.productForm.url = response.data.url
+      },
+      handleProductEdit() {
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          if (v.id === this.productForm.id) {
+            this.products.splice(i, 1, this.productForm)
+            break
+          }
+        }
+        this.productVisiable = false
+      },
+      handleAttributeShow() {
+        this.attributeForm = {}
+        this.attributeVisiable = true
+      },
+      handleAttributeAdd() {
+        this.attributes.push(this.attributeForm)
+        this.attributeVisiable = false
+      },
+      handleAttributeDelete(row) {
+        const index = this.attributes.indexOf(row)
+        this.attributes.splice(index, 1)
+      },
+      attributeUp(index) {
+        if (index === 0) {
+          return
+        }
+        var temp = this.attributes[index - 1]
+        // [this.attributes[index], this.attributes[index - 1]] = [this.attributes[index - 1], this.attributes[index]]
+        this.$set(this.attributes, index - 1, this.attributes[index])
+        this.$set(this.attributes, index, temp)
+      },
+      attributeDown(index) {
+        if (index === this.attributes.length - 1) {
+          return
+        }
+        var temp = this.attributes[index + 1]
+        // [this.attributes[index], this.attributes[index + 1]] = [this.attributes[index + 1], this.attributes[index]]
+        this.$set(this.attributes, index + 1, this.attributes[index])
+        this.$set(this.attributes, index, temp)
+      },
+      // changetenancy(val) {
+      //   this.financeSpecifications = []
+      //   var arr = []
+      //   var arr2 = []
+      //   var that = this
+      //   var txt = this.stagingType === 1 ? '个月' : '天'
+      //   val.forEach(item1 => {
+      //     arr2 = that.options.filter(item2 => {
+      //       return item1 === item2.periods
+      //     })
+      //     arr = [...arr, ...arr2]
+      //   })
+      //   arr = this.sortKey(arr, 'periods')
+      //   this.checkedLease = arr
+      //   this.checkedLease.forEach(item => {
+      //     item.price = ''
+      //     item.periodType = this.stagingType
+      //     this.financeData.forEach(item2 => {
+      //       if (item.periods === item2.periods) {
+      //         item.financeProductId = item2.id
+      //       }
+      //     })
+      //
+      //     this.financeSpecifications.push({
+      //       specification: '租期',
+      //       value: `${item.periods}${txt}`
+      //     })
+      //   })
+      //   this.products.forEach(item => {
+      //     item.productFinances = this.checkedLease
+      //   })
+      //   // var arr = val
+      //   // this.specifications = this.specifications.filter(item => {
+      //   //   return item.specification !== '租期'
+      //   // })
+      //   // arr.forEach(item => {
+      //   //   var obj = {}
+      //   //   obj.specification = '租期'
+      //   //   obj.value = item
+      //   //   this.specifications.push(obj)
+      //   // })
+      //
+      //   // var checkArr = this.specifications.filter(item => {
+      //   //   return (item.specification !== '租期' && item.specification !== '分期类型')
+      //   // })
+      //   // if (checkArr.length) {
+      //   //   this.specToProduct()
+      //   // }
+      // },
+      changetenancy(val) {
+        this.nperval = val
+        this.financeSpecifications = []
+        this.nperval.forEach((item1, index) => {
+          this.financeSpecifications.push({
+            installmentRules: '分期规范',
+            installmentType: item1.periodType,
+            specification: '租期',
+            value: item1.periods
+          })
+        })
+        var arr = []
+        arr = this.sortKey(arr, 'periods')
+        this.nperval.forEach((item, index) => {
+          item.price = ''
+          this.financeData.forEach(item2 => {
+            if (item.periods === item2.periods) {
+              item.financeProductId = item2.id
+            }
+          })
+          this.products.forEach(item => {
+            // item.productFinances = this.nperval
+            item.productFinanceDTOS = this.nperval
+          })
+        })
+      },
+      changetenancyType(val) {
+        this.nperarr = []
+        this.nperval = []
+        this.leaseTerm = []
+        for (let i = 0; i < val.length; i++) {
+          let a = val[i] - 1
+          this.leaseTerm.push(this.optionsType[a])
+        }
+      },
+      handlelease(row) {
+        this.productForm = JSON.parse(JSON.stringify(row))
+        this.productLeaseVisi = true
+      },
+      handleLeaseEdit() {
+        // for (var i = 0; i < this.products.length; i++) {
+        //   const v = this.products[i]
+        //   if (v.id === this.productForm.id) {
+        //     this.products.splice(i, 1, this.productForm)
+        //     break
+        //   }
+        // }
+        this.productLeaseVisi = false
+      },
+      cancel() {
+        this.productLeaseVisi = false
+        // this.checkedLease.forEach(item => {
+        //   item.rent = ''
+        // })
+      },
+      sortKey(array, key) {
+        return array.sort(function(a, b) {
+          var x = a[key]
+          var y = b[key]
+          return ((x < y) ? -1 : (x > y) ? 1 : 0)
+        })
+      },
+      editAttach() {
+        if (this.once) {
+          var obj = {}
+          this.mallGoodsFinances = []
+          this.financeAttachData.forEach(item => {
+            if (item.feeType === 1) {
+              obj.feeType = 1
+              obj.feeName = item.name
+              obj.amount = parseFloat(this.once)
+              obj.financeProductAttachId = item.id
+            }
+          })
+          this.mallGoodsFinances.push(obj)
+        }
+        if (this.installment) {
+          var obj2 = {}
+          this.financeAttachData.forEach(item => {
+            if (item.feeType === 2) {
+              obj2.feeType = 2
+              obj2.feeName = item.name
+              obj2.amount = parseFloat(this.installment)
+              obj2.financeProductAttachId = item.id
+            }
+          })
+          this.mallGoodsFinances.push(obj2)
+        }
+      }
+    },
+    watch: {
+      isInsure(newdata, olddata) {
+        if (!newdata) {
+          this.installment = null
+          this.once = null
+          this.mallGoodsFinances = []
+        }
+      }
+    }
+  }
+
+</script>

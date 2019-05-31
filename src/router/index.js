@@ -326,7 +326,7 @@ export const asyncRouterMap = [{
   },
   {
     path: 'edit',
-    component: _import('goods/edit'),
+    component: _import('goods/edit1'),
     name: 'goodsEdit',
     meta: {
       title: '商品编辑',

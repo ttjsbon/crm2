@@ -77,3 +77,29 @@ export function editOnSale(data) {
     method: 'get'
   })
 }
+
+export function publishGoodsV1_4_0(data) {
+  return request({
+    url: '/goods/v1.4.0/create',
+    method: 'post',
+    data
+  })
+}
+
+export function editGoodsV1_4_0(data) {
+  return request({
+    url: '/goods/v1.4.0/update',
+    method: 'post',
+    data
+  })
+}
+
+export function detailGoodsV1_4_0(id) {
+  return request({
+    url: '/goods/v1.4.0/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
