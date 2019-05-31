@@ -456,7 +456,7 @@
             'bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ',
             'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'
           ],
-          images_upload_handler: function (blobInfo, success, failure) {
+          images_upload_handler: function(blobInfo, success, failure) {
             const formData = new FormData()
             formData.append('file', blobInfo.blob())
             createStorage(formData).then(res => {
@@ -505,12 +505,12 @@
       handleCategoryChange(value) {
         this.goods.categoryId = value[value.length - 1]
       },
-      handleCancel: function () {
+      handleCancel: function() {
         this.$router.push({
           path: '/goods/goods'
         })
       },
-      handlePublish: function () {
+      handlePublish: function() {
         this.editAttach()
         this.goods.isOnSale = false
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
@@ -562,10 +562,10 @@
         this.newKeywordVisible = false
         this.newKeyword = ''
       },
-      uploadPicUrl: function (response) {
+      uploadPicUrl: function(response) {
         this.goods.picUrl = response.data.url
       },
-      uploadOverrun: function () {
+      uploadOverrun: function() {
         this.$message({
           type: 'error',
           message: '上传文件个数超出限制!最多上传5张图片!'
@@ -576,7 +576,7 @@
           this.goods.gallery.push(response.data.url)
         }
       },
-      handleRemove: function (file, fileList) {
+      handleRemove: function(file, fileList) {
         for (var i = 0; i < this.goods.gallery.length; i++) {
           // 这里存在两种情况
           // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
@@ -594,7 +594,7 @@
           }
         }
       },
-      specChanged: function (label) {
+      specChanged: function(label) {
         if (label === false) {
           this.specifications = [{
             specification: '规格',
@@ -613,7 +613,7 @@
           this.products = []
         }
       },
-      uploadSpecPicUrl: function (response) {
+      uploadSpecPicUrl: function(response) {
         this.specForm.picUrl = response.data.url
       },
       handleSpecificationShow() {
@@ -769,13 +769,15 @@
         } while (isContinue)
 
         this.products = products
-        this.changetenancy(this.leaseTerm)
+        this.nperarr = this.leaseTerm
+        // this.changetenancy(this.leaseTerm)
+        this.changetenancy(this.nperarr)
       },
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
         this.productVisiable = true
       },
-      uploadProductUrl: function (response) {
+      uploadProductUrl: function(response) {
         this.productForm.url = response.data.url
       },
       handleProductEdit() {
@@ -818,60 +820,15 @@
         this.$set(this.attributes, index + 1, this.attributes[index])
         this.$set(this.attributes, index, temp)
       },
-      // changetenancy(val) {
-      //   this.financeSpecifications = []
-      //   var arr = []
-      //   var arr2 = []
-      //   var that = this
-      //   // var txt = this.stagingType === 1 ? '个月' : '天'
-      //   val.forEach(item1 => {
-      //     arr2 = that.leaseTerm.filter(item2 => {
-      //       return item1.periods === item2.periods
-      //     })
-      //     arr = [...arr, ...arr2]
-      //   })
-      //
-      //   arr = this.sortKey(arr, 'periods')
-      //   this.checkedLease = arr
-      //   this.checkedLease.forEach((item, index) => {
-      //     item.price = ''
-      //     item.periodType = this.stagingType[index]
-      //     this.financeData.forEach(item2 => {
-      //       if (item.periods === item2.periods) {
-      //         item.financeProductId = item2.id
-      //       }
-      //     })
-      //
-      //     this.financeSpecifications.push({
-      //       installmentRules: '分期规范',
-      //       installmentType: item.periodType,
-      //       specification: '租期',
-      //       value: `${item.periods}`
-      //     })
-      //   })
-      //   this.products.forEach(item => {
-      //     item.productFinances = this.checkedLease
-      //   })
-      //   var arr = val
-      //   this.specifications = this.specifications.filter(item => {
-      //     return item.specification !== '租期'
-      //   })
-      //   arr.forEach(item => {
-      //     var obj = {}
-      //     obj.specification = '租期'
-      //     obj.value = item
-      //     this.specifications.push(obj)
-      //   })
-      //
-      //   var checkArr = this.specifications.filter(item => {
-      //     return (item.specification !== '租期' && item.specification !== '分期类型')
-      //   })
-      //   if (checkArr.length) {
-      //     this.specToProduct()
-      //   }
-      // },
       changetenancy(val) {
-        // console.log(val)
+        this.products = [{
+          id: 0,
+          specifications: ['标准'],
+          price: 0.00,
+          number: 0,
+          url: '',
+          productFinances: []
+        }]
         this.nperval = val
         this.financeSpecifications = []
         this.nperval.forEach((item1, index) => {
@@ -881,7 +838,7 @@
             specification: '租期',
             value: item1.periods
           })
-        });
+        })
         var arr = []
         arr = this.sortKey(arr, 'periods')
         this.nperval.forEach((item, index) => {
@@ -897,12 +854,17 @@
         })
       },
       changetenancyType(val) {
+        this.nperarr = []
         this.leaseTerm = []
+        this.nperval = []
         for (let i = 0; i < val.length; i++) {
-          // console.log(this.optionsType)
           let a = val[i] - 1
           this.leaseTerm.push(this.optionsType[a])
+          this.nperarr = this.leaseTerm
+          this.nperval = this.leaseTerm
         }
+        //this.products = products
+        this.changetenancy(this.leaseTerm)
       }
       ,
       handlelease(row) {
@@ -929,7 +891,7 @@
       }
       ,
       sortKey(array, key) {
-        return array.sort(function (a, b) {
+        return array.sort(function(a, b) {
           var x = a[key]
           var y = b[key]
           return ((x < y) ? -1 : (x > y) ? 1 : 0)
