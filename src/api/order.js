@@ -189,3 +189,19 @@ export function detailOrder3(id) {
     }
   })
 }
+
+export function listOrderV1_4_0(query) {
+  return request({
+    url: '/order/v1.4.0/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function listCompensationV1_4_0(query) {
+  return request({
+    url: '/order/v1.4.0/listCompensation',
+    method: 'get',
+    params: query
+  })
+}

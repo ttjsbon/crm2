@@ -294,6 +294,22 @@ export const asyncRouterMap = [{
       title: '到期归还',
       noCache: true
     }
+  }, {
+    path: 'orderAlsoNotMachine',
+    component: _import('order/orderAlsoNotMachine'),
+    name: 'orderAlsoNotMachine',
+    meta: {
+      title: '未还机',
+      noCache: true
+    }
+  }, {
+    path: 'orderCompensation',
+    component: _import('order/orderCompensation'),
+    name: 'orderCompensation',
+    meta: {
+      title: '赔偿逾期',
+      noCache: true
+    }
   }]
 },
 
