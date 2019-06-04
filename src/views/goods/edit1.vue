@@ -293,8 +293,10 @@
         <!--                    </el-input>-->
         <!--                  </div>-->
         <!--                </div>-->
-        <div v-if="nperarr.length > 0">
-          <div v-for="item in nperarr" :key="item.periods" class="flex mar-b">
+<!--        <div v-if="nperarr.length > 0">-->
+        <div v-if="productForm.productFinanceDTOS">
+<!--          <div v-for="item in nperarr" :key="item.periods" class="flex mar-b">-->
+          <div v-for="item in productForm.productFinanceDTOS" :key="item.periods" class="flex mar-b">
             <span class="rentlabel">{{item.productName}}{{item.periods}}期:</span>
             <el-input v-model="item.price" placeholder="输入租金">
               <template slot="append">元</template>
@@ -926,8 +928,7 @@
 
         this.products = products
         this.nperarr = this.leaseTerm
-        // this.changetenancy(this.leaseTerm)
-        this.changetenancy(this.nperarr)
+        this.changetenancy(this.leaseTerm)
       },
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
@@ -977,14 +978,14 @@
         this.$set(this.attributes, index, temp)
       },
       changetenancy(val) {
-        this.products = [{
-          id: 0,
-          specifications: ['标准'],
-          price: 0.00,
-          number: 0,
-          url: '',
-          productFinances: []
-        }]
+        // this.products = [{
+        //   id: 0,
+        //   specifications: ['标准'],
+        //   price: 0.00,
+        //   number: 0,
+        //   url: '',
+        //   productFinances: []
+        // }]
         this.nperval = val
         this.financeSpecifications = []
         this.nperval.forEach((item1, index) => {
@@ -1025,13 +1026,13 @@
         this.productLeaseVisi = true
       },
       handleLeaseEdit() {
-        // for (var i = 0; i < this.products.length; i++) {
-        //   const v = this.products[i]
-        //   if (v.id === this.productForm.id) {
-        //     this.products.splice(i, 1, this.productForm)
-        //     break
-        //   }
-        // }
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          if (v.id === this.productForm.id) {
+            this.products.splice(i, 1, this.productForm)
+            break
+          }
+        }
         this.productLeaseVisi = false
       },
       cancel() {
