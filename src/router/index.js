@@ -239,6 +239,14 @@ export const asyncRouterMap = [{
       noCache: true
     }
   }, {
+    path: 'orderAwaitCheckRefund',
+    component: _import('order/orderAwaitCheckRefund'),
+    name: 'orderAwaitCheckRefund',
+    meta: {
+      title: '退款审核',
+      noCache: true
+    }
+  }, {
     path: 'orderAwaitRefund',
     component: _import('order/orderAwaitRefund'),
     name: 'orderAwaitRefund',
@@ -287,19 +295,11 @@ export const asyncRouterMap = [{
       noCache: true
     }
   }, {
-    path: 'orderReturning',
-    component: _import('order/orderReturning'),
-    name: 'orderReturning',
-    meta: {
-      title: '到期归还',
-      noCache: true
-    }
-  }, {
     path: 'orderAlsoNotMachine',
     component: _import('order/orderAlsoNotMachine'),
     name: 'orderAlsoNotMachine',
     meta: {
-      title: '未还机',
+      title: '还机逾期',
       noCache: true
     }
   }, {
@@ -308,6 +308,14 @@ export const asyncRouterMap = [{
     name: 'orderCompensation',
     meta: {
       title: '赔偿逾期',
+      noCache: true
+    }
+  }, {
+    path: 'orderReturning',
+    component: _import('order/orderReturning'),
+    name: 'orderReturning',
+    meta: {
+      title: '到期归还',
       noCache: true
     }
   }]

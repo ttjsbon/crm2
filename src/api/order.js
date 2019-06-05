@@ -64,6 +64,18 @@ export function auditOrder(data) {
   })
 }
 
+export function auditRefund(data) {
+  return request({
+    url: '/order/v1.4.0/auditRefund',
+    method: 'get',
+    params: {
+      orderId: data.orderId,
+      isPass: data.isPass,
+      remark: data.remark
+    }
+  })
+}
+
 export function freeDepositOrder(data) {
   return request({
     url: '/order/freeDeposit',
