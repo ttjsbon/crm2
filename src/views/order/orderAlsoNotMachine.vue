@@ -238,6 +238,43 @@
             </el-table-column>
           </el-table>
         </el-form-item>
+
+        <el-form-item>
+        <span>（支付渠道）支付宝</span>
+        <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）{{orderDetail.compensation.updateTime}} </span>-->
+        <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）{{orderDetail.compensation.outTradeOrderId}} </span>-->
+        <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.amount)">（支付金额）{{orderDetail.compensation.amount}}</span>-->
+        <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）已支付</span>-->
+
+        <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）暂无 </span>-->
+        <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）暂无 </span>-->
+        <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.amount)">（金额）暂无 </span>-->
+        <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）未支付</span>-->
+
+        <el-table size="small" :data="orderDetail.compensation" border fit highlight-current-row>
+          <el-table-column align="center" :label="'支付时间'" width="200px">
+            <template slot-scope="scope">
+              <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'暂无'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="'支付订单'" width="160px">
+            <template slot-scope="scope">
+              <span>  {{ scope.row.outTradeOrderId?scope.row.outTradeOrderId:'暂无'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="'支付金额'" width="160px">
+            <template slot-scope="scope">
+              <span>  {{ scope.row.amount?scope.row.amount:'暂无'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="'支付状态'" width="160px">
+            <template slot-scope="scope">
+              <span>  {{ scope.row.outTradeOrderId?'已支付':'未支付'}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        </el-form-item>
+
         <el-form-item label="快递信息">
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
@@ -254,6 +291,17 @@
           <span v-if='!orderDetail.order.backShipSn'>（快递公司）暂无</span>
           <span  v-if='!orderDetail.order.backShipChannel'>（快递单号）暂无</span>
         </el-form-item>
+
+        <!--备注信息-->
+        <el-form-item label="备注信息">
+          <el-input clearable class="filter-item" style="width: 500px; margin-left: 10px" placeholder="请输入备注信息"
+                    v-model="orderDetail.order.remark">
+          </el-input>
+          <el-button type="primary" size="mini"
+                     @click="addRemarkV1_4_0_1">保存信息
+          </el-button>
+        </el-form-item>
+
       </el-form>
     </el-dialog>
 
@@ -387,7 +435,9 @@
     returnConfirmOrder,
     getCheckInfo,
 		detailOrder3,
-    listOrderV1_4_0
+    listOrderV1_4_0,
+    detailOrder4,
+    addRemarkV1_4_0
   } from '@/api/order'
 
   import {
@@ -509,6 +559,21 @@
           this.listLoading = false
         })
       },
+      addRemarkV1_4_0_1() {
+        addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
+          this.flags = response.data.data.flag
+          this.$notify({
+            title: '成功',
+            message: this.flags === true ? '保存成功' : '保存失败',
+            type: response.data.errmsg === '成功' ? 'success' : 'error',
+            duration: 2000
+          })
+          this.orderDialogVisible = false
+          this.getList()
+        }).catch(() => {
+          this.flags = false
+        })
+      },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -522,19 +587,7 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder2(row.id).then(response => {
-        //   this.orderDetail = response.data.data
-        //   this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
-        //   if (this.orderDetail.order.beginTime) {
-        //     this.orderDetail.order.beginTime = parseTime(this.orderDetail.order.beginTime)
-        //   }
-        //   if (this.orderDetail.order.endTime) {
-        //     this.orderDetail.order.endTime = parseTime(this.orderDetail.order.endTime)
-        //   }
-        //   this.userdata = JSON.parse(this.orderDetail.user.feature)
-        // })
-
-				detailOrder3(row.id).then(response => {
+        detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

@@ -164,6 +164,7 @@ export function shipOrderV1_3(data) {
     data
   })
 }
+
 export function listOrderV1_2_4(query) {
   return request({
     url: '/order/v1.2.4/list',
@@ -217,3 +218,33 @@ export function listCompensationV1_4_0(query) {
     params: query
   })
 }
+
+export function addRemarkV1_4_0(remark, orderId) {
+  return request({
+    url: '/order/v1.4.0/addRemark',
+    method: 'get',
+    params: {
+      remark,
+      orderId
+    }
+  })
+}
+
+export function detailOrder4(id) {
+  return request({
+    url: '/order/v1.4/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
+export function listOrder4(query) {
+  return request({
+    url: '/order/v1.4/list',
+    method: 'get',
+    params: query
+  })
+}
+
