@@ -385,7 +385,8 @@
     thaw,
     detailOrder3,
     addRemarkV1_4_0,
-    listOrder4
+    listOrder4,
+    detailOrder4
   } from '@/api/order'
   import {
     parseTime
@@ -531,7 +532,8 @@
         //   this.userdata = JSON.parse(this.orderDetail.user.feature)
         // })
 
-        detailOrder3(row.id).then(response => {
+        // detailOrder3(row.id).then(response => {
+        detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
