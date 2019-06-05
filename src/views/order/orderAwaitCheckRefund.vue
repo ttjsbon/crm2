@@ -247,12 +247,24 @@
           <span v-if='!orderDetail.order.backShipSn'>（快递公司）暂无</span>
           <span v-if='!orderDetail.order.backShipChannel'>（快递单号）暂无</span>
         </el-form-item>
+
+        <!--备注信息-->
+        <el-form-item label="备注信息">
+          <el-input clearable class="filter-item" style="width: 500px; margin-left: 10px" placeholder="请输入备注信息"
+                    v-model="orderDetail.order.remark">
+          </el-input>
+          <el-button type="primary" size="mini"
+                     @click="addRemarkV1_4_0_1">保存信息
+          </el-button>
+        </el-form-item>
+
       </el-form>
     </el-dialog>
 
     <!-- 审核对话框 -->
     <el-dialog title="审核" :visible.sync="checkDialogVisible">
-      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="是否通过" prop="refundMoney">
           <el-radio-group v-model="checkpass">
             <el-radio label="true">通过</el-radio>
@@ -295,7 +307,9 @@
     listOrder2,
     auditRefund,
     getCheckInfo,
-    detailOrder3
+    detailOrder3,
+    addRemarkV1_4_0,
+    listOrder4
   } from '@/api/order'
   import {
     parseTime
@@ -398,7 +412,8 @@
           }
         }
 
-        listOrder2(this.timeper).then(response => {
+        // listOrder2(this.timeper).then(response => {
+        listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -406,6 +421,21 @@
           this.list = []
           this.total = 0
           this.listLoading = false
+        })
+      },
+      addRemarkV1_4_0_1() {
+        addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
+          this.flags = response.data.data.flag
+          this.$notify({
+            title: '成功',
+            message: this.flags === true ? '保存成功' : '保存失败',
+            type: this.flags === true ? 'success' : 'error',
+            duration: 2000
+          })
+          this.orderDialogVisible = false
+          this.getList()
+        }).catch(() => {
+          this.flags = false
         })
       },
       handleFilter() {

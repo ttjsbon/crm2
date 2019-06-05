@@ -457,7 +457,7 @@
           this.$notify({
             title: '成功',
             message: this.flags === true ? '保存成功' : '保存失败',
-            type: response.data.errmsg === '成功' ? 'success' : 'error',
+            type: this.flags === true ? 'success' : 'error',
             duration: 2000
           })
           this.orderDialogVisible = false
