@@ -12,13 +12,16 @@
 
       <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态" v-model="listQuery.orderStatusArray">
+      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
+                 v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
         </el-option>
       </el-select>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
-      <el-button class="filter-item" type="primary" icon="el-icon-search"  @click="handleFilter">查找</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download"  @click="handleDownload" :loading="downloadLoading">导出</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
+                 :loading="downloadLoading">导出
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -64,19 +67,27 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleCheck(scope.row)" v-if="scope.row.orderStatus==201">审核</el-button>
-          <el-button type="primary" size="mini" @click="handleFree(scope.row)" v-if="scope.row.orderStatus==101">豁免押金</el-button>
-          <el-button type="primary" size="mini" @click="handleShip(scope.row)" v-if="scope.row.orderStatus==301">发货</el-button>
-          <el-button type="primary" size="mini" @click="handleRefund(scope.row)" v-if="scope.row.orderStatus==302">退款</el-button>
-          <el-button type="primary" size="mini" @click="handleReturn(scope.row)" v-if="scope.row.orderStatus==600">确认归还</el-button>
+          <el-button type="primary" size="mini" @click="handleCheck(scope.row)" v-if="scope.row.orderStatus==201">审核
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleFree(scope.row)" v-if="scope.row.orderStatus==101">豁免押金
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleShip(scope.row)" v-if="scope.row.orderStatus==301">发货
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleRefund(scope.row)" v-if="scope.row.orderStatus==302">退款
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleReturn(scope.row)" v-if="scope.row.orderStatus==600">
+            确认归还
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="listQuery.page"
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper"
                      :total="total">
       </el-pagination>
     </div>
@@ -87,11 +98,11 @@
 
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="认证信息" class="bigitem">
-          <span>（姓名）{{ orderDetail.user.cardName }}</span>
-          <span>（住址）{{ orderDetail.user.homeAddress }}</span>
-          <span>（工作地址）{{ orderDetail.user.workAddress }}</span>
-          <span>（身份证）{{ orderDetail.user.idCardNo }}</span>
-          <span>（手机号）{{ orderDetail.user.mobile }}</span>
+          <span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
+          <span>（住址）{{  orderDetail.user && orderDetail.user.homeAddress ? orderDetail.user.homeAddress : ''  }}</span>
+          <span>（工作地址）{{  orderDetail.user && orderDetail.user.workAddress ? orderDetail.user.workAddress : ''  }}</span>
+          <span>（身份证）{{  orderDetail.user && orderDetail.user.idCardNo ? orderDetail.user.idCardNo : ''  }}</span>
+          <span>（手机号）{{  orderDetail.user && orderDetail.user.mobile ? orderDetail.user.mobile : ''  }}</span>
           <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
           <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
           <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
@@ -148,35 +159,35 @@
           </el-form-item>
         </div>
 
-<!--        <div class="flex itemtogether">
+        <!--        <div class="flex itemtogether">
+
+                  <el-form-item label="增值服务总额">
+                    <template slot-scope="scope">
+                      <span>{{orderDetail.attach.actualPrice}}</span>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="增值服务分期金额">
+                    <span>{{ orderDetail.attach.periodPrice }}</span>
+                  </el-form-item>
+                  <el-form-item label="增值服务期数">
+                    <span>{{ orderDetail.attach.periods }}</span>
+                  </el-form-item>
+                </div> -->
+
+        <div class="flex itemtogether">
 
           <el-form-item label="增值服务总额">
             <template slot-scope="scope">
-              <span>{{orderDetail.attach.actualPrice}}</span>
+              <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
             </template>
           </el-form-item>
           <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach.periodPrice }}</span>
+            <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
           </el-form-item>
           <el-form-item label="增值服务期数">
-            <span>{{ orderDetail.attach.periods }}</span>
+            <span>{{ orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
           </el-form-item>
-        </div> -->
-				
-				<div class="flex itemtogether">
-				
-				  <el-form-item label="增值服务总额">
-				    <template slot-scope="scope">
-				      <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
-				    </template>
-				  </el-form-item>
-				  <el-form-item label="增值服务分期金额">
-				    <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
-				  </el-form-item>
-				  <el-form-item label="增值服务期数">
-				    <span>{{ orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
-				  </el-form-item>
-				</div>
+        </div>
 
         <div class="flex itemtogether">
           <el-form-item label="租赁开始时间" class="bigitem">
@@ -196,14 +207,14 @@
         </el-form-item>
         <el-form-item label="商品信息">
           <el-table size="small" :data="orderDetail.orderGoods" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
+            <el-table-column align="center" label="商品名称" prop="goodsName"/>
+            <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+            <el-table-column align="center" label="货品规格" prop="specifications"/>
+            <el-table-column align="center" label="货品价格" prop="price"/>
+            <el-table-column align="center" label="货品数量" prop="number"/>
             <el-table-column align="center" label="货品图片" prop="picUrl">
               <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40" />
+                <img :src="scope.row.picUrl" width="40"/>
               </template>
             </el-table-column>
           </el-table>
@@ -225,38 +236,65 @@
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
           <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
-            <el-table-column  align="center" :label="'需支付时间'" width="160px">
-              <template slot-scope="scope" >
+            <el-table-column align="center" :label="'需支付时间'" width="160px">
+              <template slot-scope="scope">
                 <span>  {{ scope.row.createTime.substring(0, 10)}}</span>
               </template>
             </el-table-column>
-            <el-table-column  align="center" :label="'支付时间'" width="160px">
-              <template slot-scope="scope" >
+            <el-table-column align="center" :label="'支付时间'" width="160px">
+              <template slot-scope="scope">
                 <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column  align="center" :label="'支付订单'" width="195px">
-              <template slot-scope="scope" >
+            <el-table-column align="center" :label="'支付订单'" width="195px">
+              <template slot-scope="scope">
                 <span>  {{ scope.row.payOrderId?scope.row.payOrderId:'无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column  align="center" :label="'支付状态'" width="160px">
-              <template slot-scope="scope" >
+            <el-table-column align="center" :label="'支付状态'" width="160px">
+              <template slot-scope="scope">
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
               </template>
             </el-table-column>
-						<el-table-column  align="center" :label="'是否退款'" width="160px">
-              <template slot-scope="scope" >
+            <el-table-column align="center" :label="'是否退款'" width="160px">
+              <template slot-scope="scope">
                 <span>  {{ scope.row.status =='4' ? '已退款': '未退款'}}</span>
               </template>
             </el-table-column>
-						<el-table-column  align="center" :label="'退款时间'" width="160px">
-              <template slot-scope="scope" >
-								<span>  {{ scope.row.status =='4' ? scope.row.paySuccTime.substring(0, 10):'无'}}</span> 
+            <el-table-column align="center" :label="'退款时间'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.status =='4' ? scope.row.paySuccTime.substring(0, 10):'无'}}</span>
               </template>
             </el-table-column>
           </el-table>
         </el-form-item>
+
+        <el-form-item label="赔偿支付信息">
+          <span>（支付渠道）支付宝</span>
+          <el-table size="small" :data="orderDetail.compensation" border fit highlight-current-row>
+            <el-table-column align="center" :label="'支付时间'" width="200px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付订单'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.outTradeOrderId?scope.row.outTradeOrderId:'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付金额'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.amount?scope.row.amount:'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付状态'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.outTradeOrderId?'已支付':'未支付'}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+
         <el-form-item label="快递信息">
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
@@ -268,17 +306,29 @@
         <el-form-item label="归还信息">
           <span v-if='orderDetail.order.backTime'>（归还时间）{{ orderDetail.order.backTime }}</span>
           <span v-if='orderDetail.order.backShipSn'>（快递公司）{{ orderDetail.order.backShipSn }}</span>
-          <span  v-if='orderDetail.order.backShipChannel'>（快递单号）{{ orderDetail.order.backShipChannel }}</span>
+          <span v-if='orderDetail.order.backShipChannel'>（快递单号）{{ orderDetail.order.backShipChannel }}</span>
           <span v-if='!orderDetail.order.backTime'>（归还时间）暂无</span>
           <span v-if='!orderDetail.order.backShipSn'>（快递公司）暂无</span>
-          <span  v-if='!orderDetail.order.backShipChannel'>（快递单号）暂无</span>
+          <span v-if='!orderDetail.order.backShipChannel'>（快递单号）暂无</span>
         </el-form-item>
+
+        <!--备注信息-->
+        <el-form-item label="备注信息">
+          <el-input clearable class="filter-item" style="width: 500px; margin-left: 10px" placeholder="请输入备注信息"
+                    v-model="orderDetail.order.remark">
+          </el-input>
+          <el-button type="primary" size="mini"
+                     @click="addRemarkV1_4_0_1">保存信息
+          </el-button>
+        </el-form-item>
+
       </el-form>
     </el-dialog>
 
     <!-- 发货对话框 -->
     <el-dialog title="发货" :visible.sync="shipDialogVisible" @close='resetId' :close-on-click-modal='false'>
-      <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="快递公司" prop="shipChannel">
           <el-input v-model="shipForm.shipChannel" placeholder="请输入快递公司"></el-input>
         </el-form-item>
@@ -287,7 +337,8 @@
         </el-form-item>
         <el-form-item label="设备id">
           <el-button type="primary" @click="addId">添加</el-button>
-          <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in shipForm.deviceId' v-model="shipForm.deviceId[index]"
+          <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in shipForm.deviceId'
+                    v-model="shipForm.deviceId[index]"
                     :key="index" placeholder="请输入设备ID"></el-input>
         </el-form-item>
       </el-form>
@@ -299,7 +350,8 @@
 
     <!-- 退款对话框 -->
     <el-dialog title="退款" :visible.sync="refundDialogVisible">
-      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="退款金额" prop="refundMoney">
           <el-input v-model="refundForm.refundMoney" :disabled="true"></el-input>
         </el-form-item>
@@ -312,7 +364,8 @@
 
     <!-- 审核对话框 -->
     <el-dialog title="审核" :visible.sync="checkDialogVisible">
-      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="是否通过" prop="refundMoney">
           <el-radio-group v-model="checkpass">
             <el-radio label="true">通过</el-radio>
@@ -320,7 +373,8 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="refundMoney">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="checkForm.remark">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+                    v-model="checkForm.remark">
           </el-input>
         </el-form-item>
         <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
@@ -360,7 +414,8 @@
 
     <!-- 豁免金额对话框 -->
     <el-dialog title="豁免" :visible.sync="freeDialogVisible">
-      <el-form ref="freeForm" :model="freeForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form ref="freeForm" :model="freeForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="豁免金额" prop="freeDeposit">
           <el-input v-model="freeForm.freeDeposit"></el-input>
         </el-form-item>
@@ -400,12 +455,13 @@
     listOrder2,
     shipOrder,
     refundOrder,
-    detailOrder2,
     auditOrder,
     freeDepositOrder,
     returnConfirmOrder,
     getCheckInfo,
-		detailOrder3
+    detailOrder4,
+    addRemarkV1_4_0,
+    listOrder4
   } from '@/api/order'
 
   import {
@@ -467,7 +523,7 @@
           mobile: undefined,
           timePeriod: [null]
         },
-				timeper: {},
+        timeper: {},
         statusMap,
         orderDialogVisible: false,
         orderDetail: {
@@ -516,20 +572,20 @@
     },
     methods: {
       getList() {
-				this.timeper=JSON.parse(JSON.stringify(this.listQuery))
-				if (this.listQuery.timePeriod.length === 2) {
-					if(this.listQuery.timePeriod[0] && this.listQuery.timePeriod[0].getTime()>1000000000000){
-							this.listLoading = true
-							this.timeper.timePeriod[0]=new Date(new Date(this.listQuery.timePeriod[0]).getTime()+3600*24*1000)
-							this.timeper.timePeriod[1]=new Date(new Date(this.listQuery.timePeriod[1]).getTime()+3600*24*1000)	
-					}
-					else{
-						this.listQuery.timePeriod=[]
-						this.listQuery.timePeriod.push(null)
-					}
-				}
-        
-				listOrder2(this.timeper).then(response => {
+        this.timeper = JSON.parse(JSON.stringify(this.listQuery))
+        if (this.listQuery.timePeriod.length === 2) {
+          if (this.listQuery.timePeriod[0] && this.listQuery.timePeriod[0].getTime() > 1000000000000) {
+            this.listLoading = true
+            this.timeper.timePeriod[0] = new Date(new Date(this.listQuery.timePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.timeper.timePeriod[1] = new Date(new Date(this.listQuery.timePeriod[1]).getTime() + 3600 * 24 * 1000)
+          } else {
+            this.listQuery.timePeriod = []
+            this.listQuery.timePeriod.push(null)
+          }
+        }
+
+        // listOrder2(this.timeper).then(response => {
+        listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -539,6 +595,21 @@
           this.listLoading = false
         })
 
+      },
+      addRemarkV1_4_0_1() {
+        addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
+          this.flags = response.data.data.flag
+          this.$notify({
+            title: '成功',
+            message: this.flags === true ? '保存成功' : '保存失败',
+            type: response.data.errmsg === '成功' ? 'success' : 'error',
+            duration: 2000
+          })
+          this.orderDialogVisible = false
+          this.getList()
+        }).catch(() => {
+          this.flags = false
+        })
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -553,19 +624,7 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder2(row.id).then(response => {
-        //   this.orderDetail = response.data.data
-        //   this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
-        //   if (this.orderDetail.order.beginTime) {
-        //     this.orderDetail.order.beginTime = parseTime(this.orderDetail.order.beginTime)
-        //   }
-        //   if (this.orderDetail.order.endTime) {
-        //     this.orderDetail.order.endTime = parseTime(this.orderDetail.order.endTime)
-        //   }
-        //   this.userdata = JSON.parse(this.orderDetail.user.feature)
-        // })
-				
-				detailOrder3(row.id).then(response => {
+        detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -576,7 +635,7 @@
           }
           this.userdata = JSON.parse(this.orderDetail.user.feature)
         })
-				
+
         this.orderDialogVisible = true
       },
       closeDetail() {
