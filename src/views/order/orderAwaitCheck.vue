@@ -12,6 +12,7 @@
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
+      <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;" placeholder="选择支付日期时间" ></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出
@@ -98,6 +99,9 @@
 
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
+        </el-form-item>
+        <el-form-item label="设备序列号" class="bigitem">
+          <span>{{ orderDetail.order && orderDetail.order.deviceIds != null && orderDetail.order.deviceIds !== [] && orderDetail.order.deviceIds.length > 0  ? orderDetail.order.deviceIds : '暂无'}}</span>
         </el-form-item>
         <div class="flex itemtogether">
           <el-form-item label="订单状态">
@@ -493,6 +497,7 @@
     data() {
       return {
         timePeriod: '',
+        payTimePeriod: '',
         lang: {
           days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
           months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -510,6 +515,14 @@
             }
           }
         ],
+        payshortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.listQuery.payTimePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -523,7 +536,8 @@
           overdue: 1,
           name: undefined,
           mobile: undefined,
-          timePeriod: [null]
+          timePeriod: [null],
+          payTimePeriod: [null]
         },
         timeper: {},
         statusMap,
@@ -568,7 +582,16 @@
             this.listQuery.timePeriod.push(null)
           }
         }
-
+        if (this.listQuery.payTimePeriod.length === 2) {
+          if (this.listQuery.payTimePeriod[0] && this.listQuery.payTimePeriod[0].getTime() > 1000000000000) {
+            this.listLoading = true
+            this.timeper.payTimePeriod[0] = new Date(new Date(this.listQuery.payTimePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.timeper.payTimePeriod[1] = new Date(new Date(this.listQuery.payTimePeriod[1]).getTime() + 3600 * 24 * 1000)
+          } else {
+            this.listQuery.payTimePeriod = []
+            this.listQuery.payTimePeriod.push(null)
+          }
+        }
         // listOrder2(this.timeper).then(response => {
         listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items

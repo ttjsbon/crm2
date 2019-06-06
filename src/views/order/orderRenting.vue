@@ -12,6 +12,8 @@
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
+      <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;"
+                   placeholder="选择支付日期时间"></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出
@@ -81,11 +83,11 @@
 
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="认证信息" class="bigitem">
-          <span>（姓名）{{ orderDetail.user.cardName }}</span>
-          <span>（住址）{{ orderDetail.user.homeAddress }}</span>
-          <span>（工作地址）{{ orderDetail.user.workAddress }}</span>
-          <span>（身份证）{{ orderDetail.user.idCardNo }}</span>
-          <span>（手机号）{{ orderDetail.user.mobile }}</span>
+          <span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
+          <span>（住址）{{  orderDetail.user && orderDetail.user.homeAddress ? orderDetail.user.homeAddress : ''  }}</span>
+          <span>（工作地址）{{  orderDetail.user && orderDetail.user.workAddress ? orderDetail.user.workAddress : ''  }}</span>
+          <span>（身份证）{{  orderDetail.user && orderDetail.user.idCardNo ? orderDetail.user.idCardNo : ''  }}</span>
+          <span>（手机号）{{  orderDetail.user && orderDetail.user.mobile ? orderDetail.user.mobile : ''  }}</span>
           <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
           <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
           <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
@@ -97,6 +99,9 @@
 
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
+        </el-form-item>
+        <el-form-item label="设备序列号" class="bigitem">
+          <span>{{ orderDetail.order && orderDetail.order.deviceIds != null && orderDetail.order.deviceIds !== [] && orderDetail.order.deviceIds.length > 0  ? orderDetail.order.deviceIds : '暂无'}}</span>
         </el-form-item>
         <div class="flex itemtogether">
           <el-form-item label="订单状态">
@@ -364,6 +369,7 @@
     data() {
       return {
         timePeriod: '',
+        payTimePeriod: '',
         lang: {
           days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
           months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -381,6 +387,14 @@
             }
           }
         ],
+        payshortcuts: [
+          {
+            text: 'Today',
+            onClick: () => {
+              this.listQuery.payTimePeriod = [new Date(), new Date()]
+            }
+          }
+        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -394,7 +408,8 @@
           order: 'desc',
           overdue: 1,
           mobile: undefined,
-          timePeriod: [null]
+          timePeriod: [null],
+          payTimePeriod: [null]
         },
         statusMap,
         orderDialogVisible: false,
@@ -427,6 +442,16 @@
           } else {
             this.listQuery.timePeriod = []
             this.listQuery.timePeriod.push(null)
+          }
+        }
+        if (this.listQuery.payTimePeriod.length === 2) {
+          if (this.listQuery.payTimePeriod[0] && this.listQuery.payTimePeriod[0].getTime() > 1000000000000) {
+            this.listLoading = true
+            this.timeper.payTimePeriod[0] = new Date(new Date(this.listQuery.payTimePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.timeper.payTimePeriod[1] = new Date(new Date(this.listQuery.payTimePeriod[1]).getTime() + 3600 * 24 * 1000)
+          } else {
+            this.listQuery.payTimePeriod = []
+            this.listQuery.payTimePeriod.push(null)
           }
         }
 

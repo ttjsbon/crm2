@@ -88,11 +88,11 @@
 
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="认证信息" class="bigitem">
-          <span>（姓名）{{ orderDetail.user.cardName }}</span>
-          <span>（住址）{{ orderDetail.user.homeAddress }}</span>
-          <span>（工作地址）{{ orderDetail.user.workAddress }}</span>
-          <span>（身份证）{{ orderDetail.user.idCardNo }}</span>
-          <span>（手机号）{{ orderDetail.user.mobile }}</span>
+          <span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
+          <span>（住址）{{  orderDetail.user && orderDetail.user.homeAddress ? orderDetail.user.homeAddress : ''  }}</span>
+          <span>（工作地址）{{  orderDetail.user && orderDetail.user.workAddress ? orderDetail.user.workAddress : ''  }}</span>
+          <span>（身份证）{{  orderDetail.user && orderDetail.user.idCardNo ? orderDetail.user.idCardNo : ''  }}</span>
+          <span>（手机号）{{  orderDetail.user && orderDetail.user.mobile ? orderDetail.user.mobile : ''  }}</span>
           <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
           <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
           <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
@@ -104,6 +104,9 @@
 
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
+        </el-form-item>
+        <el-form-item label="设备序列号" class="bigitem">
+          <span>{{ orderDetail.order && orderDetail.order.deviceIds != null && orderDetail.order.deviceIds !== [] && orderDetail.order.deviceIds.length > 0  ? orderDetail.order.deviceIds : '暂无'}}</span>
         </el-form-item>
         <div class="flex itemtogether">
           <el-form-item label="订单状态">
