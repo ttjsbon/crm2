@@ -688,6 +688,10 @@
       handleSpecificationDelete(row) {
         const index = this.copyspecifications.indexOf(row)
         var keys = row.specification
+        // 多规格的规格数组为1的时候，点击删除清空products
+        if (this.copyspecifications.length === 1) {
+          this.products = []
+        }
         this.copyspecifications.splice(index, 1)
         this.specifications = this.specifications.filter(item => {
           return item.specification !== keys

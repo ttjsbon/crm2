@@ -133,6 +133,9 @@
           <img class="detailIdimg" v-if='userdata' :src="userdata.idCardBackImage" alt="">
         </el-form-item>
 
+        <el-form-item label="订单渠道" class="bigitem">
+          <span>{{ orderDetail.order && orderDetail.order.orderChannel != null ? orderDetail.order.orderChannel : '暂无' }}</span>
+        </el-form-item>
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
@@ -253,11 +256,7 @@
           </span>
         </el-form-item>
         <el-form-item label="支付信息">
-          <span>（支付渠道）支付宝</span>
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
+          <span>（支付渠道）{{this.payChannel && this.payChannel != null ? this.payChannel : '暂无'}}</span>
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope">
@@ -292,17 +291,7 @@
           </el-table>
         </el-form-item>
         <el-form-item label="赔偿支付信息">
-          <span>（支付渠道）支付宝</span>
-          <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）{{orderDetail.compensation.updateTime}} </span>-->
-          <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）{{orderDetail.compensation.outTradeOrderId}} </span>-->
-          <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.amount)">（支付金额）{{orderDetail.compensation.amount}}</span>-->
-          <!--          <span v-if="(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）已支付</span>-->
-
-          <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.updateTime)">（支付时间）暂无 </span>-->
-          <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付订单）暂无 </span>-->
-          <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.amount)">（金额）暂无 </span>-->
-          <!--          <span v-if="!(orderDetail.compensation&&orderDetail.compensation.outTradeOrderId)">（支付状态）未支付</span>-->
-
+          <span>（支付渠道）{{this.compensationPayChannel && this.compensationPayChannel != null ? this.compensationPayChannel : '暂无'}}</span>
           <el-table size="small" :data="orderDetail.compensation" border fit highlight-current-row>
             <el-table-column align="center" :label="'支付时间'" width="200px">
               <template slot-scope="scope">
@@ -472,7 +461,9 @@
         downloadLoading: false,
         dialogFormVisible: false,
         dialogFormVisibleAmount: false,
-        userdata: null
+        userdata: null,
+        payChannel: null,
+        compensationPayChannel: null
       }
     },
     filters: {
@@ -567,6 +558,28 @@
           }
           if (this.orderDetail.order.endTime) {
             this.orderDetail.order.endTime = parseTime(this.orderDetail.order.endTime)
+          }
+          if (this.orderDetail.pay[0].payChannel === 1) {
+            this.payChannel = '支付宝'
+          } else if (this.orderDetail.pay[0].payChannel === 2) {
+            this.payChannel = '微信'
+          } else if (this.orderDetail.pay[0].payChannel === 3) {
+            this.payChannel = '支付宝手机网站'
+          } else if (this.orderDetail.pay[0].payChannel === 4) {
+            this.payChannel = '微信h5支付'
+          } else {
+            this.payChannel = '暂无'
+          }
+          if (this.orderDetail.compensation[0].payChannel === 1) {
+            this.compensationPayChannel = '支付宝'
+          } else if (this.orderDetail.compensation[0].payChannel === 2) {
+            this.compensationPayChannel = '微信'
+          } else if (this.orderDetail.compensation[0].payChannel === 3) {
+            this.compensationPayChannel = '支付宝手机网站'
+          } else if (this.orderDetail.compensation[0].payChannel === 4) {
+            this.compensationPayChannel = '微信h5支付'
+          } else {
+            this.compensationPayChannel = '暂无'
           }
           this.userdata = JSON.parse(this.orderDetail.user.feature)
         })

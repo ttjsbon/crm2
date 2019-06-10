@@ -293,9 +293,9 @@
         <!--                    </el-input>-->
         <!--                  </div>-->
         <!--                </div>-->
-<!--        <div v-if="nperarr.length > 0">-->
+        <!--        <div v-if="nperarr.length > 0">-->
         <div v-if="productForm.productFinanceDTOS">
-<!--          <div v-for="item in nperarr" :key="item.periods" class="flex mar-b">-->
+          <!--          <div v-for="item in nperarr" :key="item.periods" class="flex mar-b">-->
           <div v-for="item in productForm.productFinanceDTOS" :key="item.periods" class="flex mar-b">
             <span class="rentlabel">{{item.productName}}{{item.periods}}期:</span>
             <el-input v-model="item.price" placeholder="输入租金">
@@ -851,13 +851,19 @@
       handleSpecificationDelete(row) {
         const index = this.copyspecifications.indexOf(row)
         var keys = row.specification
+        // 多规格的规格数组为1的时候，点击删除清空products
+        if (this.copyspecifications.length === 1) {
+          this.products = []
+        }
         this.copyspecifications.splice(index, 1)
         this.specifications = this.specifications.filter(item => {
           return item.specification !== keys
         })
+
         this.specToProduct()
       },
       specToProduct() {
+
         if (this.specifications.length === 0) {
           return
         }
@@ -866,6 +872,7 @@
         var spec = this.specifications[0].specification
         var values = []
         values.push(0)
+        console.log('fuck')
 
         for (var i = 1; i < this.specifications.length; i++) {
           const aspec = this.specifications[i].specification
@@ -880,7 +887,6 @@
           }
         }
         specValues.push(values)
-
         // 根据临时规格列表生产货品规格
         // 算法基于 https://blog.csdn.net/tyhj_sf/article/details/53893125
         var productsIndex = 0
@@ -927,7 +933,7 @@
         } while (isContinue)
 
         this.products = products
-        this.nperarr = this.leaseTerm
+        // this.nperarr = this.leaseTerm
         this.changetenancy(this.leaseTerm)
       },
       handleProductShow(row) {
