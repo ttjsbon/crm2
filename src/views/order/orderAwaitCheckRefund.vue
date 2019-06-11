@@ -201,11 +201,7 @@
           </span>
         </el-form-item>
         <el-form-item label="支付信息">
-          <span>（支付渠道）{{this.payChannel && this.payChannel != null ? this.payChannel : '暂无'}}</span>
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.updateTime">（支付时间）{{ orderDetail.pay.updateTime }}</span>-->
-          <!--<span v-if="orderDetail.pay&&orderDetail.pay.outTradeOrderId ">（支付订单）{{ orderDetail.pay.outTradeOrderId }}</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.updateTime)">（支付时间）暂无</span>-->
-          <!--<span v-if="!(orderDetail.pay&&orderDetail.pay.outTradeOrderId)">（支付订单）暂无</span>-->
+          <span> (支付渠道) {{this.orderDetail.pay && this.orderDetail.pay[0] && this.orderDetail.pay[0].body != null ? this.orderDetail.pay[0].body : '暂无'}}</span>
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
             <el-table-column align="center" :label="'需支付时间'" width="160px">
               <template slot-scope="scope">
@@ -431,7 +427,6 @@
         downloadLoading: false,
         showCheckData: null,
         userdata: null,
-        payChannel: null,
         compensationPayChannel: null
 
       }
@@ -516,27 +511,21 @@
           if (this.orderDetail.order.endTime) {
             this.orderDetail.order.endTime = parseTime(this.orderDetail.order.endTime)
           }
-          if (this.orderDetail.pay[0].payChannel === 1) {
-            this.payChannel = '支付宝'
-          } else if (this.orderDetail.pay[0].payChannel === 2) {
-            this.payChannel = '微信'
-          } else if (this.orderDetail.pay[0].payChannel === 3) {
-            this.payChannel = '支付宝手机网站'
-          } else if (this.orderDetail.pay[0].payChannel === 4) {
-            this.payChannel = '微信h5支付'
+          this.compensationPayChannel = null
+          if (this.orderDetail.compensation != null) {
+            if (this.orderDetail.compensation[0].payChannel === 1) {
+              this.compensationPayChannel = '支付宝'
+            } else if (this.orderDetail.compensation[0].payChannel === 2) {
+              this.compensationPayChannel = '微信'
+            } else if (this.orderDetail.compensation[0].payChannel === 3) {
+              this.compensationPayChannel = '支付宝手机网站'
+            } else if (this.orderDetail.compensation[0].payChannel === 4) {
+              this.compensationPayChannel = '微信h5支付'
+            } else if (this.orderDetail.compensation[0].length <= 0) {
+              this.compensationPayChannel = null
+            }
           } else {
-            this.payChannel = '暂无'
-          }
-          if (this.orderDetail.compensation[0].payChannel === 1) {
-            this.compensationPayChannel = '支付宝'
-          } else if (this.orderDetail.compensation[0].payChannel === 2) {
-            this.compensationPayChannel = '微信'
-          } else if (this.orderDetail.compensation[0].payChannel === 3) {
-            this.compensationPayChannel = '支付宝手机网站'
-          } else if (this.orderDetail.compensation[0].payChannel === 4) {
-            this.compensationPayChannel = '微信h5支付'
-          } else {
-            this.compensationPayChannel = '暂无'
+            this.compensationPayChannel = null
           }
           this.userdata = JSON.parse(this.orderDetail.user.feature)
         })
