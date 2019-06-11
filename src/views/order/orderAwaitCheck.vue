@@ -241,7 +241,7 @@
           </el-table>
         </el-form-item>
 
-        <el-form-item label="赔偿支付信息">
+        <el-form-item label="赔偿支付信息" style="width: 800px">
           <span>（支付渠道）{{this.compensationPayChannel && this.compensationPayChannel != null ? this.compensationPayChannel : '暂无'}}</span>
           <el-table size="small" :data="orderDetail.compensation" border fit highlight-current-row>
             <el-table-column align="center" :label="'支付时间'" width="200px">
@@ -249,17 +249,17 @@
                 <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'暂无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" :label="'支付订单'" width="160px">
+            <el-table-column align="center" :label="'支付订单'" width="200px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.outTradeOrderId?scope.row.outTradeOrderId:'暂无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" :label="'支付金额'" width="160px">
+            <el-table-column align="center" :label="'支付金额'" width="200px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.amount?scope.row.amount:'暂无'}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" :label="'支付状态'" width="160px">
+            <el-table-column align="center" :label="'支付状态'" width="200px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.outTradeOrderId?'已支付':'未支付'}}</span>
               </template>
