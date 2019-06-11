@@ -92,7 +92,25 @@
   </div>
 </template>
 
+<style>
+  .itemtogether .el-form-item__content {
+    display: inline-block;
+  }
 
+  .itemtogether {
+    flex-wrap: wrap;
+  }
+
+  .itemtogether .el-form-item {
+    min-width: 150px;
+    flex: 1;
+  }
+
+  .itemtogether .bigitem {
+    min-width: 230px;
+  }
+
+</style>
 <script>
   import { userCouponList, delUserCoupon, userCouponDetail } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
