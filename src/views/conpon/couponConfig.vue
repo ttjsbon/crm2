@@ -110,6 +110,46 @@
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
+      <div class="content">
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchGoods"
+                         placeholder="请输入商品名称或id" @select="handleSelectGoods">
+          <template slot-scope="props">
+            <div v-if='!props.item.nonesuggestion' class="proinfo flex">
+              <div class="pic">
+                <img :src="props.item.picUrl" alt="">
+              </div>
+              <div class="prointroduce">
+                <div class="proId">{{props.item.id}}</div>
+                <div class="proname wordhide">{{props.item.name}}</div>
+              </div>
+            </div>
+            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
+              {{props.item.nonesuggestion}}
+            </div>
+          </template>
+        </el-autocomplete>
+        <div class="flex goodlist">
+          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
+            <div class="goodbox flex">
+              <div>
+                <img :src="item.picUrl" alt="">
+              </div>
+              <div class="goodnames">{{item.name}}</div>
+            </div>
+            <div class="rightinfo">
+              <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelGoods">取消</el-button>
+        <el-button type="primary" @click="addGoods">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
