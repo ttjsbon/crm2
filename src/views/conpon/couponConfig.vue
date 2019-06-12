@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column align="center" label="优惠券类型" prop="type">
         <template slot-scope="scope">
-          <el-tag >{{ scope.row.type===1 ? '新用户注册' : scope.row.type===2 ? '指定商品' : '指定用户' }}</el-tag>
+          <el-tag >{{ scope.row.type===1 ? '新用户注册' : scope.row.type===2 ? '指定商品' : scope.row.type===3 ? '指定专题' : '指定用户' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="优惠金额" prop="discountedPrice">
@@ -77,13 +77,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="优惠券类型" prop="type">
-          <el-select v-model="dataForm.type" placeholder="请选择">
+        <el-form-item label="优惠券类型" prop="targetType">
+          <el-select v-model="dataForm.targetType" placeholder="请选择">
             <el-option label="新用户注册" :value="1">
             </el-option>
             <el-option label="指定商品" :value="2">
             </el-option>
-            <el-option label="指定用户" :value="3">
+            <el-option label="指定专题" :value="3">
+            </el-option>
+            <el-option label="指定用户" :value="4">
             </el-option>
           </el-select>
         </el-form-item>
@@ -92,8 +94,8 @@
           <el-input v-model="dataForm.discountedPrice"></el-input>
         </el-form-item>
 
-        <el-form-item label="指定商品id" prop="goodsId">
-          <el-input v-model="dataForm.goodsId"></el-input>
+        <el-form-item label="指定商品id" prop="targetId">
+          <el-input v-model="dataForm.targetId"></el-input>
         </el-form-item>
 
         <el-form-item label="满足金额" prop="fullPrice">
@@ -160,6 +162,7 @@
   import Editor from '@tinymce/tinymce-vue'
   import { updateGoodAndTopic } from '@/api/ad'
   import {
+    listTopic,
     getGoodsInfo
   } from '@/api/topic'
   import {
@@ -419,6 +422,19 @@
           this.editGood.splice(index, 1)
         }).catch(() => {
 
+        })
+      },
+      getTopic() {
+        var listQuery = {
+          page: 1,
+          limit: 1000,
+          goodsSn: undefined,
+          name: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        }
+        listTopic(listQuery).then(response => {
+          this.allTopic = response.data.data.items
         })
       }
     }
