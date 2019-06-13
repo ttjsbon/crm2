@@ -129,3 +129,13 @@ export function userCouponDetail(id) {
     }
   })
 }
+
+export function couponConfigDetail(id) {
+  return request({
+    url: '/coupon/v1.3.0/couponConfig/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
