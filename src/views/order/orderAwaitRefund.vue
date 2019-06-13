@@ -343,7 +343,8 @@
     refund,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder4
+    listOrder4,
+    refundOrderV1_4_0
   } from '@/api/order'
   import {
     parseTime
@@ -550,7 +551,8 @@
       confirmRefund() {
         this.$refs['refundForm'].validate((valid) => {
           if (valid) {
-            refundOrderV1_3_0(this.refundForm.orderId).then(response => {
+            // refundOrderV1_3_0(this.refundForm.orderId).then(response => {
+            refundOrderV1_4_0(this.refundForm.orderId).then(response => {
               this.refundDialogVisible = false
               this.$notify({
                 title: '成功',

@@ -248,3 +248,13 @@ export function listOrder4(query) {
   })
 }
 
+export function refundOrderV1_4_0(id) {
+  return request({
+    url: '/order/v1.4.0/refund',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
