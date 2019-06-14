@@ -93,7 +93,7 @@
           <el-input v-model="dataForm.discountedPrice"></el-input>
         </el-form-item>
 
-        <el-form-item label="指定商品id" prop="targetId">
+        <el-form-item label="指定id" prop="targetId">
           <el-input v-model="dataForm.targetId"></el-input>
         </el-form-item>
 
@@ -292,11 +292,15 @@
           order: 'desc'
         },
         dataForm: {
+          addTime: undefined,
+          content: undefined,
+          del: false,
+          discountedPrice: undefined,
+          expirationTime: undefined,
+          fullPrice: undefined,
           id: undefined,
-          url: undefined,
-          pic: undefined,
-          remarks: undefined,
-          type: undefined,
+          page: undefined,
+          pageType: undefined,
           targetId: undefined,
           targetType: undefined
         },
@@ -308,7 +312,12 @@
         },
         rules: {
           remarks: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
-          pic: [{ required: true, message: '图片不能为空', trigger: 'blur' }]
+          page: [{ required: true, message: '页面展示位置不能为空', trigger: 'blur' }],
+          pageType: [{ required: true, message: '跳转页面类型不能为空', trigger: 'blur' }],
+          targetType: [{ required: true, message: '优惠卷类型不能为空', trigger: 'blur' }],
+          discountedPrice: [{ required: true, message: '优惠金额不能为空', trigger: 'blur' }],
+          fullPrice: [{ required: true, message: '满足金额不能为空', trigger: 'blur' }],
+          expirationTime: [{ required: true, message: '过期时长不能为空', trigger: 'blur' }]
         },
         downloadLoading: false,
         adddata: {
@@ -375,6 +384,8 @@
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.dataForm.targetId = parseInt(this.dataForm.targetId)
+            console.log(this.dataForm)
             addCouponConfig(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
