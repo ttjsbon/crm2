@@ -362,15 +362,17 @@
       },
       resetForm() {
         this.dataForm = {
-          id: undefined,
-          name: undefined,
+          addTime: undefined,
           content: undefined,
-          url: undefined,
-          link: undefined,
-          position: 1,
-          topicId: undefined,
-          goodId: undefined,
-          enabled: true
+          del: false,
+          discountedPrice: undefined,
+          expirationTime: undefined,
+          fullPrice: undefined,
+          id: undefined,
+          page: undefined,
+          pageType: undefined,
+          targetId: undefined,
+          targetType: undefined
         }
       },
       handleCreate() {
