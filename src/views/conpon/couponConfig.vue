@@ -28,7 +28,7 @@
       </el-table-column>-->
       <el-table-column align="center" label="优惠券类型" prop="type">
         <template slot-scope="scope">
-          <el-tag >{{ scope.row.targetType===1 ? '新用户注册' : scope.row.targetType===2 ? '指定商品' : scope.row.targetType===3 ? '指定专题' : scope.row.targetType===3 ? '指定用户' : '异常' }}</el-tag>
+          <el-tag >{{ scope.row.targetType===1 ? '新用户注册' : scope.row.targetType===2 ? '指定商品' : scope.row.targetType===3 ? '指定专题' : scope.row.targetType===4 ? '指定用户' : '异常' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="满足金额" prop="fullPrice">
