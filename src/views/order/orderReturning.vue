@@ -12,6 +12,8 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
+      </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
       <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;"
                    placeholder="选择支付日期时间"></date-picker>
@@ -371,16 +373,14 @@
 <script>
   import DatePicker from 'vue2-datepicker'
   import {
-    listOrder2,
-    detailOrder2,
     returnConfirmOrder,
     payAndThaw,
     enterTheAmountOfCompensation,
     thaw,
-    detailOrder3,
     addRemarkV1_4_0,
     listOrder4,
-    detailOrder4
+    detailOrder4,
+    listOrderV1_5_0
   } from '@/api/order'
   import {
     parseTime
@@ -447,7 +447,8 @@
           overdue: 1,
           mobile: undefined,
           timePeriod: [null],
-          payTimePeriod: [null]
+          payTimePeriod: [null],
+          sequence: undefined
         },
         timeper: {},
         statusMap,
@@ -497,8 +498,8 @@
           }
         }
 
-        // listOrder2(this.timeper).then(response => {
-        listOrder4(this.timeper).then(response => {
+        listOrderV1_5_0(this.timeper).then(response => {
+        // listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

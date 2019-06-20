@@ -12,6 +12,8 @@
 
       <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
+      </el-input>
       <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
                  v-model="listQuery.orderStatusArray">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
@@ -460,7 +462,6 @@
 
 <script>
   import {
-    listOrder2,
     shipOrder,
     refundOrder,
     auditOrder,
@@ -469,7 +470,8 @@
     getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder4
+    listOrder4,
+    listOrderV1_5_0
   } from '@/api/order'
 
   import {
@@ -539,7 +541,8 @@
           name: undefined,
           mobile: undefined,
           timePeriod: [null],
-          payTimePeriod: [null]
+          payTimePeriod: [null],
+          sequence: undefined
         },
         timeper: {},
         statusMap,
@@ -614,8 +617,8 @@
           }
         }
 
-        // listOrder2(this.timeper).then(response => {
-        listOrder4(this.timeper).then(response => {
+        listOrderV1_5_0(this.timeper).then(response => {
+        // listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

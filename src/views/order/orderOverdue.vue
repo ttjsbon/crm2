@@ -11,6 +11,8 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
+      </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
       <el-select multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态"
                  v-model="listQuery.orderStatusArray">
@@ -453,7 +455,8 @@
     returnConfirmOrder,
     getCheckInfo,
     detailOrder4,
-    addRemarkV1_4_0
+    addRemarkV1_4_0,
+    listOrderOverdueANDBadDebtsV1_5_0
   } from '@/api/order'
 
   import {
@@ -502,7 +505,8 @@
           order: 'desc,',
           overdue: 0,
           mobile: undefined,
-          timePeriod: [null]
+          timePeriod: [null],
+          sequence: undefined
         },
         timeper: {},
         statusMap,
@@ -565,7 +569,8 @@
             this.listQuery.timePeriod.push(null)
           }
         }
-        listOrderV1_2_4(this.timeper).then(response => {
+        listOrderOverdueANDBadDebtsV1_5_0(this.timeper).then(response => {
+        // listOrderV1_2_4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
