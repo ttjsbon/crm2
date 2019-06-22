@@ -7,18 +7,21 @@
       </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
+                 :loading="downloadLoading">导出
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
+              highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" sortable>
       </el-table-column>
       <el-table-column align="center" label="内容" prop="content">
       </el-table-column>
       <el-table-column align="center" label="展示位置" prop="page">
         <template slot-scope="scope">
-          <el-tag >{{ scope.row.page===1 ? '活动详情页' : '商品详情页' }}</el-tag>
+          <el-tag>{{ scope.row.page===1 ? '活动详情页' : '商品详情页' }}</el-tag>
         </template>
       </el-table-column>
       <!--<el-table-column align="center" label="跳转类型" prop="pageType">
@@ -28,7 +31,9 @@
       </el-table-column>-->
       <el-table-column align="center" label="优惠券类型" prop="type">
         <template slot-scope="scope">
-          <el-tag >{{ scope.row.targetType===1 ? '新用户注册' : scope.row.targetType===2 ? '指定商品' : scope.row.targetType===3 ? '指定专题' : scope.row.targetType===4 ? '指定用户' : '异常' }}</el-tag>
+          <el-tag>{{ scope.row.targetType===1 ? '新用户注册' : scope.row.targetType===2 ? '指定商品' : scope.row.targetType===3 ?
+            '指定专题' : scope.row.targetType===4 ? '指定用户' : '异常' }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="满足金额" prop="fullPrice">
@@ -41,7 +46,7 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           <el-button type="primary" size="mini" @click="changeGoods(scope.row)">设置商品</el-button>
         </template>
       </el-table-column>
@@ -49,14 +54,17 @@
 
     <!-- 分页 -->
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="listQuery.page"
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close='resetId'>
+      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="内容" prop="content">
           <el-input v-model="dataForm.content"></el-input>
         </el-form-item>
@@ -97,6 +105,13 @@
           <el-input v-model="dataForm.targetId"></el-input>
         </el-form-item>
 
+        <el-form-item label="优惠券指定类别id">
+          <el-button type="primary" @click="addId">添加</el-button>
+          <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in dataForm.categoryId'
+                    v-model="dataForm.categoryId[index]"
+                    :key="index" placeholder="请输入优惠券指定类别id"></el-input>
+        </el-form-item>
+
         <el-form-item label="满足金额" prop="fullPrice">
           <el-input v-model="dataForm.fullPrice"></el-input>
         </el-form-item>
@@ -114,7 +129,8 @@
 
     <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchGoods"
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
+                         :fetch-suggestions="querySearchGoods"
                          placeholder="请输入商品名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
@@ -174,8 +190,11 @@
           <el-form-item label="优惠券类型：">
             <span>{{couponDetail.targetType ===1 ? '新用户注册' : couponDetail.targetType === 2 ? '指定商品' : couponDetail.targetType === 3 ? '指定专题'  : couponDetail.targetType === 3 ? '指定用户' : '异常'}}</span>
           </el-form-item>
-          <el-form-item label="">
-            <span></span>
+          <!--          <el-form-item label="">-->
+          <!--            <span></span>-->
+          <!--          </el-form-item>-->
+          <el-form-item label="新人优惠券指定类型id：">
+            <span style="float: left">{{couponDetail.categoryId == null || couponDetail.categoryId.length === 0 ? '暂无' : couponDetail.categoryId}}</span>
           </el-form-item>
         </div>
 
@@ -228,7 +247,13 @@
 </style>
 
 <script>
-  import { couponConfigDetail, couponConfigList, addCouponConfig, updateCouponConfig, delCouponConfig } from '@/api/coupon'
+  import {
+    couponConfigDetail,
+    couponConfigList,
+    addCouponConfig,
+    updateCouponConfig,
+    delCouponConfig
+  } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
   import { updateGoodAndTopic } from '@/api/ad'
@@ -276,7 +301,8 @@
           page: undefined,
           pageType: undefined,
           targetId: undefined,
-          targetType: undefined
+          targetType: undefined,
+          categoryId: []
         },
         couponDetailDialog: false,
         dialogGoods: false,
@@ -302,7 +328,8 @@
           page: undefined,
           pageType: undefined,
           targetId: undefined,
-          targetType: undefined
+          targetType: undefined,
+          categoryId: []
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -372,7 +399,8 @@
           page: undefined,
           pageType: undefined,
           targetId: undefined,
-          targetType: undefined
+          targetType: undefined,
+          categoryId: []
         }
       },
       handleCreate() {
@@ -387,7 +415,6 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.dataForm.targetId = parseInt(this.dataForm.targetId)
-            console.log(this.dataForm)
             addCouponConfig(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -403,6 +430,9 @@
       },
       handleUpdate(row) {
         this.dataForm = Object.assign({}, row)
+        if (row.categoryId == null || row.categoryId.length === 0) {
+          this.$set(this.dataForm, 'categoryId', [])
+        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -560,6 +590,18 @@
       },
       closeDetail() {
         this.couponDetailDialog = false
+      },
+      addId() {
+
+        if (this.dataForm.categoryId.length === 4) {
+          this.$message.warning('已达到最大数量')
+        } else {
+          this.dataForm.categoryId.push('')
+          this.$nextTick()
+        }
+      },
+      resetId() {
+        this.dataForm.categoryId = []
       }
     }
   }
