@@ -190,7 +190,7 @@
         <!--          </el-checkbox>-->
         <!--        </el-checkbox-group>-->
         <el-checkbox-group v-model="nperarr" @change="changetenancy">
-          <el-checkbox v-for="item in leaseTerm" :key="item.periods" :label="item" name="type">
+          <el-checkbox v-for="(item,index) in leaseTerm" :key="index" :label="item" name="type">
             <div>{{item.productName}}{{item.periods}}期</div>
           </el-checkbox>
         </el-checkbox-group>
@@ -511,6 +511,9 @@
         goods: {
           gallery: []
         },
+        goodsReqs: {
+          gallery: []
+        },
         specVisiable: false,
         specForm: {
           specification: '',
@@ -685,8 +688,11 @@
       handleEdit: function() {
         this.editAttach()
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
+        this.goodsReqs.newis = this.goods.isNew
+        this.goodsReqs.hotis = this.goods.isHot
         const finalGoods = {
           goods: this.goods,
+          goodsReqs: this.goodsReqs,
           specifications: this.specifications,
           products: this.products,
           attributes: this.attributes,
