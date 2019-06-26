@@ -26,6 +26,15 @@
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出
       </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleNormalDownload"
+                 :loading="downloadNormalLoading">导出已发货订单信息
+      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleOverdueDownload"
+                 :loading="downloadOverdueLoading">导出逾期订单信息
+      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleBadBdbtDownload"
+                 :loading="downloadBadBdbtLoading">导出坏账订单信息
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -470,7 +479,6 @@
     getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder4,
     listOrderV1_5_0
   } from '@/api/order'
 
@@ -580,6 +588,9 @@
         freeDialogVisible: false,
 
         downloadLoading: false,
+        downloadNormalLoading: false,
+        downloadOverdueLoading: false,
+        downloadBadBdbtLoading: false,
         showCheckData: null,
         userdata: null,
         compensationPayChannel: null
@@ -627,7 +638,6 @@
           this.total = 0
           this.listLoading = false
         })
-
       },
       addRemarkV1_4_0_1() {
         addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
@@ -841,6 +851,21 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
+      },
+      handleNormalDownload() {
+        this.downloadNormalLoading = true
+        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/normalTorderExport'
+        this.downloadNormalLoading = false
+      },
+      handleOverdueDownload() {
+        this.downloadOverdueLoading = true
+        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/overdueTorderExport'
+        this.downloadOverdueLoading = false
+      },
+      handleBadBdbtDownload() {
+        this.downloadBadBdbtLoading = true
+        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/badDebtTorderExport'
+        this.downloadBadBdbtLoading = false
       },
       addId() {
         if (this.shipForm.deviceId.length === 4) {
