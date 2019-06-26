@@ -116,7 +116,7 @@
             </template>
           </el-form-item>
           <el-form-item label="下单用户">
-            <span>{{ orderDetail.order.mobile }}</span>
+            <span>{{ orderDetail.user.mobile }}</span>
           </el-form-item>
           <el-form-item label="下单时间" class="bigitem">
             <span>{{ orderDetail.order.addTime }}</span>
