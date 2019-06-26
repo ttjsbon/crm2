@@ -854,17 +854,17 @@
       },
       handleNormalDownload() {
         this.downloadNormalLoading = true
-        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/normalTorderExport'
+        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/normalTorderExport'
         this.downloadNormalLoading = false
       },
       handleOverdueDownload() {
         this.downloadOverdueLoading = true
-        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/overdueTorderExport'
+        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/overdueTorderExport'
         this.downloadOverdueLoading = false
       },
       handleBadBdbtDownload() {
         this.downloadBadBdbtLoading = true
-        window.location.href = 'http://localhost:8083/admin/order/v1.5.0/badDebtTorderExport'
+        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/badDebtTorderExport'
         this.downloadBadBdbtLoading = false
       },
       addId() {
