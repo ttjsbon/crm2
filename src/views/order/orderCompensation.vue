@@ -134,7 +134,7 @@
         </el-form-item>
 
         <el-form-item label="订单渠道" class="bigitem">
-          <span>{{ orderDetail.order && orderDetail.order.orderChannel != null ? orderDetail.order.orderChannel : '暂无' }}</span>
+          <span>{{ orderDetail.order && orderDetail.order.orderChannel ? orderDetail.order.orderChannel === 'aliapplet' ? '支付宝小程序' : '微信小程序' : '暂无' }}</span>
         </el-form-item>
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
