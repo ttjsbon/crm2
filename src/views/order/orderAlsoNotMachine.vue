@@ -240,6 +240,12 @@
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
               </template>
             </el-table-column>
+            <!--支付金额-->
+            <el-table-column align="center" :label="'支付金额'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.amount ? scope.row.amount : 0.00}}</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" :label="'是否退款'" width="160px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.status =='4' ? '已退款': '未退款'}}</span>
@@ -446,7 +452,8 @@
     listOrderV1_4_0,
     detailOrder4,
     addRemarkV1_4_0,
-    listAlsoNotMachineV1_5_0
+    listAlsoNotMachineV1_5_0,
+    detailOrderV1_5_3
   } from '@/api/order'
 
   import {
@@ -618,7 +625,8 @@
         this.getList()
       },
       handleDetail(row) {
-        detailOrder4(row.id).then(response => {
+        // detailOrder4(row.id).then(response => {
+        detailOrderV1_5_3(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {

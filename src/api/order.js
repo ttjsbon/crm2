@@ -289,3 +289,13 @@ export function listOrderOverdueANDBadDebtsV1_5_0(query) {
     params: query
   })
 }
+
+export function detailOrderV1_5_3(id) {
+  return request({
+    url: '/order/v1.5.3/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
