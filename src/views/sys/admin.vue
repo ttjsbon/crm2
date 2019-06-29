@@ -105,7 +105,7 @@
 </style>
 
 <script>
-  import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges } from '@/api/admin'
+  import { listAdmin, createAdmin, updateAdmin, deleteAdmin, selectMens, adminPrivileges, adminPrivilegesMenu } from '@/api/admin'
   import { uploadPath } from '@/api/storage'
 
   export default {
@@ -137,7 +137,7 @@
       return {
         checkList: [],
         checkedCities: [],
-        isIndeterminate: true,
+        isIndeterminate: false,
         uploadPath,
         list: null,
         total: null,
@@ -205,6 +205,7 @@
         this.isIndeterminate = false
       },
       handleCheckedCitiesChange(value, index) {
+        console.log(value, index)
         this.checkedCities = value
         const choose = this.checkList[index].subList.every((value) => {
           return !this.checkedCities.includes(value.id)
@@ -319,6 +320,25 @@
       handleUpdate(row) {
         this.dataForm = Object.assign({}, row)
         this.dialogStatus = 'update'
+        adminPrivilegesMenu(row.username).then(response => {
+          console.log(response.data.data)
+          response.data.data.forEach((value) => {
+            this.checkedCities.push(value.id)
+            value.subList.forEach((value1) => {
+              this.checkedCities.push(value1.id)
+            })
+          })
+          for (let i = 0; i < response.data.data.length; i++) {
+            for (let j = 0; j < this.checkList.length; j++) {
+              if (response.data.data[i].id === this.checkList[j].id) {
+                this.checkList[j].checkAll = true
+              }
+            }
+            this.handleCheckedCitiesChange(this.checkedCities, i)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
@@ -328,7 +348,7 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAdmin(this.dataForm).then(() => {
+            updateAdmin(this.dataForm).then((response) => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
@@ -336,6 +356,7 @@
                   break
                 }
               }
+              this.adminPrivileges(response.data.data.username)
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',

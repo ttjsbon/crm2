@@ -58,3 +58,13 @@ export function adminPrivileges(menuIds, adminName) {
     }
   })
 }
+
+export function adminPrivilegesMenu( adminName) {
+  return request({
+    url: '/login/adminPrivilegesMenu',
+    method: 'post',
+    params: {
+      adminName: adminName
+    }
+  })
+}
