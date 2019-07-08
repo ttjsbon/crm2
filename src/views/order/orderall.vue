@@ -486,7 +486,8 @@
     detailOrder4,
     addRemarkV1_4_0,
     listOrderV1_5_0,
-    detailOrderV1_5_3
+    detailOrderV1_5_3,
+    listOrderV1_5_4_1
   } from '@/api/order'
 
   import {
@@ -635,9 +636,10 @@
           }
         }
 
-        listOrderV1_5_0(this.timeper).then(response => {
-        // listOrder4(this.timeper).then(response => {
+        // listOrderV1_5_0(this.timeper).then(response => {
+          listOrderV1_5_4_1(this.timeper).then(response => {
           this.list = response.data.data.items
+          console.log(this.list,'xx')
           this.total = response.data.data.total
           this.listLoading = false
         }).catch(() => {
@@ -675,7 +677,7 @@
       },
       handleDetail(row) {
         detailOrderV1_5_3(row.id).then(response => {
-        // detailOrder4(row.id).then(response => {
+          // detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -854,8 +856,8 @@
       handleDownload() {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
-          const filterVal = ['id', 'orderSn', 'userId', 'orderStatus', 'isDelete', 'consignee', 'mobile', 'address']
+          const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址', '租期到期时间']
+          const filterVal = ['id', 'orderSn', 'userId', 'orderStatus', 'isDelete', 'consignee', 'mobile', 'address', 'endTimes']
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })

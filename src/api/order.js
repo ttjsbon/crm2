@@ -299,3 +299,11 @@ export function detailOrderV1_5_3(id) {
     }
   })
 }
+
+export function listOrderV1_5_4_1(query) {
+  return request({
+    url: '/order/v1.5.4.1/list',
+    method: 'get',
+    params: query
+  })
+}
