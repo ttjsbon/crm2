@@ -47,3 +47,19 @@ export function updateGoodAndTopic(data) {
     data
   })
 }
+
+export function createAdV1_5_4_1(data) {
+  return request({
+    url: '/ad/v1.5.4.1/create',
+    method: 'post',
+    data
+  })
+}
+
+export function updateAdV1_5_4_1(data) {
+  return request({
+    url: '/ad/v1.5.4.1/update',
+    method: 'post',
+    data
+  })
+}

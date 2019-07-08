@@ -9,11 +9,14 @@
       </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
+                 :loading="downloadLoading">导出
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
+              highlight-current-row>
 
 
       <el-table-column align="center" label="广告ID" prop="id" sortable>
@@ -50,7 +53,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           <el-button type="primary" size="mini" @click="changeGoods(scope.row)">设置商品</el-button>
           <el-button type="primary" size="mini" @click="changeTopic(scope.row)">设置专题</el-button>
         </template>
@@ -59,14 +62,17 @@
 
     <!-- 分页 -->
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="listQuery.page"
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
+      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="广告标题" prop="name">
           <el-input v-model="dataForm.name"></el-input>
         </el-form-item>
@@ -74,7 +80,8 @@
           <el-input v-model="dataForm.content"></el-input>
         </el-form-item>
         <el-form-item label="广告图片" prop="url">
-          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
+          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false"
+                     accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
             <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -94,6 +101,12 @@
         <el-form-item label="专题id" prop="topicId">
           <el-input v-model="dataForm.topicId"></el-input>
         </el-form-item>
+        <el-form-item label="选择展示渠道" prop="bannerType">
+          <el-select v-model="dataForm.bannerType" placeholder="请选择">
+            <el-option v-for="(item,index) in options" :key="index" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="是否启用" prop="enabled">
           <el-select v-model="dataForm.enabled" placeholder="请选择">
             <el-option label="启用" :value="true">
@@ -112,7 +125,8 @@
 
     <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchGoods"
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
+                         :fetch-suggestions="querySearchGoods"
                          placeholder="请输入商品名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
@@ -151,7 +165,8 @@
 
     <el-dialog title="设置专题" :visible.sync="dialogTopic" @close="cancelTopic" :close-on-click-modal='false'>
       <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearchTopic"
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
+                         :fetch-suggestions="querySearchTopic"
                          placeholder="请输入专题名称或id" @select="handleSelectTopic">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
@@ -198,9 +213,11 @@
     position: relative;
     overflow: hidden;
   }
+
   .avatar-uploader .el-upload:hover {
     border-color: #20a0ff;
   }
+
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
@@ -209,6 +226,7 @@
     line-height: 120px;
     text-align: center;
   }
+
   .avatar {
     width: 120px;
     height: 120px;
@@ -217,7 +235,15 @@
 </style>
 
 <script>
-  import { listAd, createAd, updateAd, deleteAd, updateGoodAndTopic } from '@/api/ad'
+  import {
+    listAd,
+    createAd,
+    updateAd,
+    deleteAd,
+    updateGoodAndTopic,
+    createAdV1_5_4_1,
+    updateAdV1_5_4_1
+  } from '@/api/ad'
 
   import {
     listTopic,
@@ -264,7 +290,8 @@
           position: 1,
           goodId: undefined,
           topicId: undefined,
-          enabled: true
+          enabled: true,
+          bannerType: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -285,7 +312,15 @@
         editGood: [],
         allgoods: [],
         editTopic: [],
-        allTopic: []
+        allTopic: [],
+        options: [{
+          value: '支付宝',
+          label: '支付宝小程序'
+        }, {
+          value: '微信',
+          label: '微信小程序'
+        }],
+        value: '支付宝'
       }
     },
     created() {
@@ -328,7 +363,8 @@
           position: 1,
           topicId: undefined,
           goodId: undefined,
-          enabled: true
+          enabled: true,
+          bannerType: undefined
         }
       },
       handleCreate() {
@@ -345,7 +381,8 @@
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createAd(this.dataForm).then(response => {
+            // createAd(this.dataForm).then(response => {
+            createAdV1_5_4_1(this.dataForm).then(response => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify({
@@ -369,7 +406,8 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAd(this.dataForm).then(() => {
+            updateAdV1_5_4_1(this.dataForm).then(() => {
+              // updateAd(this.dataForm).then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
