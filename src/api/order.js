@@ -299,3 +299,13 @@ export function detailOrderV1_5_3(id) {
     }
   })
 }
+
+export function basicInfoReportV1_5_4(id) {
+  return request({
+    url: '/order/v1.5.4/basicInfoReport',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
