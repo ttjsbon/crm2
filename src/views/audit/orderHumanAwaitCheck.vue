@@ -373,7 +373,7 @@
     getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder1_5_4
+    listOrderV1_5_4
   } from '@/api/order'
   import {
     parseTime
@@ -496,7 +496,7 @@
             this.listQuery.payTimePeriod.push(null)
           }
         }
-        listOrder1_5_4(this.timeper).then(response => {
+        listOrderV1_5_4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

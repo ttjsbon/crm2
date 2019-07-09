@@ -147,38 +147,107 @@
     <el-card class="box-card">
       <h3>4.多平台申请情况</h3>
       <h4>1>近七天申请情况</h4>
-      <el-table :data="info">
-        <el-table-column property="value" label="手机号申请详情">
+      <div class="zlInfo">
+        <div class="zlDetail">
+          <div class="zltitle">{{'手机号申请详情'}}</div>
+          <div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'> 
+            <el-text>{{tdinfo}}</el-text>
+          </div>
+        </div>
+      <div class="zlDetail">
+        <div class="zltitle">{{'身份证申请详情'}}</div>
+        <div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'> 
+            <el-text>{{tdinfo}}</el-text>
+        </div>
+      </div>
+      <div class="zlDetail">
+        <div class="zltitle">{{'多维度申请详情'}}</div>
+        <div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['多维度']" :key='ind'> 
+            <el-text>{{tdinfo}}</el-text>
+        </div>
+      </div>
+    </div>
+      <!--el-table :data="td_info['7天内租赁人在多个平台申请借款']">
+        <el-table-column property="value" label="手机号申请详情" prop="租赁人手机">
+            <template slot-scope="scope">
+                {{ scope.row }}
+            </template>
         </el-table-column>
-        <el-table-column property="value" label="身份证申请详情">
+        <el-table-column property="value" label="身份证申请详情" prop="租赁人身份证">
+            <template slot-scope="scope">
+                {{ scope.row }}
+            </template>
         </el-table-column>
-        <el-table-column property="value" label="多维度申请情况">
+        <el-table-column property="value" label="多维度申请情况" prop="多维度">
+            <template slot-scope="scope">
+                {{ scope.row }}
+            </template>
         </el-table-column>
-      </el-table>
+      </el-table-->
       <h4>2>近1个月申请情况</h4>
-      <el-table :data="info">
+      <div class="zlInfo">
+          <div class="zlDetail">
+            <div class="zltitle">{{'手机号申请详情'}}</div>
+            <div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+            </div>
+          </div>
+        <div class="zlDetail">
+          <div class="zltitle">{{'身份证申请详情'}}</div>
+          <div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+          </div>
+        </div>
+        <div class="zlDetail">
+          <div class="zltitle">{{'多维度申请详情'}}</div>
+          <div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['多维度']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+          </div>
+        </div>
+      </div>
+      <!--el-table :data="info">
         <el-table-column property="value" label="手机号申请详情">
         </el-table-column>
         <el-table-column property="value" label="身份证申请详情">
         </el-table-column>
         <el-table-column property="value" label="多维度申请情况">
         </el-table-column>
-      </el-table>
+      </el-table-->
       <h4>3>近3个月多平台申请情况</h4>
-      <el-table :data="info">
+      <div class="zlInfo">
+          <div class="zlDetail">
+            <div class="zltitle">{{'手机号申请详情'}}</div>
+            <div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+            </div>
+          </div>
+        <div class="zlDetail">
+          <div class="zltitle">{{'身份证申请详情'}}</div>
+          <div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+          </div>
+        </div>
+        <div class="zlDetail">
+          <div class="zltitle">{{'多维度申请详情'}}</div>
+          <div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['多维度']" :key='ind'> 
+              <el-text>{{tdinfo}}</el-text>
+          </div>
+        </div>
+      </div>
+      <!--el-table :data="info">
         <el-table-column property="value" label="手机号申请详情">
         </el-table-column>
         <el-table-column property="value" label="身份证申请详情">
         </el-table-column>
         <el-table-column property="value" label="多维度申请情况">
         </el-table-column>
-      </el-table>
+      </el-table-->
     </el-card>
 
     <el-card class="box-card">
 
       <h3>4.客户申请记录</h3>
-      <el-table :data="attributes">
+      <!--el-table :data="attributes">
         <el-table-column property="add_time" :formatter="dateFormat" label="申请时间">
         </el-table-column>
         <el-table-column property="order_sn" label="订单编号">
@@ -195,14 +264,20 @@
         </el-table-column>
         <el-table-column property="order_status" label="订单状态">
         </el-table-column>
-      </el-table>
+      </el-table-->
     </el-card>
 
+    <el-card class="box-card">
+      <h3>备注</h3>
+      <el-input type="textarea" placeholder="备注" v-model="orderRemark"></el-input>
+    </el-card>
+
+    <el-button type="primary" @click="addRemark">保存</el-button>
 
 
     <!--备注信息-->
     <el-form-item label="备注信息">
-      <el-input clearable class="filter-item" style="width: 500px; margin-left: 10px" placeholder="核实客户在网贷款申请和还款情况">
+      <el-input clearable v-model="orderRemark" class="filter-item" style="width: 500px; margin-left: 10px" placeholder="核实客户在网贷款申请和还款情况">
       </el-input>
       <el-button type="primary" size="mini" @click="addRemark">保存信息</el-button>
     </el-form-item>
@@ -219,6 +294,23 @@
 
   .itemtogether .el-form-item__content {
     display: inline-block;
+  }
+
+  .zlInfo{
+    display: grid;
+    grid-auto-flow: column;
+  }
+
+  .zlDetail{
+    font-size: 14px;
+    display: grid;
+    grid-auto-flow: row;
+    grid-row-gap: 5px;
+  }
+
+  .zltitle{
+    margin-bottom: 3px;
+    font-weight: 700;
   }
 
   .itemtogether {
@@ -347,7 +439,7 @@
 
 <script>
   import {
-    basicInfoReportV1_5_4
+    basicInfoReportV1_5_4,listOrderReport,addOrderReport
   } from '@/api/order'
   import Editor from '@tinymce/tinymce-vue'
 
@@ -386,11 +478,18 @@
           orders: [],
           shouhuoMobileOverdue: undefined
         }],
+        td_info:{
+        },
+        orderRemark:'',
         attributes: []
       }
     },
     created() {
       this.basicInfoReport()
+
+      //let dataRes={"errno":0,"data":{"id_card_no":"412825199805067027","emergency_relation":"亲人","emergency_name":"了么","emergency_phone":"18601381456","result":"{\"INFOANALYSIS\":{\"id_age\":\"21\",\"id_gender\":\"F\",\"address_detect\":{\"mobile_address_city\":\"北京市\",\"id_card_city\":\"驻马店地区\",\"mobile_address\":\"北京市\",\"id_card_province\":\"河南省\",\"mobile_address_province\":\"北京市\",\"id_card_address\":\"河南省驻马店地区上蔡县\"},\"geoip_info\":{},\"device_info\":{\"error\":\"参数缺失\"},\"geotrueip_info\":{}},\"DEFAULT_MODEL\":{\"b1a14f3fe5013fe3\":{\"credit_score\":0,\"model_version\":\"1\"}},\"RENT\":{\"final_decision\":\"PASS\",\"final_score\":15,\"risk_items\":[{\"rule_id\":4515942,\"policy_score\":15,\"score\":5,\"policy_mode\":\"Weighted\",\"decision\":\"Accept\",\"policy_decision\":\"Accept\",\"policy_name\":\"信用租赁_安卓\",\"risk_name\":\"7天内设备或身份证或手机号申请次数过多\",\"risk_detail\":[{\"frequency_detail_list\":[{\"count\":\"31\",\"note\":\"7天内租赁人手机号申请次数\",\"detail\":\"7天内租赁人手机号申请次数：31\",\"dim_type\":\"accountMobile\"}],\"type\":\"frequency_detail\"}]},{\"rule_id\":4516016,\"policy_score\":15,\"score\":5,\"policy_mode\":\"Weighted\",\"decision\":\"Accept\",\"policy_decision\":\"Accept\",\"policy_name\":\"信用租赁_安卓\",\"risk_name\":\"1个月内租赁人身份证关联过多的收货地址_本平台\",\"risk_detail\":[{\"frequency_detail_list\":[{\"count\":\"4\",\"note\":\"主属性在指定时间范围内出现的次数或者关联从属性的个数\",\"sub_dim_type\":\"accountAddress\",\"detail\":\"主属性在指定时间范围内出现的次数或者关联从属性的个数：4\",\"data\":[\"北京市市辖区东城区xx\",\"浙江杭州市西湖区城区紫荆花路188号骆家庄西苑(一区)117号\",\"?????????xx\",\"??????????\"],\"dim_type\":\"idNumber\"}],\"type\":\"frequency_detail\"}]},{\"rule_id\":4516018,\"policy_score\":15,\"score\":5,\"policy_mode\":\"Weighted\",\"decision\":\"Accept\",\"policy_decision\":\"Accept\",\"policy_name\":\"信用租赁_安卓\",\"risk_name\":\"1个月内租赁人手机关联过多的收货地址\",\"risk_detail\":[{\"frequency_detail_list\":[{\"count\":\"4\",\"note\":\"主属性在指定时间范围内出现的次数或者关联从属性的个数\",\"sub_dim_type\":\"accountAddress\",\"detail\":\"主属性在指定时间范围内出现的次数或者关联从属性的个数：4\",\"data\":[\"北京市市辖区东城区xx\",\"浙江杭州市西湖区城区紫荆花路188号骆家庄西苑(一区)117号\",\"?????????xx\",\"??????????\"],\"dim_type\":\"accountMobile\"}],\"type\":\"frequency_detail\"}]}]}}","shouhuoMobile":"18601381457","addressComparison":"否","submitOrder":"否","consignee":"刘梦威","address":"北京市市辖区东城区xx","phoneComparison":"是","anti_fraud":"15","mobile_address":"北京市","shouhuoMobileOrder":"否","phoneAddressComparison":"是","idCardOrder":"否","home_city":"河南省驻马店地区上蔡县","user_id":4620,"model_score":202,"card_name":"刘梦威","shouhuoAddress":"是","orders":[{"goods_name":"慎小嶷 十天突破雅思口语 剑13版（附赠便携式速查手册+纯正英音朗读音频卡）","order_status":"待审核","consignee":"刘梦威","address":"北京市市辖区东城区xx","price":0.01,"mobile":"18601381457","add_time":1562315894000,"order_sn":"TO20190705001664"}],"order_sn":"TO20190705001664","regist":"18601381457","age":"21", "td_info": {"3个月内租赁人在多个平台申请借款":{"多维度":["P2P网贷","综合类电商平台"],"租赁人身份证":["P2P网贷","综合类电商平台"],"租赁人手机":["P2P网贷","综合类电商平台"]},"7天内租赁人在多个平台申请借款":{"多维度":["P2P网贷","综合类电商平台"],"租赁人身份证":["P2P网贷","综合类电商平台"],"租赁人手机":["P2P网贷","综合类电商平台"]},"1个月内租赁人在多个平台申请借款":{"多维度":["P2P网贷","综合类电商平台"],"租赁人身份证":["P2P网贷","综合类电商平台"],"租赁人手机":["P2P网贷","综合类电商平台"]}}},"errmsg":"成功"};
+      //this.info[0]=dataRes.data; 
+      //console.log(this.info[0].td_info['7天内租赁人在多个平台申请借款']);
     },
     methods: {
       basicInfoReport() {
@@ -399,9 +498,18 @@
           return
         }
         basicInfoReportV1_5_4(orderId).then(response => {
-          this.info[0] = response.data.data
+          this.info[0] = response.data.data;
+          this.td_info = this.info[0].td_info;
+          console.log(this.td_info['7天内租赁人在多个平台申请借款']['多维度']);
+          //console.log(this.info[0].td_info['7天内租赁人在多个平台申请借款']);
           this.attributes = this.info[0].orders
-          console.info(this.attributes)
+          //console.info(this.attributes)
+        })
+        listOrderReport(orderId).then(res=>{
+          //console.log(res);
+          if(res.data.data){
+            this.orderRemark=res.data.data;
+          }
         })
       },
       dateFormat(row, column) {
@@ -419,7 +527,14 @@
         }
       },
       addRemark() {
-
+        //console.log(this.orderRemark)
+        let queryP={
+          id:this.$route.query.id,
+          remark:this.orderRemark
+        }
+        addOrderReport(queryP).then(res=>{
+          //console.log(res);
+        })
       }
     }
   }
