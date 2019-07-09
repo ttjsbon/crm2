@@ -318,7 +318,7 @@
   import {
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_0
+    listOrderV1_5_4
   } from '@/api/order'
   import {
     parseTime
@@ -381,7 +381,7 @@
           orderStatusArray: [201],
           sort: 'add_time',
           order: 'desc',
-          overdue: 1,
+          electronuclear_state: 0,
           name: undefined,
           mobile: undefined,
           timePeriod: [null],
@@ -440,7 +440,7 @@
             this.listQuery.payTimePeriod.push(null)
           }
         }
-        listOrderV1_5_0(this.timeper).then(response => {
+        listOrderV1_5_4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

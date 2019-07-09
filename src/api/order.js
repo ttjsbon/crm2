@@ -309,3 +309,11 @@ export function basicInfoReportV1_5_4(id) {
     }
   })
 }
+
+export function listOrder1_5_4(query) {
+  return request({
+    url: '/order/v1.5.4/list',
+    method: 'get',
+    params: query
+  })
+}

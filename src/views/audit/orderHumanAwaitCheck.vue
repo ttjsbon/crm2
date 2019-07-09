@@ -57,6 +57,7 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button type="primary" size="mini" @click="handleInfo(scope.row)">报告</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -372,7 +373,7 @@
     getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_0
+    listOrder1_5_4
   } from '@/api/order'
   import {
     parseTime
@@ -435,7 +436,7 @@
           orderStatusArray: [201],
           sort: 'add_time',
           order: 'desc',
-          overdue: 1,
+          electronuclear_state: 1,
           name: undefined,
           mobile: undefined,
           timePeriod: [null],
@@ -495,7 +496,7 @@
             this.listQuery.payTimePeriod.push(null)
           }
         }
-        listOrderV1_5_0(this.timeper).then(response => {
+        listOrder1_5_4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -575,6 +576,14 @@
         })
         this.checkForm.orderId = row.id
         this.checkDialogVisible = true
+      },
+      handleInfo(row) {
+        this.$router.push({
+          path: 'auditInfo',
+          query: {
+            id: row.id
+          }
+        })
       },
       confirmCheck() {
         if (!this.checkpass) {
