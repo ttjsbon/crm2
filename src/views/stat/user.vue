@@ -2,10 +2,12 @@
   <div class="app-container calendar-list-container">
     <div id="select">
       选择时间段：
-      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;" @change="selectDate"></date-picker>
+      <date-picker v-model="timePeriod" range :shortcuts="shortcuts" style="width: 220px;"
+                   @change="selectDate"></date-picker>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       认证状态：
-      <el-select :default-active="$route.path" @change="chickAuth" v-model="searchAuth" filterable placeholder="请输入/请选择" class="h-m-select">
+      <el-select :default-active="$route.path" @change="chickAuth" v-model="searchAuth" filterable placeholder="请输入/请选择"
+                 class="h-m-select">
         <el-option v-for="item in auths" :key="item.value" :label="item.label" v-model="item.value">
         </el-option>
       </el-select>
@@ -17,7 +19,7 @@
 </template>
 
 <script>
-  import { statUser } from '@/api/stat'
+  import { statUser, statUserChannel } from '@/api/stat'
   import VeHistogram from 'v-charts/lib/histogram'
   import VeLine from 'v-charts/lib/line'
   import DatePicker from 'vue2-datepicker'
@@ -87,28 +89,30 @@
     },
     methods: {
       data() {
-			if (this.timePeriod.length === 2) {
-					if(this.query.timePeriod[0] && this.query.timePeriod[0].getTime()>1000000000000){
-						var dat = new Date(new Date(this.query.timePeriod[0]).getTime()+3600*24*1000)
-						this.query.timePeriod[0] = dat
-						var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime()+3600*24*1000)
-						this.query.timePeriod[1] = dat1				
-					}
-					else{
-						this.query.timePeriod=[]
-						this.query.timePeriod.push(null)
-					}
-			
-      }
-        statUser(this.query).then(response => {
+        if (this.timePeriod.length === 2) {
+          if (this.query.timePeriod[0] && this.query.timePeriod[0].getTime() > 1000000000000) {
+            var dat = new Date(new Date(this.query.timePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.query.timePeriod[0] = dat
+            var dat1 = new Date(new Date(this.query.timePeriod[1]).getTime() + 3600 * 24 * 1000)
+            this.query.timePeriod[1] = dat1
+          } else {
+            this.query.timePeriod = []
+            this.query.timePeriod.push(null)
+          }
+
+        }
+        statUserChannel(this.query).then(response => {
+          // statUser(this.query).then(response => {
           this.chartData = response.data.data
           this.chartSettings = {
             labelMap: {
-              'users': '用户增长数'
+              'AliUsers': '支付宝用户增长量',
+              'WxUsers': '微信用户增长量',
+              'JdUsers': '京东用户增长量'
             }
           }
           this.chartExtend = {
-            xAxis: { boundaryGap: true },
+            xAxis: { boundaryGap: true }
             // series: {
             //   label: { show: true, position: 'top' }
             // }
@@ -121,17 +125,17 @@
       // },
       chickAuth() {
         this.query.auth = this.searchAuth
-				if(this.timePeriod.length === 1){
-					this.query.timePeriod[0] = this.timePeriod[0]
-				}else{
-					this.query.timePeriod[0] = this.timePeriod[0]
-					this.query.timePeriod[1] = this.timePeriod[1]
-				}
+        if (this.timePeriod.length === 1) {
+          this.query.timePeriod[0] = this.timePeriod[0]
+        } else {
+          this.query.timePeriod[0] = this.timePeriod[0]
+          this.query.timePeriod[1] = this.timePeriod[1]
+        }
         this.data()
       },
       selectDate() {
-				this.query.timePeriod[0] = this.timePeriod[0]
-		    this.query.timePeriod[1] = this.timePeriod[1]
+        this.query.timePeriod[0] = this.timePeriod[0]
+        this.query.timePeriod[1] = this.timePeriod[1]
         this.data()
       }
     }
@@ -139,7 +143,7 @@
   }
 </script>
 <style scoped>
-  .h-m-select{
-    margin-top: 10px ;
+  .h-m-select {
+    margin-top: 10px;
   }
 </style>

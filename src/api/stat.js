@@ -111,3 +111,11 @@ export function statotherAmountMonthV1_3_0(query) {
     params: query
   })
 }
+
+export function statUserChannel(query) {
+  return request({
+    url: '/stat/v1.5.4.1/statUserChannel',
+    method: 'get',
+    params: query
+  })
+}
