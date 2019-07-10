@@ -15,6 +15,8 @@
 
     <!--<ve-histogram :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-histogram>-->
     <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"></ve-line>
+
+    <ve-line :extend="chartExtend" :data="chartDataChannel" :settings="chartSettingsChannel"></ve-line>
   </div>
 </template>
 
@@ -48,6 +50,8 @@
         ],
         chartData: {},
         chartSettings: {},
+        chartDataChannel: {},
+        chartSettingsChannel: {},
         chartExtend: {},
         query: {
           dayNum: 30,
@@ -99,16 +103,26 @@
             this.query.timePeriod = []
             this.query.timePeriod.push(null)
           }
-
         }
         statUserChannel(this.query).then(response => {
           // statUser(this.query).then(response => {
-          this.chartData = response.data.data
-          this.chartSettings = {
+          this.chartDataChannel = response.data.data
+          this.chartSettingsChannel = {
             labelMap: {
               'AliUsers': '支付宝用户增长量',
               'WxUsers': '微信用户增长量',
               'JdUsers': '京东用户增长量'
+            }
+          }
+          this.chartExtend = {
+            xAxis: { boundaryGap: true }
+          }
+        })
+        statUser(this.query).then(response => {
+          this.chartData = response.data.data
+          this.chartSettings = {
+            labelMap: {
+              'users': '用户增长量'
             }
           }
           this.chartExtend = {
