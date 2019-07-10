@@ -352,7 +352,7 @@ export const asyncRouterMap = [{
     component: _import('audit/orderHumanAwaitCheck'),
     name: 'orderHumanAwaitCheck',
     meta: {
-      title: '人审',
+      title: '信审',
       noCache: true
     }
   }, {
