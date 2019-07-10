@@ -343,3 +343,11 @@ export function addOrderReport(query) {
     params: query
   })
 }
+
+export function refundFailure(query) {
+  return request({
+    url: '/order/v1.5.4.2/refundFailure',
+    method: 'get',
+    params: query
+  })
+}

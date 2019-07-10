@@ -35,6 +35,9 @@
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleBadBdbtDownload"
                  :loading="downloadBadBdbtLoading">导出坏账订单信息
       </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleRefundFailure">
+        查找退款失败订单信息
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -487,7 +490,8 @@
     addRemarkV1_4_0,
     listOrderV1_5_0,
     detailOrderV1_5_3,
-    listOrderV1_5_4_1
+    listOrderV1_5_4_1,
+    refundFailure
   } from '@/api/order'
 
   import {
@@ -642,9 +646,41 @@
         }
 
         // listOrderV1_5_0(this.timeper).then(response => {
-          listOrderV1_5_4_1(this.timeper).then(response => {
+        listOrderV1_5_4_1(this.timeper).then(response => {
           this.list = response.data.data.items
-          console.log(this.list,'xx')
+          this.total = response.data.data.total
+          this.listLoading = false
+        }).catch(() => {
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
+      },
+      getRefundFailureList() {
+        this.timeper = JSON.parse(JSON.stringify(this.listQuery))
+        if (this.listQuery.timePeriod.length === 2) {
+          if (this.listQuery.timePeriod[0] && this.listQuery.timePeriod[0].getTime() > 1000000000000) {
+            this.listLoading = true
+            this.timeper.timePeriod[0] = new Date(new Date(this.listQuery.timePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.timeper.timePeriod[1] = new Date(new Date(this.listQuery.timePeriod[1]).getTime() + 3600 * 24 * 1000)
+          } else {
+            this.listQuery.timePeriod = []
+            this.listQuery.timePeriod.push(null)
+          }
+        }
+        if (this.listQuery.payTimePeriod.length === 2) {
+          if (this.listQuery.payTimePeriod[0] && this.listQuery.payTimePeriod[0].getTime() > 1000000000000) {
+            this.listLoading = true
+            this.timeper.payTimePeriod[0] = new Date(new Date(this.listQuery.payTimePeriod[0]).getTime() + 3600 * 24 * 1000)
+            this.timeper.payTimePeriod[1] = new Date(new Date(this.listQuery.payTimePeriod[1]).getTime() + 3600 * 24 * 1000)
+          } else {
+            this.listQuery.payTimePeriod = []
+            this.listQuery.payTimePeriod.push(null)
+          }
+        }
+
+        refundFailure(this.timeper).then(response => {
+          this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
         }).catch(() => {
@@ -671,6 +707,10 @@
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
+      },
+      handleRefundFailure() {
+        this.listQuery.page = 1
+        this.getRefundFailureList()
       },
       handleSizeChange(val) {
         this.listQuery.limit = val
