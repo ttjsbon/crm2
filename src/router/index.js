@@ -230,15 +230,17 @@ export const asyncRouterMap = [{
       title: '新订单',
       noCache: true
     }
-  }, {
-    path: 'orderAwaitCheck',
-    component: _import('order/orderAwaitCheck'),
-    name: 'orderAwaitCheck',
-    meta: {
-      title: '待审核',
-      noCache: true
-    }
-  }, {
+  },
+    // {
+    // path: 'orderAwaitCheck',
+    // component: _import('order/orderAwaitCheck'),
+    // name: 'orderAwaitCheck',
+    // meta: {
+    //   title: '待审核',
+    //   noCache: true
+    // }
+  // },
+  {
     path: 'orderAwaitCheckRefund',
     component: _import('order/orderAwaitCheckRefund'),
     name: 'orderAwaitCheckRefund',
