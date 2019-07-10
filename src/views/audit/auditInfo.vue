@@ -239,20 +239,9 @@
 
     <el-card class="box-card">
       <h3>备注</h3>
-      <el-input type="textarea" placeholder="备注" v-model="orderRemark"></el-input>
+      <el-input type="textarea" placeholder="核实客户在网贷款申请和还款情况" v-model="orderRemark"></el-input>
     </el-card>
-
-    <el-button type="primary" @click="addRemark">保存</el-button>
-
-
-    <!--备注信息-->
-    <el-form-item label="备注信息">
-      <el-input clearable v-model="orderRemark" class="filter-item" style="width: 500px; margin-left: 10px"
-                placeholder="核实客户在网贷款申请和还款情况">
-      </el-input>
-      <el-button type="primary" size="mini" @click="addRemark">保存信息</el-button>
-    </el-form-item>
-
+    <el-button type="primary" @click="addRemark">保存并确认</el-button>
   </div>
 </template>
 
