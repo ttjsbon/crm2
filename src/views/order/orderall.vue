@@ -518,6 +518,8 @@
     name: 'Order',
     data() {
       return {
+        excelHttp: 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/',
+        // excelHttp: 'http://prod1.fanyoutech.com:8083/admin/order/v1.5.0/',
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -865,17 +867,17 @@
       },
       handleNormalDownload() {
         this.downloadNormalLoading = true
-        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/normalTorderExport'
+        window.location.href = this.excelHttp + 'normalTorderExport'
         this.downloadNormalLoading = false
       },
       handleOverdueDownload() {
         this.downloadOverdueLoading = true
-        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/overdueTorderExport'
+        window.location.href = this.excelHttp + 'overdueTorderExport'
         this.downloadOverdueLoading = false
       },
       handleBadBdbtDownload() {
         this.downloadBadBdbtLoading = true
-        window.location.href = 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/badDebtTorderExport'
+        window.location.href = this.excelHttp + 'badDebtTorderExport'
         this.downloadBadBdbtLoading = false
       },
       addId() {
