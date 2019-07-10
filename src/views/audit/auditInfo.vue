@@ -464,6 +464,10 @@
           remark: this.orderRemark
         }
         addOrderReport(queryP).then(res => {
+          // this.$router.push({
+          //   path: 'orderElectricAwaitCheck'
+          // })
+          this.$router.go(-1)
         })
       }
     }
