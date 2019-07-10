@@ -11,8 +11,6 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
-      </el-input>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
       <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;" placeholder="选择支付日期时间" ></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
@@ -55,16 +53,11 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
-      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
-      <!--</el-table-column>-->
-
-      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
-      <!--</el-table-column>-->
-
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
+          <el-button type="primary" size="mini" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button type="primary" size="mini" @click="handleInfo(scope.row)">报告</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -127,13 +120,14 @@
           <el-form-item label="分期期数">
             <template slot-scope="scope">
               <span>{{orderDetail.order.periods}}</span>
+
             </template>
           </el-form-item>
           <el-form-item label="每期租金">
             <span>{{ orderDetail.order.periodPrice }}</span>
           </el-form-item>
           <el-form-item label="全部租金">
-            <span>{{ orderDetail.order.orderPrice }}</span>
+            <span>{{ orderDetail.order.actualPrice }}</span>
           </el-form-item>
         </div>
 
@@ -148,7 +142,7 @@
             <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
           </el-form-item>
           <el-form-item label="增值服务期数">
-            <span>{{  orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
+            <span>{{ orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
           </el-form-item>
         </div>
 
@@ -199,8 +193,8 @@
         </el-form-item>
         <el-form-item label="费用信息">
           <span>
-            (应收金额){{ orderDetail.order.actualPrice }}元 =
-            (商品总租金){{ orderDetail.order.orderPrice }}元 +
+            (实际费用){{ orderDetail.order.actualPrice }}元 =
+            (商品总价){{ orderDetail.order.goodsPrice }}元 +
             (快递费用){{ orderDetail.order.freightPrice }}元 -
             (优惠减免){{ orderDetail.order.couponPrice }}元 -
             (积分减免){{ orderDetail.order.integralPrice }}元
@@ -227,12 +221,6 @@
             <el-table-column align="center" :label="'支付状态'" width="160px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
-              </template>
-            </el-table-column>
-            <!--支付金额-->
-            <el-table-column align="center" :label="'支付金额'" width="160px">
-              <template slot-scope="scope">
-                <span>  {{ scope.row.amount ? scope.row.amount : 0.00}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" :label="'是否退款'" width="160px">
@@ -304,21 +292,56 @@
       </el-form>
     </el-dialog>
 
-
-    <!-- 退款对话框 -->
-    <el-dialog title="退款" :visible.sync="refundDialogVisible">
-      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px"
+    <!-- 审核对话框 -->
+    <el-dialog title="审核" :visible.sync="checkDialogVisible">
+      <el-form ref="checkForm" :model="checkForm" status-icon label-position="left" label-width="100px"
                style='width: 400px; margin-left:50px;'>
-        <el-form-item label="退款金额" prop="refundMoney">
-          <el-input v-model="refundForm.refundMoney" :disabled="true"></el-input>
+        <el-form-item label="是否通过" prop="refundMoney">
+          <el-radio-group v-model="checkpass">
+            <el-radio label="true">通过</el-radio>
+            <el-radio label="false">不通过</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="预授权" prop="preAuthorization" v-if='showCheckData'>
+          {{showCheckData.preAuthorization==true?'已通过':'未通过'}}（该订单是否通过支付宝预授权）
+        </el-form-item>
+        <el-form-item label="备注" prop="refundMoney">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+                    v-model="checkForm.remark">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
+          <div v-html='showCheckData.creditScore'>
+          </div>
+        </el-form-item>
+        <el-form-item label="信用分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.creditScore)'>
+          ''
+        </el-form-item>
+        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='showCheckData&&showCheckData.score'>
+          {{showCheckData.score}}
+        </el-form-item>
+        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.score)'>
+          ''
+        </el-form-item>
+        <el-form-item label="风控建议" prop="refundMoney" v-if='showCheckData&&showCheckData.decision'>
+          {{showCheckData.decision}}
+        </el-form-item>
+        <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>
+          ''
+        </el-form-item>
+        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">
+          <div v-html='showCheckData.result'>
+          </div>
+        </el-form-item>
+        <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>
+          ''
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="refundDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmRefund">确定</el-button>
+        <el-button @click="checkDialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmCheck">确定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -343,19 +366,18 @@
 </style>
 
 <script>
+  import DatePicker from 'vue2-datepicker'
+
   import {
-    refundOrderAmount,
+    auditOrder,
+    getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder4,
-    refundOrderV1_4_0,
-    listOrderV1_5_0,
-    detailOrderV1_5_3
+    listOrderV1_5_4
   } from '@/api/order'
   import {
     parseTime
   } from '@/utils/index'
-  import DatePicker from 'vue2-datepicker'
 
   const statusMap = {
     101: '已下单',
@@ -366,9 +388,6 @@
     204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
-    303: '反欺诈拒绝',
-    304: '新颜拒绝',
-    305: '评分卡拒绝',
     401: '已发货',
     501: '租赁中',
     600: '归还中',
@@ -414,11 +433,11 @@
           page: 1,
           limit: 20,
           id: undefined,
-          name: undefined,
-          orderStatusArray: [302, 202, 303, 304, 305],
+          orderStatusArray: [201],
           sort: 'add_time',
           order: 'desc',
-          overdue: 1,
+          electronuclear_state: 1,
+          name: undefined,
           mobile: undefined,
           timePeriod: [null],
           payTimePeriod: [null],
@@ -433,12 +452,15 @@
           orderGoods: [],
           attach: {}
         },
-        refundForm: {
-          orderId: undefined,
-          refundMoney: undefined
+        checkForm: {
+          orderId: null,
+          isPass: undefined,
+          remark: ''
         },
-        refundDialogVisible: false,
+        checkpass: undefined,
+        checkDialogVisible: false,
         downloadLoading: false,
+        showCheckData: null,
         userdata: null,
         compensationPayChannel: null
       }
@@ -474,9 +496,7 @@
             this.listQuery.payTimePeriod.push(null)
           }
         }
-
-        listOrderV1_5_0(this.timeper).then(response => {
-        // listOrder4(this.timeper).then(response => {
+        listOrderV1_5_4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -514,8 +534,7 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder4(row.id).then(response => {
-        detailOrderV1_5_3(row.id).then(response => {
+        detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -548,33 +567,51 @@
       closeDetail() {
         this.userdata = null
       },
-      handleRefund(row) {
-        refundOrderAmount(row.id).then(response => {
-          this.refundForm = response.data.data
-          this.refundForm.orderId = row.id
-          this.refundForm.refundMoney = this.refundForm.refundAmount
+      handleCheck(row) {
+        getCheckInfo(row.id, row.userId).then(res => {
+          this.showCheckData = res.data.data
+          this.checkTongDun = JSON.parse(this.showCheckData.result)
+          this.changeJson(this.showCheckData, 'result')
+          this.changeJson(this.showCheckData, 'creditScore')
         })
-        this.refundDialogVisible = true
-        this.$nextTick(() => {
-          this.$refs['refundForm'].clearValidate()
-        })
+        this.checkForm.orderId = row.id
+        this.checkDialogVisible = true
       },
-      confirmRefund() {
-        this.$refs['refundForm'].validate((valid) => {
-          if (valid) {
-            // refundOrderV1_3_0(this.refundForm.orderId).then(response => {
-            refundOrderV1_4_0(this.refundForm.orderId).then(response => {
-              this.refundDialogVisible = false
-              this.$notify({
-                title: '成功',
-                message: '确认退款成功',
-                type: 'success',
-                duration: 2000
-              })
-              this.getList()
-            })
+      handleInfo(row) {
+        this.$router.push({
+          path: 'auditInfo',
+          query: {
+            id: row.id
           }
         })
+      },
+      confirmCheck() {
+        if (!this.checkpass) {
+          return
+        } else {
+          this.checkForm.isPass = this.checkpass === 'true'
+          this.$refs['checkForm'].validate((valid) => {
+            if (valid) {
+              auditOrder(this.checkForm).then(response => {
+                this.checkDialogVisible = false
+                this.$notify({
+                  title: '成功',
+                  message: '已审核',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.checkpass = null
+                this.checkForm = {
+                  orderId: null,
+                  isPass: undefined,
+                  remark: ''
+                }
+                this.showCheckData = null
+                this.getList()
+              })
+            }
+          })
+        }
       },
       handleDownload() {
         this.downloadLoading = true
@@ -584,6 +621,12 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
+      },
+      changeJson(val, result) {
+        if (val && val[result]) {
+          const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
+          val[result] = Str
+        }
       }
     }
   }

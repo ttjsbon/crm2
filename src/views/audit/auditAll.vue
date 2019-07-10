@@ -3,18 +3,23 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入用户ID" v-model="listQuery.userId">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
+      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入订单编号" v-model="listQuery.orderSn">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入姓名" v-model="listQuery.name">
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入姓名" v-model="listQuery.name">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
+
+      <el-input clearable class="filter-item" style="width: 140px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
-      </el-input>
+      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
+                 v-model="listQuery.orderStatusArray">
+        <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
+        </el-option>
+      </el-select>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
-      <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;" placeholder="选择支付日期时间" ></date-picker>
+      <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;"
+                   placeholder="选择支付日期时间"></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出
@@ -55,16 +60,9 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
-      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
-      <!--</el-table-column>-->
-
-      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
-      <!--</el-table-column>-->
-
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,22 +131,7 @@
             <span>{{ orderDetail.order.periodPrice }}</span>
           </el-form-item>
           <el-form-item label="全部租金">
-            <span>{{ orderDetail.order.orderPrice }}</span>
-          </el-form-item>
-        </div>
-
-        <div class="flex itemtogether">
-
-          <el-form-item label="增值服务总额">
-            <template slot-scope="scope">
-              <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
-            </template>
-          </el-form-item>
-          <el-form-item label="增值服务分期金额">
-            <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
-          </el-form-item>
-          <el-form-item label="增值服务期数">
-            <span>{{  orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
+            <span>{{ orderDetail.order.actualPrice }}</span>
           </el-form-item>
         </div>
 
@@ -164,6 +147,22 @@
           </el-form-item>
           <el-form-item>
             <span></span>
+          </el-form-item>
+        </div>
+
+
+        <div class="flex itemtogether">
+
+          <el-form-item label="增值服务总额">
+            <template slot-scope="scope">
+              <span>{{orderDetail.attach && orderDetail.attach.actualPrice ? orderDetail.attach.actualPrice : ''}}</span>
+            </template>
+          </el-form-item>
+          <el-form-item label="增值服务分期金额">
+            <span>{{ orderDetail.attach && orderDetail.attach.periodPrice ? orderDetail.attach.periodPrice : ''}}</span>
+          </el-form-item>
+          <el-form-item label="增值服务期数">
+            <span>{{ orderDetail.attach && orderDetail.attach.periods ? orderDetail.attach.periods : ''}}</span>
           </el-form-item>
         </div>
 
@@ -199,13 +198,14 @@
         </el-form-item>
         <el-form-item label="费用信息">
           <span>
-            (应收金额){{ orderDetail.order.actualPrice }}元 =
-            (商品总租金){{ orderDetail.order.orderPrice }}元 +
+            (实际费用){{ orderDetail.order.actualPrice }}元 =
+            (商品总价){{ orderDetail.order.goodsPrice }}元 +
             (快递费用){{ orderDetail.order.freightPrice }}元 -
             (优惠减免){{ orderDetail.order.couponPrice }}元 -
             (积分减免){{ orderDetail.order.integralPrice }}元
           </span>
         </el-form-item>
+
         <el-form-item label="支付信息">
           <span> (支付渠道) {{this.orderDetail.pay && this.orderDetail.pay[0] && this.orderDetail.pay[0].body != null ? this.orderDetail.pay[0].body : '暂无'}}</span>
           <el-table size="small" :data="orderDetail.pay" border fit highlight-current-row>
@@ -227,12 +227,6 @@
             <el-table-column align="center" :label="'支付状态'" width="160px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
-              </template>
-            </el-table-column>
-            <!--支付金额-->
-            <el-table-column align="center" :label="'支付金额'" width="160px">
-              <template slot-scope="scope">
-                <span>  {{ scope.row.amount ? scope.row.amount : 0.00}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" :label="'是否退款'" width="160px">
@@ -304,21 +298,6 @@
       </el-form>
     </el-dialog>
 
-
-    <!-- 退款对话框 -->
-    <el-dialog title="退款" :visible.sync="refundDialogVisible">
-      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px"
-               style='width: 400px; margin-left:50px;'>
-        <el-form-item label="退款金额" prop="refundMoney">
-          <el-input v-model="refundForm.refundMoney" :disabled="true"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="refundDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmRefund">确定</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -344,17 +323,15 @@
 
 <script>
   import {
-    refundOrderAmount,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrder4,
-    refundOrderV1_4_0,
-    listOrderV1_5_0,
-    detailOrderV1_5_3
+    listOrderV1_5_0
   } from '@/api/order'
+
   import {
     parseTime
   } from '@/utils/index'
+
   import DatePicker from 'vue2-datepicker'
 
   const statusMap = {
@@ -395,7 +372,7 @@
           {
             text: 'Today',
             onClick: () => {
-              this.timePeriod = [new Date(), new Date()]
+              this.listQuery.timePeriod = [new Date(), new Date()]
             }
           }
         ],
@@ -414,11 +391,11 @@
           page: 1,
           limit: 20,
           id: undefined,
-          name: undefined,
-          orderStatusArray: [302, 202, 303, 304, 305],
+          orderStatusArray: [],
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
+          name: undefined,
           mobile: undefined,
           timePeriod: [null],
           payTimePeriod: [null],
@@ -431,16 +408,20 @@
           order: {},
           user: {},
           orderGoods: [],
-          attach: {}
+          attach: {},
+          pay: []
         },
-        refundForm: {
+        checkpass: undefined,
+        compensationPayChannel: undefined,
+        checkDialogVisible: false,
+        freeForm: {
           orderId: undefined,
-          refundMoney: undefined
+          freeDeposit: undefined
         },
-        refundDialogVisible: false,
+        freeDialogVisible: false,
+
         downloadLoading: false,
-        userdata: null,
-        compensationPayChannel: null
+        userdata: null
       }
     },
     filters: {
@@ -476,7 +457,6 @@
         }
 
         listOrderV1_5_0(this.timeper).then(response => {
-        // listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -514,8 +494,7 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder4(row.id).then(response => {
-        detailOrderV1_5_3(row.id).then(response => {
+        detailOrder4(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
@@ -548,34 +527,6 @@
       closeDetail() {
         this.userdata = null
       },
-      handleRefund(row) {
-        refundOrderAmount(row.id).then(response => {
-          this.refundForm = response.data.data
-          this.refundForm.orderId = row.id
-          this.refundForm.refundMoney = this.refundForm.refundAmount
-        })
-        this.refundDialogVisible = true
-        this.$nextTick(() => {
-          this.$refs['refundForm'].clearValidate()
-        })
-      },
-      confirmRefund() {
-        this.$refs['refundForm'].validate((valid) => {
-          if (valid) {
-            // refundOrderV1_3_0(this.refundForm.orderId).then(response => {
-            refundOrderV1_4_0(this.refundForm.orderId).then(response => {
-              this.refundDialogVisible = false
-              this.$notify({
-                title: '成功',
-                message: '确认退款成功',
-                type: 'success',
-                duration: 2000
-              })
-              this.getList()
-            })
-          }
-        })
-      },
       handleDownload() {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
@@ -584,6 +535,26 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
+      },
+      changeJson(val, result) {
+        if (val && val[result]) {
+          const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
+          val[result] = Str
+        }
+      },
+      dateFormat(row, column) {
+        const daterc = row[column.property]
+        if (daterc != null) {
+          const dateMat = new Date(parseInt(daterc.replace('/Date(', '').replace(')/', ''), 14))
+          const year = dateMat.getFullYear()
+          const month = dateMat.getMonth() + 1
+          const day = dateMat.getDate()
+          const hh = dateMat.getHours()
+          const mm = dateMat.getMinutes()
+          const ss = dateMat.getSeconds()
+          const timeFormat = year + '-' + month + '-' + day + ' ' + hh + ':' + mm + ':' + ss
+          return timeFormat
+        }
       }
     }
   }

@@ -307,3 +307,39 @@ export function listOrderV1_5_4_1(query) {
     params: query
   })
 }
+
+export function basicInfoReportV1_5_4(id) {
+  return request({
+    url: '/order/v1.5.4/basicInfoReport',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
+export function listOrderV1_5_4(query) {
+  return request({
+    url: '/order/v1.5.4/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function listOrderReport(id) {
+  return request({
+    url: '/order/v1.5.4/getReportRemark',
+    method: 'post',
+    params: {
+      id
+    }
+  })
+}
+
+export function addOrderReport(query) {
+  return request({
+    url: '/order/v1.5.4/addReportRemark',
+    method: 'post',
+    params: query
+  })
+}

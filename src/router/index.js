@@ -230,15 +230,17 @@ export const asyncRouterMap = [{
       title: '新订单',
       noCache: true
     }
-  }, {
-    path: 'orderAwaitCheck',
-    component: _import('order/orderAwaitCheck'),
-    name: 'orderAwaitCheck',
-    meta: {
-      title: '待审核',
-      noCache: true
-    }
-  }, {
+  },
+    // {
+    // path: 'orderAwaitCheck',
+    // component: _import('order/orderAwaitCheck'),
+    // name: 'orderAwaitCheck',
+    // meta: {
+    //   title: '待审核',
+    //   noCache: true
+    // }
+  // },
+  {
     path: 'orderAwaitCheckRefund',
     component: _import('order/orderAwaitCheckRefund'),
     name: 'orderAwaitCheckRefund',
@@ -320,7 +322,51 @@ export const asyncRouterMap = [{
     }
   }]
 },
-
+{
+  path: '/audit',
+  component: Layout,
+  redirect: 'noredirect',
+  name: 'auditManage',
+  meta: {
+    title: '审核管理',
+    icon: 'chart'
+  },
+  children: [{
+    path: 'auditAll',
+    component: _import('audit/auditAll'),
+    name: 'auditAll',
+    meta: {
+      title: '总订单',
+      noCache: true
+    }
+  }, {
+    path: 'orderElectricAwaitCheck',
+    component: _import('audit/orderElectricAwaitCheck'),
+    name: 'orderElectricAwaitCheck',
+    meta: {
+      title: '电核',
+      noCache: true
+    }
+  }, {
+    path: 'orderHumanAwaitCheck',
+    component: _import('audit/orderHumanAwaitCheck'),
+    name: 'orderHumanAwaitCheck',
+    meta: {
+      title: '信审',
+      noCache: true
+    }
+  }, {
+    path: 'auditInfo',
+    component: _import('audit/auditInfo'),
+    name: 'auditInfo',
+    meta: {
+      title: '报告信息',
+      noCache: true
+    },
+    hidden: true
+  }
+  ]
+},
 {
   path: '/goods',
   component: Layout,
