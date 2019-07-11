@@ -351,3 +351,11 @@ export function refundFailure(query) {
     params: query
   })
 }
+
+export function listNewOrderV1_5_5(query) {
+  return request({
+    url: '/order/v1.5.5/newOrderlist',
+    method: 'get',
+    params: query
+  })
+}

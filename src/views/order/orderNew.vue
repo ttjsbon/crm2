@@ -13,6 +13,11 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
       </el-input>
+      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
+                 v-model="listQuery.orderStatusArray">
+        <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
+        </el-option>
+      </el-select>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
@@ -362,7 +367,8 @@
     addRemarkV1_4_0,
     listOrder4,
     listOrderV1_5_0,
-    detailOrderV1_5_3
+    detailOrderV1_5_3,
+    listNewOrderV1_5_5
   } from '@/api/order'
   import {
     parseTime
@@ -415,7 +421,7 @@
           limit: 20,
           id: undefined,
           name: undefined,
-          orderStatusArray: [101],
+          orderStatusArray: [],
           sort: 'add_time',
           order: 'desc',
           overdue: 1,
@@ -465,8 +471,8 @@
           }
         }
 
-        listOrderV1_5_0(this.timeper).then(response => {
-        // listOrder4(this.timeper).then(response => {
+        // listOrderV1_5_0(this.timeper).then(response => {
+        listNewOrderV1_5_5(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
