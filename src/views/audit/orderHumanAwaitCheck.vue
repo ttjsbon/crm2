@@ -58,6 +58,7 @@
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleCheck(scope.row)">审核</el-button>
           <el-button type="primary" size="mini" @click="handleInfo(scope.row)">报告</el-button>
+          <el-button type="primary" size="mini" @click="handleTime(scope.row)">时间线</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -342,6 +343,23 @@
         <el-button type="primary" @click="confirmCheck">确定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="订单状态时间线" width="500px" :visible.sync="timeVisible" @close='closeTime'>
+      <div class="block" v-for="activities in orderTimes">
+        <el-timeline style="border:2px solid #409eff; border-radius: 10px; margin-top: 10px; padding-top: 15px;">
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            color="#409eff"
+            :size="activity.size"
+            :timestamp="activity.timestamp">
+            {{activity.content}}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -373,7 +391,8 @@
     getCheckInfo,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_4
+    listOrderV1_5_4,
+    orderStatusFlow
   } from '@/api/order'
   import {
     parseTime
@@ -399,6 +418,8 @@
     name: 'Order',
     data() {
       return {
+        timeVisible: false,
+        orderTimes: null,
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -612,6 +633,15 @@
             }
           })
         }
+      },
+      handleTime(row) {
+        orderStatusFlow(row.id).then(res => {
+          this.orderTimes = res.data.data
+          this.timeVisible = true
+        })
+      },
+      closeTime() {
+        this.timeVisible = false
       },
       handleDownload() {
         this.downloadLoading = true
