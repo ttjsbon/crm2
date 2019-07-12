@@ -57,6 +57,7 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleCheck(scope.row)">报告</el-button>
+          <el-button type="primary" size="mini" @click="handleTime(scope.row)">时间线</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -289,6 +290,11 @@
 
       </el-form>
     </el-dialog>
+
+    <!-- 订单详情对话框 -->
+    <el-dialog title="时间线" width="900px" :visible.sync="timeVisible" @close='closeTime'>
+      <light-timeline :items='items'  ></light-timeline>
+    </el-dialog>
   </div>
 </template>
 
@@ -318,7 +324,8 @@
   import {
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_4
+    listOrderV1_5_4,
+    orderStatusFlow
   } from '@/api/order'
   import {
     parseTime
@@ -344,6 +351,10 @@
     name: 'Order',
     data() {
       return {
+        items: [
+        ],
+        timeVisible: false,
+        msg: 'Welcome to Your Vue.js App',
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -520,6 +531,15 @@
             id: row.id
           }
         })
+      },
+      handleTime(row) {
+        orderStatusFlow(row.id).then(res => {
+          this.items = res.data.data
+          this.timeVisible = true
+        })
+      },
+      closeTime() {
+        this.timeVisible = false
       },
       handleDownload() {
         this.downloadLoading = true

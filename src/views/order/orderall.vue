@@ -523,8 +523,8 @@
     name: 'Order',
     data() {
       return {
-        excelHttp: 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/',
-        // excelHttp: 'http://prod1.fanyoutech.com:8083/admin/order/v1.5.0/',
+        // excelHttp: 'http://test.fanyoutech.com:8083/admin/order/v1.5.0/',
+        excelHttp: 'http://prod1.fanyoutech.com:8083/admin/order/v1.5.0/',
         timePeriod: '',
         payTimePeriod: '',
         lang: {

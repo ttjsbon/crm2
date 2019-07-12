@@ -359,3 +359,13 @@ export function listNewOrderV1_5_5(query) {
     params: query
   })
 }
+
+export function orderStatusFlow(orderId) {
+  return request({
+    url: '/order/v1.5.5/orderStatusFlow',
+    method: 'get',
+    params: {
+      orderId
+    }
+  })
+}

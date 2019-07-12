@@ -5,7 +5,16 @@
 </template>
 
 <script>
+  import { version } from 'ant-design-vue/es'
+  import moment from 'moment'
+
   export default{
-    name: 'APP'
+    name: 'APP',
+    data() {
+      return {
+        moment,
+        version
+      }
+    }
   }
 </script>
