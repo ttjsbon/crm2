@@ -11,15 +11,10 @@ import App from './App'
 import router from './router'
 import store from './store'
 
-import Antd from 'ant-design-vue/es'
-import 'ant-design-vue/dist/antd.css'
-import LightTimeline from 'vue-light-timeline';
 import './icons' // icon
 import './permission' // permission control
 // import './mock' // simulation data
 import moment from 'moment'
-Vue.use(Antd)
-Vue.use(LightTimeline)
 Vue.use(Element, {
   size: 'medium' // set element-ui default size
 })

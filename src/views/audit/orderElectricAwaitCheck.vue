@@ -74,15 +74,14 @@
 
     <!-- 订单详情对话框 -->
     <el-dialog title="订单详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
-
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="认证信息" class="bigitem">
-          <span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
+          <br><span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
           <span>（住址）{{  orderDetail.user && orderDetail.user.homeAddress ? orderDetail.user.homeAddress : ''  }}</span>
           <span>（工作地址）{{  orderDetail.user && orderDetail.user.workAddress ? orderDetail.user.workAddress : ''  }}</span>
           <span>（身份证）{{  orderDetail.user && orderDetail.user.idCardNo ? orderDetail.user.idCardNo : ''  }}</span>
           <span>（手机号）{{  orderDetail.user && orderDetail.user.mobile ? orderDetail.user.mobile : ''  }}</span>
-          <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
+          <br><span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
           <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
           <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
         </el-form-item>
@@ -291,9 +290,21 @@
       </el-form>
     </el-dialog>
 
-    <!-- 订单详情对话框 -->
-    <el-dialog title="时间线" width="900px" :visible.sync="timeVisible" @close='closeTime'>
-      <light-timeline :items='items'  ></light-timeline>
+    <el-dialog title="订单状态时间线" width="500px" :visible.sync="timeVisible" @close='closeTime'>
+      <div class="block" v-for="activities in orderTimes">
+        <el-timeline style="border:2px solid #409eff; border-radius: 10px; margin-top: 10px; padding-top: 15px;">
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            color="#409eff"
+            :size="activity.size"
+            :timestamp="activity.timestamp">
+            {{activity.content}}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -351,8 +362,25 @@
     name: 'Order',
     data() {
       return {
-        items: [
-        ],
+        orderTimes: null,
+        // activities: [{
+        //   content: '支持使用图标',
+        //   timestamp: '2018-04-12 20:46',
+        //   size: 'large',
+        //   type: 'primary',
+        //   icon: 'el-icon-more'
+        // }, {
+        //   content: '支持自定义颜色',
+        //   timestamp: '2018-04-03 20:46',
+        //   color: '#0bbd87'
+        // }, {
+        //   content: '支持自定义尺寸',
+        //   timestamp: '2018-04-03 20:46',
+        //   size: 'large'
+        // }, {
+        //   content: '默认样式的节点',
+        //   timestamp: '2018-04-03 20:46'
+        // }],
         timeVisible: false,
         msg: 'Welcome to Your Vue.js App',
         timePeriod: '',
@@ -534,7 +562,7 @@
       },
       handleTime(row) {
         orderStatusFlow(row.id).then(res => {
-          this.items = res.data.data
+          this.orderTimes = res.data.data
           this.timeVisible = true
         })
       },
