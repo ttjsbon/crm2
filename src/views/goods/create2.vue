@@ -214,6 +214,12 @@
         <el-input  disabled  value="1"></el-input>
       </div> -->
       <div class="flex tenancybox">
+        <span class="tenancylabel">最低租赁天数</span>
+        <el-input v-model="MinimumDays" placeholder="输入最低租赁天数，如：1" style="width: 25%">
+          <template slot="append">天</template>
+        </el-input>
+      </div>
+      <div class="flex tenancybox">
         <span class="tenancylabel">意外保险</span>
         <el-switch v-model="isInsure"></el-switch>
       </div>
@@ -298,7 +304,7 @@
         </div>
         <!--        <div v-if="nperval.length > 0">-->
         <div v-if="productForm.productFinances">
-<!--          <div v-for="item in nperval" :key="item.periods" class="flex mar-b">-->
+          <!--          <div v-for="item in nperval" :key="item.periods" class="flex mar-b">-->
           <div v-for="item in productForm.productFinances" :key="item.periods" class="flex mar-b">
             <span class="rentlabel">{{item.productName}}{{item.periods}}期:</span>
             <el-input v-model="item.price" placeholder="输入租金">
@@ -480,7 +486,8 @@
         financeAttachData: [],
         mallGoodsFinances: [],
         installment: null,
-        once: null
+        once: null,
+        MinimumDays: null
       }
     },
     created() {
@@ -516,6 +523,7 @@
         this.editAttach()
         this.goods.isOnSale = false
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
+        this.goods.minimumDays = this.MinimumDays
         const finalGoods = {
           goods: this.goods,
           specifications: this.specifications,

@@ -204,6 +204,12 @@
         <el-input  disabled  value="1"></el-input>
       </div> -->
       <div class="flex tenancybox">
+        <span class="tenancylabel">最低租赁天数</span>
+        <el-input v-model="MinimumDays" placeholder="输入最低租赁天数，如：1" style="width: 25%">
+          <template slot="append">天</template>
+        </el-input>
+      </div>
+      <div class="flex tenancybox">
         <span class="tenancylabel">意外保险</span>
         <el-switch v-model="isInsure"></el-switch>
       </div>
@@ -592,7 +598,8 @@
         financeAttachData: [],
         mallGoodsFinances: [],
         installment: null,
-        once: null
+        once: null,
+        MinimumDays: null
       }
     },
     created() {
@@ -619,6 +626,8 @@
           this.products = response.data.data.products
           this.attributes = response.data.data.attributes
           this.categoryIds = response.data.data.categoryIds
+          // 最低租赁天数
+          this.MinimumDays = this.goods.minimumDays
           this.getFirstCopy()
 
           this.products[0].productFinanceDTOS.forEach(item => {
@@ -690,6 +699,7 @@
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
         this.goodsReqs.newis = this.goods.isNew
         this.goodsReqs.hotis = this.goods.isHot
+        this.goods.minimumDays = this.MinimumDays
         const finalGoods = {
           goods: this.goods,
           goodsReqs: this.goodsReqs,
