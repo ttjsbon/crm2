@@ -63,6 +63,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button type="primary" size="mini" @click="handleTime(scope.row)">时间线</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -298,6 +299,22 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog title="订单状态时间线" width="500px" :visible.sync="timeVisible" @close='closeTime'>
+      <div class="block" v-for="activities in orderTimes">
+        <el-timeline style="border:2px solid #409eff; border-radius: 10px; margin-top: 10px; padding-top: 15px;">
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            color="#409eff"
+            :size="activity.size"
+            :timestamp="activity.timestamp">
+            {{activity.content}}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -325,7 +342,8 @@
   import {
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_0
+    listOrderV1_5_0,
+    orderStatusFlow
   } from '@/api/order'
 
   import {
@@ -357,6 +375,8 @@
     name: 'Order',
     data() {
       return {
+        orderTimes: null,
+        timeVisible: false,
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -541,6 +561,15 @@
           const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
           val[result] = Str
         }
+      },
+      handleTime(row) {
+        orderStatusFlow(row.id).then(res => {
+          this.orderTimes = res.data.data
+          this.timeVisible = true
+        })
+      },
+      closeTime() {
+        this.timeVisible = false
       },
       dateFormat(row, column) {
         const daterc = row[column.property]
