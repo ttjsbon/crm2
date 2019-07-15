@@ -9,12 +9,14 @@
       </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
+                 :loading="downloadLoading">导出
+      </el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-      highlight-current-row>
+              highlight-current-row>
       <el-table-column align="center" label="专题标题" prop="title">
       </el-table-column>
 
@@ -23,7 +25,7 @@
 
       <el-table-column align="center" property="picUrl" label="图片">
         <template slot-scope="scope">
-          <img :src="scope.row.picUrl" width="80" />
+          <img :src="scope.row.picUrl" width="80"/>
         </template>
       </el-table-column>
 
@@ -53,9 +55,11 @@
 
     <!-- 分页 -->
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-        :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="listQuery.page"
+                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="total">
       </el-pagination>
     </div>
 
@@ -66,7 +70,7 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px"
-        style='width: 400px; margin-left:50px;'>
+               style='width: 400px; margin-left:50px;'>
         <el-form-item label="专题标题" prop="title">
           <el-input v-model="dataForm.title"></el-input>
         </el-form-item>
@@ -75,7 +79,7 @@
         </el-form-item>
         <el-form-item label="专题图片" prop="picUrl">
           <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false"
-            accept=".jpg,.jpeg,.png,.gif" :on-success="uploadPicUrl">
+                     accept=".jpg,.jpeg,.png,.gif" :on-success="uploadPicUrl">
             <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -99,48 +103,49 @@
 
     <!-- 修改商品 -->
     <!--<div title="设置商品" class="setting" v-if="this.dialogGoods===true" :visible.sync="dialogGoods" @close="cancel" :close-on-click-modal='false'>-->
-      <!--<div class="content" >-->
-        <!--<el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearch"-->
-                         <!--placeholder="请输入商品名称或id" @select="handleSelect">-->
-          <!--<template slot-scope="props">-->
-            <!--<div v-if='!props.item.nonesuggestion' class="proinfo flex">-->
-              <!--<div class="pic">-->
-                <!--<img :src="props.item.picUrl" alt="">-->
-              <!--</div>-->
-              <!--<div class="prointroduce">-->
-                <!--<div class="proId">{{props.item.id}}</div>-->
-                <!--<div class="proname wordhide">{{props.item.name}}</div>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<div v-if='props.item.nonesuggestion' class="nonesuggestion">-->
-              <!--{{props.item.nonesuggestion}}-->
-            <!--</div>-->
-          <!--</template>-->
-        <!--</el-autocomplete>-->
-        <!--<div class="flex goodlist">-->
-          <!--<div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">-->
-            <!--<div class="goodbox flex">-->
-              <!--<div>-->
-                <!--<img :src="item.picUrl" alt="">-->
-              <!--</div>-->
-              <!--<div class="goodnames">{{item.name}}</div>-->
-            <!--</div>-->
-            <!--<div class="rightinfo">-->
-              <!--<div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>-->
-            <!--</div>-->
-          <!--</div>-->
+    <!--<div class="content" >-->
+    <!--<el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearch"-->
+    <!--placeholder="请输入商品名称或id" @select="handleSelect">-->
+    <!--<template slot-scope="props">-->
+    <!--<div v-if='!props.item.nonesuggestion' class="proinfo flex">-->
+    <!--<div class="pic">-->
+    <!--<img :src="props.item.picUrl" alt="">-->
+    <!--</div>-->
+    <!--<div class="prointroduce">-->
+    <!--<div class="proId">{{props.item.id}}</div>-->
+    <!--<div class="proname wordhide">{{props.item.name}}</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div v-if='props.item.nonesuggestion' class="nonesuggestion">-->
+    <!--{{props.item.nonesuggestion}}-->
+    <!--</div>-->
+    <!--</template>-->
+    <!--</el-autocomplete>-->
+    <!--<div class="flex goodlist">-->
+    <!--<div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">-->
+    <!--<div class="goodbox flex">-->
+    <!--<div>-->
+    <!--<img :src="item.picUrl" alt="">-->
+    <!--</div>-->
+    <!--<div class="goodnames">{{item.name}}</div>-->
+    <!--</div>-->
+    <!--<div class="rightinfo">-->
+    <!--<div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div slot="footer" class="dialog-footer" style="margin-top: 10px">-->
-        <!--<el-button @click="cancel">取消</el-button>-->
-        <!--<el-button type="primary" @click="addgoods">确定</el-button>-->
-      <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div slot="footer" class="dialog-footer" style="margin-top: 10px">-->
+    <!--<el-button @click="cancel">取消</el-button>-->
+    <!--<el-button type="primary" @click="addgoods">确定</el-button>-->
+    <!--</div>-->
     <!--</div>-->
     <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancel" :close-on-click-modal='false'>
       <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name" :fetch-suggestions="querySearch"
-          placeholder="请输入商品名称或id" @select="handleSelect">
+        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
+                         :fetch-suggestions="querySearch"
+                         placeholder="请输入商品名称或id" @select="handleSelect">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -157,7 +162,7 @@
           </template>
         </el-autocomplete>
         <div class="flex goodlist">
-          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
+          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index" @click="showButton(item)">
             <div class="goodbox flex">
               <div>
                 <img :src="item.picUrl" alt="">
@@ -166,6 +171,12 @@
             </div>
             <div class="rightinfo">
               <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
+              <el-dialog title="专题排序操作" :visible.sync="buttonHiddenAndDisplay" @close="hiddenButton" append-to-body>
+                <el-button type="primary" size="mini" @click="handleTop(operation)">置顶</el-button>
+                <el-button type="primary" size="mini" @click="handleUp(operation)">上移</el-button>
+                <el-button type="primary" size="mini" @click="handleDown(operation)">下移</el-button>
+              </el-dialog>
+
             </div>
           </div>
 
@@ -187,6 +198,7 @@
     position: absolute;
     background-color: white;
   }
+
   .el-dialog {
     width: 800px;
   }
@@ -279,10 +291,12 @@
     createTopic,
     updateTopic,
     deleteTopic,
-    getGoodsInfo
+    getGoodsInfo,
+    getGoodsInfoV1_5_6
   } from '@/api/topic'
   import {
-    listGoods
+    listGoods,
+    sort
   } from '@/api/goods'
   import {
     createStorage,
@@ -323,6 +337,8 @@
         },
         contentDetail: '',
         contentDialogVisible: false,
+        buttonHiddenAndDisplay: false,
+        operation: undefined,
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
@@ -450,6 +466,10 @@
         this.contentDetail = content
         this.contentDialogVisible = true
       },
+      showButton(item) {
+        this.operation = item
+        this.buttonHiddenAndDisplay = true
+      },
       handleUpdate(row) {
         this.dataForm = Object.assign({}, row)
         this.dialogStatus = 'update'
@@ -517,7 +537,8 @@
       changeGoods(row) {
         if (this.dialogGoods === false) {
           if (row.goods.length) {
-            getGoodsInfo({
+            getGoodsInfoV1_5_6({
+              // getGoodsInfo({
               idList: row.goods
             }).then(res => {
               this.editGood = res.data.data
@@ -535,6 +556,9 @@
       cancel() {
         this.dialogGoods = false
         this.resetgoods()
+      },
+      hiddenButton() {
+        this.buttonHiddenAndDisplay = false
       },
       handleSelect(val) {
         this.editGood.push({
@@ -592,6 +616,61 @@
       resetgoods() {
         this.editGood = []
         this.resetForm()
+      },
+      handleTop(row, index) {
+        console.log(row.name, index)
+        this.handleTopParams = {
+          orderId: row.id,
+          move: 0,
+          top: true
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '置顶成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.buttonHiddenAndDisplay = false
+          this.dialogGoods = false
+        })
+      },
+      handleUp(row) {
+        this.handleTopParams = {
+          orderId: row.id,
+          move: 1,
+          top: false
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '上移成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.buttonHiddenAndDisplay = false
+          this.dialogGoods = false
+        })
+      },
+      handleDown(row) {
+        this.handleTopParams = {
+          orderId: row.id,
+          move: -1,
+          top: false
+        }
+        sort(this.handleTopParams).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '下移成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.buttonHiddenAndDisplay = false
+          this.dialogGoods = false
+        })
       }
     }
   }

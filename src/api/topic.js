@@ -57,3 +57,11 @@ export function getGoodsInfo(data) {
     data
   })
 }
+
+export function getGoodsInfoV1_5_6(data) {
+  return request({
+    url: '/goods/v1.5.6/getList',
+    method: 'post',
+    data
+  })
+}
