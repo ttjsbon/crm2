@@ -369,3 +369,11 @@ export function orderStatusFlow(orderId) {
     }
   })
 }
+
+export function listOrderV1_5_6(query) {
+  return request({
+    url: '/order/v1.5.6/list',
+    method: 'get',
+    params: query
+  })
+}

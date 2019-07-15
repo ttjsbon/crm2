@@ -41,6 +41,9 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="商品ID" prop="id">
+      </el-table-column>
+
       <el-table-column align="center" label="商品编号" prop="goodsSn">
       </el-table-column>
 
