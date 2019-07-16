@@ -103,3 +103,11 @@ export function detailGoodsV1_4_0(id) {
     }
   })
 }
+
+export function sortV1_5_6(data) {
+  return request({
+    url: '/goods/v1.5.6/sort',
+    method: 'post',
+    data
+  })
+}

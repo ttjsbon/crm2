@@ -162,7 +162,7 @@
           </template>
         </el-autocomplete>
         <div class="flex goodlist">
-          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index" @click="showButton(item)">
+          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index" @click="showButton(item,index)">
             <div class="goodbox flex">
               <div>
                 <img :src="item.picUrl" alt="">
@@ -296,7 +296,8 @@
   } from '@/api/topic'
   import {
     listGoods,
-    sort
+    sort,
+    sortV1_5_6
   } from '@/api/goods'
   import {
     createStorage,
@@ -339,6 +340,7 @@
         contentDialogVisible: false,
         buttonHiddenAndDisplay: false,
         operation: undefined,
+        goodsIdArr: [],
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
@@ -535,6 +537,7 @@
         })
       },
       changeGoods(row) {
+        this.goodsIdArr = row.goods
         if (this.dialogGoods === false) {
           if (row.goods.length) {
             getGoodsInfoV1_5_6({
@@ -617,14 +620,14 @@
         this.editGood = []
         this.resetForm()
       },
-      handleTop(row, index) {
-        console.log(row.name, index)
+      handleTop(row) {
         this.handleTopParams = {
           orderId: row.id,
           move: 0,
-          top: true
+          top: true,
+          relatedGoodsIds: this.goodsIdArr
         }
-        sort(this.handleTopParams).then(response => {
+        sortV1_5_6(this.handleTopParams).then(response => {
           this.$notify({
             title: '成功',
             message: '置顶成功',
@@ -640,9 +643,10 @@
         this.handleTopParams = {
           orderId: row.id,
           move: 1,
-          top: false
+          top: false,
+          relatedGoodsIds: this.goodsIdArr
         }
-        sort(this.handleTopParams).then(response => {
+        sortV1_5_6(this.handleTopParams).then(response => {
           this.$notify({
             title: '成功',
             message: '上移成功',
@@ -658,9 +662,10 @@
         this.handleTopParams = {
           orderId: row.id,
           move: -1,
-          top: false
+          top: false,
+          relatedGoodsIds: this.goodsIdArr
         }
-        sort(this.handleTopParams).then(response => {
+        sortV1_5_6(this.handleTopParams).then(response => {
           this.$notify({
             title: '成功',
             message: '下移成功',
