@@ -128,17 +128,17 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="下单人手机号是否在凡有其他渠道下有逾期">
-            <span>{{'暂无渠道信息'}}</span>
+            <span>{{info[0].mobileOverdue ? info[0].mobileOverdue : '无'}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="下单人身份证号是否在凡有其他渠道下有逾期">
-            <span>{{'暂无渠道信息'}}</span>
+            <span>{{info[0].idCardOverdue ? info[0].idCardOverdue : '无'}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="收货人的手机号是否在凡有其他渠道下有逾期">
-            <span>{{'暂无渠道信息'}}</span>
+            <span>{{info[0].shouhuoMobileOverdue ? info[0].shouhuoMobileOverdue : '无'}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -157,26 +157,6 @@
         <el-table-column property="multi" label="多维度">
         </el-table-column>
       </el-table>
-      <!--<div class="zlInfo">-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'手机号申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'身份证申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'多维度申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['7天内租赁人在多个平台申请借款']['多维度']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
       <h4>2>近1个月申请情况</h4>
       <el-table :data="attributesMonth" style="font-size: 10px">
         <el-table-column property="name" label="类目">
@@ -188,26 +168,6 @@
         <el-table-column property="multi" label="多维度">
         </el-table-column>
       </el-table>
-      <!--<div class="zlInfo">-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'手机号申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'身份证申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'多维度申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['1个月内租赁人在多个平台申请借款']['多维度']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
       <h4>3>近3个月多平台申请情况</h4>
       <el-table :data="attributesMonths" style="font-size: 10px">
         <el-table-column property="name" label="类目">
@@ -219,26 +179,6 @@
         <el-table-column property="multi" label="多维度">
         </el-table-column>
       </el-table>
-      <!--<div class="zlInfo">-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'手机号申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['租赁人手机']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'身份证申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['租赁人身份证']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="zlDetail">-->
-          <!--<div class="zltitle">{{'多维度申请详情'}}</div>-->
-          <!--<div v-for="(tdinfo,ind) in td_info['3个月内租赁人在多个平台申请借款']['多维度']" :key='ind'>-->
-            <!--<el-text>{{tdinfo}}</el-text>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
     </el-card>
 
     <el-card class="box-card">
