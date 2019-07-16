@@ -111,7 +111,8 @@
             labelMap: {
               'AliUsers': '支付宝用户增长量',
               'WxUsers': '微信用户增长量',
-              'JdUsers': '京东用户增长量'
+              'JdUsers': '京东用户增长量',
+              'AppUsers': 'APP用户增长量'
             }
           }
           this.chartExtend = {
