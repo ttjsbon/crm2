@@ -63,6 +63,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button type="primary" size="mini" @click="handleCheck(scope.row)">报告</el-button>
           <el-button type="primary" size="mini" @click="handleTime(scope.row)">时间线</el-button>
         </template>
       </el-table-column>
@@ -499,6 +500,14 @@
           this.getList()
         }).catch(() => {
           this.flags = false
+        })
+      },
+      handleCheck(row) {
+        this.$router.push({
+          path: 'auditInfo',
+          query: {
+            id: row.id
+          }
         })
       },
       handleFilter() {

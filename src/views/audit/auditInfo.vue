@@ -204,6 +204,8 @@
         </el-table-column>
         <el-table-column property="order_status" label="订单状态">
         </el-table-column>
+        <el-table-column property="electronuclear_remark" label="拒绝原因">
+        </el-table-column>
       </el-table>
     </el-card>
 
