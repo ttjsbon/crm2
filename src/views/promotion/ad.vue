@@ -320,6 +320,9 @@
           value: '微信',
           label: '微信小程序'
         }, {
+          value: 'APP',
+          label: 'APP'
+        }, {
           value: '全部',
           label: '以上所有'
         }],
