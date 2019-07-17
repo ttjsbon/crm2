@@ -71,8 +71,20 @@
           <el-form-item label="指定类型：">
             <span>{{ orderDetail.targetType===1 ? '商品id' : '专题id' }}</span>
           </el-form-item>
-          <el-form-item label="">
-            <span></span>
+          <el-form-item label="新人优惠券指定类型id：">
+            <span>{{orderDetail.categoryId}}</span>
+          </el-form-item>
+        </div>
+
+        <div class="flex itemtogether">
+          <el-form-item label="优惠金额：">
+            <span>{{orderDetail.discountedPrice}}</span>
+          </el-form-item>
+          <el-form-item label="满足金额：">
+            <span>{{ orderDetail.fullPrice}}</span>
+          </el-form-item>
+          <el-form-item label="有效期限(天)：">
+            <span>{{orderDetail.expirationTime}}</span>
           </el-form-item>
         </div>
 
@@ -112,7 +124,7 @@
 
 </style>
 <script>
-  import { userCouponList, delUserCoupon, userCouponDetail } from '@/api/coupon'
+  import { userCouponList, delUserCoupon, userCouponDetail, userCouponDetailV1_5_6 } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
   export default {
@@ -258,7 +270,8 @@
         })
       },
       handleDetail(row) {
-        userCouponDetail(row.id).then(response => {
+        userCouponDetailV1_5_6(row.id).then(response => {
+        // userCouponDetail(row.id).then(response => {
           this.orderDetail = response.data.data
         })
         this.orderDialogVisible = true
