@@ -413,6 +413,7 @@
     name: 'Order',
     data() {
       return {
+        amount: undefined,
         timePeriod: '',
         payTimePeriod: '',
         lang: {
