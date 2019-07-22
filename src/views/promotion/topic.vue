@@ -162,12 +162,12 @@
           </template>
         </el-autocomplete>
         <div class="flex goodlist">
-          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index" @click="showButton(item,index)">
+          <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
             <div class="goodbox flex">
               <div>
-                <img :src="item.picUrl" alt="">
+                <img :src="item.picUrl" alt="" @click="showButton(item,index)">
               </div>
-              <div class="goodnames">{{item.name}}</div>
+              <div class="goodnames" @click="showButton(item,index)">{{item.name}}</div>
             </div>
             <div class="rightinfo">
               <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
@@ -594,6 +594,7 @@
         }
       },
       delGoods(index) {
+        // this.buttonHiddenAndDisplay = false
         this.$confirm('确认删除此商品?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
