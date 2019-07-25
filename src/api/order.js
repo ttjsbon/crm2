@@ -377,3 +377,13 @@ export function listOrderV1_5_6(query) {
     params: query
   })
 }
+
+export function refundOrderV1_5_7(id) {
+  return request({
+    url: '/order/v1.5.7/refund',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
