@@ -100,7 +100,7 @@
         </el-form-item>
 
         <el-form-item label="订单渠道" class="bigitem">
-          <span>{{ orderDetail.order && orderDetail.order.orderChannel ? orderDetail.order.orderChannel === 'aliapplet' ? '支付宝小程序' : '微信小程序' : '暂无' }}</span>
+          <span>{{ this.orderChannel && this.orderChannel != null ? this.orderChannel : '暂无'}}</span>
         </el-form-item>
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
@@ -441,7 +441,8 @@
         refundDialogVisible: false,
         downloadLoading: false,
         userdata: null,
-        compensationPayChannel: null
+        compensationPayChannel: null,
+        orderChannel: null
       }
     },
     filters: {
@@ -540,6 +541,22 @@
             }
           } else {
             this.compensationPayChannel = null
+          }
+          // 订单渠道判断
+          if (this.orderDetail.order != null) {
+            if (this.orderDetail.order.orderChannel === 'aliapplet') {
+              this.orderChannel = '支付宝小程序'
+            } else if (this.orderDetail.order.orderChannel === 'wxapplet') {
+              this.orderChannel = '微信小程序'
+            } else if (this.orderDetail.order.orderChannel === 'app') {
+              this.orderChannel = 'APP'
+            } else if (this.orderDetail.order.orderChannel === 'h5') {
+              this.orderChannel = 'H5'
+            } else {
+              this.orderChannel = '暂无此订单渠道'
+            }
+          } else {
+            this.orderChannel = '暂无'
           }
           this.userdata = JSON.parse(this.orderDetail.user.feature)
         })
