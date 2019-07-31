@@ -494,7 +494,8 @@
     detailOrderV1_5_3,
     listOrderV1_5_4_1,
     refundFailure,
-    listOrderV1_5_6
+    listOrderV1_5_6,
+    refundFailureV1_5_8
   } from '@/api/order'
 
   import {
@@ -684,7 +685,8 @@
           }
         }
 
-        refundFailure(this.timeper).then(response => {
+        refundFailureV1_5_8(this.timeper).then(response => {
+        // refundFailure(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false

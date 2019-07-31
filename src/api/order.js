@@ -387,3 +387,11 @@ export function refundOrderV1_5_7(id) {
     }
   })
 }
+
+export function refundFailureV1_5_8(query) {
+  return request({
+    url: '/order/v1.5.8/refundFailure',
+    method: 'get',
+    params: query
+  })
+}
