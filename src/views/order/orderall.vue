@@ -14,7 +14,8 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
       </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入支付订单号" v-model="listQuery.payOrderId">
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入支付订单号"
+                v-model="listQuery.payOrderId">
       </el-input>
       <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
                  v-model="listQuery.orderStatusArray">
@@ -652,7 +653,7 @@
         }
 
         listOrderV1_5_6(this.timeper).then(response => {
-        // listOrderV1_5_4_1(this.timeper).then(response => {
+          // listOrderV1_5_4_1(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -686,7 +687,7 @@
         }
 
         refundFailureV1_5_8(this.timeper).then(response => {
-        // refundFailure(this.timeper).then(response => {
+          // refundFailure(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -748,6 +749,10 @@
               this.compensationPayChannel = '支付宝手机网站'
             } else if (this.orderDetail.compensation[0].payChannel === 4) {
               this.compensationPayChannel = '微信h5支付'
+            } else if (this.orderDetail.compensation[0].payChannel === 5) {
+              this.compensationPayChannel = '微信小程序'
+            } else if (this.orderDetail.compensation[0].payChannel === 6) {
+              this.compensationPayChannel = '支付宝小程序'
             } else if (this.orderDetail.compensation[0].length <= 0) {
               this.compensationPayChannel = null
             }

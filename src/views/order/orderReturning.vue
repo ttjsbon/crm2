@@ -581,6 +581,10 @@
               this.compensationPayChannel = '支付宝手机网站'
             } else if (this.orderDetail.compensation[0].payChannel === 4) {
               this.compensationPayChannel = '微信h5支付'
+            } else if (this.orderDetail.compensation[0].payChannel === 5) {
+              this.compensationPayChannel = '微信小程序'
+            } else if (this.orderDetail.compensation[0].payChannel === 6) {
+              this.compensationPayChannel = '支付宝小程序'
             } else if (this.orderDetail.compensation[0].length <= 0) {
               this.compensationPayChannel = null
             }
