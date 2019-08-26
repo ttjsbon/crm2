@@ -220,6 +220,12 @@
         </el-input>
       </div>
       <div class="flex tenancybox">
+        <span class="tenancylabel">买断系数</span>
+        <el-input v-model="BuyoutCoefficient" placeholder="输入买断系数，如：1" style="width: 25%">
+          <template slot="append">元</template>
+        </el-input>
+      </div>
+      <div class="flex tenancybox">
         <span class="tenancylabel">意外保险</span>
         <el-switch v-model="isInsure"></el-switch>
       </div>
@@ -487,7 +493,8 @@
         mallGoodsFinances: [],
         installment: null,
         once: null,
-        MinimumDays: null
+        MinimumDays: null,
+        BuyoutCoefficient: null
       }
     },
     created() {
@@ -524,6 +531,7 @@
         this.goods.isOnSale = false
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
         this.goods.minimumDays = this.MinimumDays
+        this.goods.buyoutCoefficient = this.BuyoutCoefficient
         const finalGoods = {
           goods: this.goods,
           specifications: this.specifications,

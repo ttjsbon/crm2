@@ -40,14 +40,14 @@
         </el-form-item> -->
 
         <el-form-item label="是否支持续租" prop="isRelet">
-          <el-radio-group v-model="goods.isRelet">
+          <el-radio-group v-model="goods.relet">
             <el-radio :label="true">支持</el-radio>
             <el-radio :label="false">不支持</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="是否支持买断" prop="isBuyout">
-          <el-radio-group v-model="goods.isBuyout">
+          <el-radio-group v-model="goods.buyout">
             <el-radio :label="true">支持</el-radio>
             <el-radio :label="false">不支持</el-radio>
           </el-radio-group>
@@ -207,6 +207,12 @@
         <span class="tenancylabel">最低租赁天数</span>
         <el-input v-model="MinimumDays" placeholder="输入最低租赁天数，如：1" style="width: 25%">
           <template slot="append">天</template>
+        </el-input>
+      </div>
+      <div class="flex tenancybox">
+        <span class="tenancylabel">买断系数</span>
+        <el-input v-model="BuyoutCoefficient" placeholder="输入买断系数，如：1" style="width: 25%">
+          <template slot="append">元</template>
         </el-input>
       </div>
       <div class="flex tenancybox">
@@ -599,7 +605,8 @@
         mallGoodsFinances: [],
         installment: null,
         once: null,
-        MinimumDays: null
+        MinimumDays: null,
+        BuyoutCoefficient: null
       }
     },
     created() {
@@ -628,6 +635,10 @@
           this.categoryIds = response.data.data.categoryIds
           // 最低租赁天数
           this.MinimumDays = this.goods.minimumDays
+          // 买断系数
+          this.BuyoutCoefficient = this.goods.buyoutCoefficient
+          this.goods.isRelet = this.goods.relet
+          this.goods.isBuyout = this.goods.buyout
           this.getFirstCopy()
 
           this.products[0].productFinanceDTOS.forEach(item => {
@@ -699,7 +710,12 @@
         this.mallGoodsFinances = this.isInsure ? this.mallGoodsFinances : []
         this.goodsReqs.newis = this.goods.isNew
         this.goodsReqs.hotis = this.goods.isHot
+        // 续租
+        this.goodsReqs.reletis = this.goods.relet
+        // 买断
+        this.goodsReqs.buyoutis = this.goods.buyout
         this.goods.minimumDays = this.MinimumDays
+        this.goods.buyoutCoefficient = this.BuyoutCoefficient
         const finalGoods = {
           goods: this.goods,
           goodsReqs: this.goodsReqs,
