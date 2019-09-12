@@ -320,7 +320,15 @@ export const asyncRouterMap = [{
       title: '到期归还',
       noCache: true
     }
-  }]
+  }, {
+      path: 'orderBuyout',
+      component: _import('order/orderBuyout'),
+      name: 'orderBuyout',
+      meta: {
+        title: '买断列表',
+        noCache: true
+      }
+    }]
 },
 {
   path: '/audit',
