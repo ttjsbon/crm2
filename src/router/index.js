@@ -231,6 +231,15 @@ export const asyncRouterMap = [{
       noCache: true
     }
   },
+  {
+    path: 'orderRenewal',
+    component: _import('order/orderRenewal'),
+    name: 'orderRenewal',
+    meta: {
+      title: '续租订单',
+      noCache: true
+    }
+  },
     // {
     // path: 'orderAwaitCheck',
     // component: _import('order/orderAwaitCheck'),
