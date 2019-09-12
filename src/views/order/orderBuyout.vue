@@ -1,6 +1,6 @@
 <template>
-
   <div class="app-container calendar-list-container">
+
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input clearable class="filter-item" style="width: 180px;" placeholder="请输入用户ID" v-model="listQuery.userId">
@@ -11,9 +11,14 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号" v-model="listQuery.mobile">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入设备序列号" v-model="listQuery.sequence">
+      </el-input>
+      <el-select multiple style="width: 150px" class="filter-item" placeholder="请选择订单状态"
+                 v-model="listQuery.orderStatusArray">
+        <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value">
+        </el-option>
+      </el-select>
       <date-picker v-model="listQuery.timePeriod" range :shortcuts="shortcuts" style="width: 220px;"></date-picker>
-      <date-picker v-model="listQuery.payTimePeriod" range :shortcuts="payshortcuts" style="width: 220px;"
-                   placeholder="选择支付日期时间"></date-picker>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出
@@ -54,11 +59,16 @@
       <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
 
+      <!--<el-table-column align="center" label="物流单号" prop="shipSn">-->
+      <!--</el-table-column>-->
+
+      <!--<el-table-column align="center" label="物流渠道" prop="shipChannel">-->
+      <!--</el-table-column>-->
+
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleCheck(scope.row)">报告</el-button>
-          <el-button type="primary" size="mini" @click="handleTime(scope.row)">时间线</el-button>
+          <el-button type="primary" size="mini" @click="handleFree(scope.row)">豁免押金</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,16 +83,18 @@
       </el-pagination>
     </div>
 
+
     <!-- 订单详情对话框 -->
     <el-dialog title="订单详情" width="900" :visible.sync="orderDialogVisible" @close='closeDetail'>
+
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="认证信息" class="bigitem">
-          <br><span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
+          <span>（姓名）{{ orderDetail.user && orderDetail.user.cardName ? orderDetail.user.cardName : '' }}</span>
           <span>（住址）{{  orderDetail.user && orderDetail.user.homeAddress ? orderDetail.user.homeAddress : ''  }}</span>
           <span>（工作地址）{{  orderDetail.user && orderDetail.user.workAddress ? orderDetail.user.workAddress : ''  }}</span>
           <span>（身份证）{{  orderDetail.user && orderDetail.user.idCardNo ? orderDetail.user.idCardNo : ''  }}</span>
           <span>（手机号）{{  orderDetail.user && orderDetail.user.mobile ? orderDetail.user.mobile : ''  }}</span>
-          <br><span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
+          <span>（紧急联系人）{{ orderDetail.order.emergencyName }}</span>
           <span>（联系人关系）{{ orderDetail.order.emergencyRelation }}</span>
           <span>（联系人手机）{{ orderDetail.order.emergencyPhone }}</span>
         </el-form-item>
@@ -122,7 +134,6 @@
           <el-form-item label="分期期数">
             <template slot-scope="scope">
               <span>{{orderDetail.order.periods}}</span>
-
             </template>
           </el-form-item>
           <el-form-item label="每期租金">
@@ -132,6 +143,21 @@
             <span>{{ orderDetail.order.orderPrice }}</span>
           </el-form-item>
         </div>
+
+        <!--        <div class="flex itemtogether">
+
+                  <el-form-item label="增值服务总额">
+                    <template slot-scope="scope">
+                      <span>{{orderDetail.attach.actualPrice}}</span>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="增值服务分期金额">
+                    <span>{{ orderDetail.attach.periodPrice }}</span>
+                  </el-form-item>
+                  <el-form-item label="增值服务期数">
+                    <span>{{ orderDetail.attach.periods }}</span>
+                  </el-form-item>
+                </div> -->
 
         <div class="flex itemtogether">
 
@@ -223,6 +249,12 @@
             <el-table-column align="center" :label="'支付状态'" width="160px">
               <template slot-scope="scope">
                 <span>  {{ scope.row.payOrderId ? '已支付': '未支付'}}</span>
+              </template>
+            </el-table-column>
+            <!--支付金额-->
+            <el-table-column align="center" :label="'支付金额'" width="160px">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.amount ? scope.row.amount : 0.00}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" :label="'是否退款'" width="160px">
@@ -325,22 +357,20 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="订单状态时间线" width="500px" :visible.sync="timeVisible" @close='closeTime'>
-      <div class="block" v-for="activities in orderTimes">
-        <el-timeline style="border:2px solid #409eff; border-radius: 10px; margin-top: 10px; padding-top: 15px;">
-          <el-timeline-item
-            v-for="(activity, index) in activities"
-            :key="index"
-            :icon="activity.icon"
-            :type="activity.type"
-            color="#409eff"
-            :size="activity.size"
-            :timestamp="activity.timestamp">
-            {{activity.content}}
-          </el-timeline-item>
-        </el-timeline>
+    <!-- 豁免金额对话框 -->
+    <el-dialog title="豁免" :visible.sync="freeDialogVisible">
+      <el-form ref="freeForm" :model="freeForm" status-icon label-position="left" label-width="100px"
+               style='width: 400px; margin-left:50px;'>
+        <el-form-item label="豁免金额" prop="freeDeposit">
+          <el-input v-model="freeForm.freeDeposit"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="freeDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmFree">确定</el-button>
       </div>
     </el-dialog>
+
   </div>
 </template>
 
@@ -365,18 +395,21 @@
 </style>
 
 <script>
-  import DatePicker from 'vue2-datepicker'
-
   import {
+    freeDepositOrder,
     detailOrder4,
     addRemarkV1_4_0,
-    listOrderV1_5_4,
-    orderStatusFlow,
-    detailOrderV2_1_0
+    listOrder4,
+    listOrderV1_5_0,
+    detailOrderV1_5_3,
+    listNewOrderV1_5_5,
+    detailOrderV2_1_0,
+    listBuyoutOrderV2_1_0
   } from '@/api/order'
   import {
     parseTime
   } from '@/utils/index'
+  import DatePicker from 'vue2-datepicker'
 
   const statusMap = {
     101: '已下单',
@@ -387,6 +420,9 @@
     204: '申请退款',
     301: '审核通过',
     302: '审核拒绝',
+    303: '反欺诈拒绝',
+    304: '新颜拒绝',
+    305: '评分卡拒绝',
     401: '已发货',
     501: '租赁中',
     600: '归还中',
@@ -398,11 +434,7 @@
     name: 'Order',
     data() {
       return {
-        orderTimes: null,
-        timeVisible: false,
-        msg: 'Welcome to Your Vue.js App',
         timePeriod: '',
-        payTimePeriod: '',
         lang: {
           days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
           months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -420,14 +452,6 @@
             }
           }
         ],
-        payshortcuts: [
-          {
-            text: 'Today',
-            onClick: () => {
-              this.listQuery.payTimePeriod = [new Date(), new Date()]
-            }
-          }
-        ],
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -435,11 +459,11 @@
           page: 1,
           limit: 20,
           id: undefined,
-          orderStatusArray: [201],
+          name: undefined,
+          orderStatusArray: [],
           sort: 'add_time',
           order: 'desc',
-          electronuclear_state: 0,
-          name: undefined,
+          overdue: 1,
           mobile: undefined,
           timePeriod: [null],
           payTimePeriod: [null],
@@ -454,17 +478,16 @@
           orderGoods: [],
           attach: {}
         },
-        checkForm: {
-          orderId: null,
-          isPass: undefined,
-          remark: ''
+        freeForm: {
+          orderId: undefined,
+          freeDeposit: undefined
         },
-        checkpass: undefined,
+        freeDialogVisible: false,
         downloadLoading: false,
-        showCheckData: null,
         userdata: null,
         compensationPayChannel: null,
-        orderChannel: null
+        orderChannel: null,
+        orderType: null
       }
     },
     filters: {
@@ -488,17 +511,9 @@
             this.listQuery.timePeriod.push(null)
           }
         }
-        if (this.listQuery.payTimePeriod.length === 2) {
-          if (this.listQuery.payTimePeriod[0] && this.listQuery.payTimePeriod[0].getTime() > 1000000000000) {
-            this.listLoading = true
-            this.timeper.payTimePeriod[0] = new Date(new Date(this.listQuery.payTimePeriod[0]).getTime() + 3600 * 24 * 1000)
-            this.timeper.payTimePeriod[1] = new Date(new Date(this.listQuery.payTimePeriod[1]).getTime() + 3600 * 24 * 1000)
-          } else {
-            this.listQuery.payTimePeriod = []
-            this.listQuery.payTimePeriod.push(null)
-          }
-        }
-        listOrderV1_5_4(this.timeper).then(response => {
+
+        listBuyoutOrderV2_1_0(this.timeper).then(response => {
+        // listNewOrderV1_5_5(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -507,6 +522,7 @@
           this.total = 0
           this.listLoading = false
         })
+
       },
       addRemarkV1_4_0_1() {
         addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
@@ -536,8 +552,8 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder4(row.id).then(response => {
         detailOrderV2_1_0(row.id).then(response => {
+        // detailOrderV1_5_3(row.id).then(response => {
           this.orderDetail = response.data.data
           this.orderType = this.orderDetail.orderType
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
@@ -583,9 +599,7 @@
           } else {
             this.orderChannel = '暂无'
           }
-          if (this.orderDetail.user.feature) {
-            this.userdata = JSON.parse()
-          }
+          this.userdata = JSON.parse(this.orderDetail.user.feature)
         })
 
         this.orderDialogVisible = true
@@ -593,37 +607,43 @@
       closeDetail() {
         this.userdata = null
       },
-      handleCheck(row) {
-        this.$router.push({
-          path: 'auditInfo',
-          query: {
-            id: row.id
-          }
-        })
+      handleFree(row) {
+        this.freeForm.orderId = row.id
+        this.freeDialogVisible = true
       },
-      handleTime(row) {
-        orderStatusFlow(row.id).then(res => {
-          this.orderTimes = res.data.data
-          this.timeVisible = true
-        })
-      },
-      closeTime() {
-        this.timeVisible = false
+      confirmFree() {
+        if (!this.freeForm.freeDeposit || !/^[0-9]*$/.test(this.freeForm.freeDeposit)) {
+          this.$message.error('请输入正确金额')
+          return
+        } else {
+          this.$refs['freeForm'].validate((valid) => {
+            if (valid) {
+              freeDepositOrder(this.freeForm).then(response => {
+                this.freeDialogVisible = false
+                this.$notify({
+                  title: '成功',
+                  message: '豁免成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.freeForm = {
+                  orderId: undefined,
+                  freeDeposit: undefined
+                }
+                this.getList()
+              })
+            }
+          })
+        }
       },
       handleDownload() {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址', '支付时间']
-          const filterVal = ['id', 'orderSn', 'userId', 'orderStatus', 'isDelete', 'consignee', 'mobile', 'address', 'payTime']
+          const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
+          const filterVal = ['id', 'orderSn', 'userId', 'orderStatus', 'isDelete', 'consignee', 'mobile', 'address']
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
-      },
-      changeJson(val, result) {
-        if (val && val[result]) {
-          const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
-          val[result] = Str
-        }
       }
     }
   }

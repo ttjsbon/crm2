@@ -411,3 +411,21 @@ export function refundFailureV1_5_8(query) {
     params: query
   })
 }
+
+export function detailOrderV2_1_0(id) {
+  return request({
+    url: '/order/v2.1.0/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
+export function listBuyoutOrderV2_1_0(query) {
+  return request({
+    url: '/order/v2.1.0/queryBuyoutOrderList',
+    method: 'get',
+    params: query
+  })
+}

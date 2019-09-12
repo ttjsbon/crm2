@@ -102,6 +102,9 @@
         <el-form-item label="订单渠道" class="bigitem">
           <span>{{ this.orderChannel && this.orderChannel != null ? this.orderChannel : '暂无'}}</span>
         </el-form-item>
+        <el-form-item label="订单类型" class="bigitem">
+          <span>{{ this.orderType }}</span>
+        </el-form-item>
         <el-form-item label="订单编号" class="bigitem">
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
@@ -274,6 +277,37 @@
           </el-table>
         </el-form-item>
 
+        <el-form-item label="买断支付信息">
+          <span>（支付渠道）{{this.orderDetail.BuyoutPayInfo && this.orderDetail.BuyoutPayInfo[0] && this.orderDetail.BuyoutPayInfo[0].body != null ? this.orderDetail.BuyoutPayInfo[0].body : '暂无'}}</span>
+          <el-table size="small" :data="orderDetail.BuyoutPayInfo" border fit highlight-current-row>
+            <el-table-column align="center" :label="'支付时间'" width="230%">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.updateTime?scope.row.updateTime.substring(0, 10):'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付订单'" width="235%">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.outTradeOrderId?scope.row.outTradeOrderId:'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付金额'" width="225%">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.amount?scope.row.amount:'暂无'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'支付状态'" width="225%">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.outTradeOrderId?'已支付':'未支付'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" :label="'买断状态'" width="225%">
+              <template slot-scope="scope">
+                <span>  {{ scope.row.outTradeOrderId?'已买断':'未买断'}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+
         <el-form-item label="快递信息">
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
@@ -351,7 +385,8 @@
     refundOrderV1_4_0,
     listOrderV1_5_0,
     detailOrderV1_5_3,
-    refundOrderV1_5_7
+    refundOrderV1_5_7,
+    detailOrderV2_1_0
   } from '@/api/order'
   import {
     parseTime
@@ -516,9 +551,10 @@
         this.getList()
       },
       handleDetail(row) {
-        // detailOrder4(row.id).then(response => {
-        detailOrderV1_5_3(row.id).then(response => {
+        detailOrderV2_1_0(row.id).then(response => {
+        // detailOrderV1_5_3(row.id).then(response => {
           this.orderDetail = response.data.data
+          this.orderType = this.orderDetail.orderType
           this.orderDetail.order.addTime = parseTime(this.orderDetail.order.addTime)
           if (this.orderDetail.order.beginTime) {
             this.orderDetail.order.beginTime = parseTime(this.orderDetail.order.beginTime)
