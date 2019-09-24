@@ -212,7 +212,7 @@
       <div class="flex tenancybox">
         <span class="tenancylabel">买断系数</span>
         <el-input v-model="BuyoutCoefficient" placeholder="输入买断系数，如：1" style="width: 25%">
-          <template slot="append">元</template>
+          <!--          <template slot="append">元</template>-->
         </el-input>
       </div>
       <div class="flex tenancybox">
@@ -716,6 +716,16 @@
         this.goodsReqs.buyoutis = this.goods.buyout
         this.goods.minimumDays = this.MinimumDays
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
+        if (this.goodsReqs.buyoutis === true) {
+          if (this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0') {
+            this.$message({
+              type: 'error',
+              message: '买断系数不可以为空或者为0，请重新填写。'
+            })
+            return
+          }
+        }
+
         const finalGoods = {
           goods: this.goods,
           goodsReqs: this.goodsReqs,
