@@ -717,7 +717,15 @@
         this.goods.minimumDays = this.MinimumDays
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
         if (this.goodsReqs.buyoutis === true) {
-          if (this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0') {
+          console.log(isNaN(this.goods.buyoutCoefficient),'sbxm')
+          if (isNaN(this.goods.buyoutCoefficient)) {
+            this.$message({
+              type: 'error',
+              message: '买断系数输入内容不能输入特殊字符，请重新填写。'
+            })
+            return
+          }
+          if (this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0' || isNaN(this.goods.buyoutCoefficient)) {
             this.$message({
               type: 'error',
               message: '买断系数不可以为空或者为0，请重新填写。'
@@ -752,17 +760,20 @@
             type: 'error'
           })
         })
-      },
+      }
+      ,
       handleClose(tag) {
         this.keywords.splice(this.keywords.indexOf(tag), 1)
         this.goods.keywords = this.keywords.toString()
-      },
+      }
+      ,
       showInput() {
         this.newKeywordVisible = true
         this.$nextTick(_ => {
           this.$refs.newKeywordInput.$refs.input.focus()
         })
-      },
+      }
+      ,
       handleInputConfirm() {
         const newKeyword = this.newKeyword
         if (newKeyword) {
@@ -771,21 +782,25 @@
         }
         this.newKeywordVisible = false
         this.newKeyword = ''
-      },
+      }
+      ,
       uploadPicUrl: function(response) {
         this.goods.picUrl = response.data.url
-      },
+      }
+      ,
       uploadOverrun: function() {
         this.$message({
           type: 'error',
           message: '上传文件个数超出限制!最多上传5张图片!'
         })
-      },
+      }
+      ,
       handleGalleryUrl(response, file, fileList) {
         if (response.errno === 0) {
           this.goods.gallery.push(response.data.url)
         }
-      },
+      }
+      ,
       handleRemove: function(file, fileList) {
         for (var i = 0; i < this.goods.gallery.length; i++) {
           // 这里存在两种情况
@@ -803,7 +818,8 @@
             this.goods.gallery.splice(i, 1)
           }
         }
-      },
+      }
+      ,
       specChanged: function(label) {
         if (label === false) {
           this.specifications = [{
@@ -822,10 +838,12 @@
           this.specifications = []
           this.products = []
         }
-      },
+      }
+      ,
       uploadSpecPicUrl: function(response) {
         this.specForm.picUrl = response.data.url
-      },
+      }
+      ,
       handleSpecificationShow() {
         this.specificationValue = ''
         this.specForm = {
@@ -834,10 +852,12 @@
           picUrl: ''
         }
         this.specVisiable = true
-      },
+      }
+      ,
       handleCloseTag(index) {
         this.specForm.value.splice(index, 1)
-      },
+      }
+      ,
       addTag() {
         if (!this.specificationValue) {
           this.$message.error('请输入规格值')
@@ -845,7 +865,8 @@
           this.specForm.value.push(this.specificationValue)
           this.specificationValue = ''
         }
-      },
+      }
+      ,
       handleSpecificationAdd() {
         if (this.specForm.value.length) {
           this.specForm.value.forEach(item => {
@@ -889,7 +910,8 @@
         this.copyspecifications = arrM
         this.specVisiable = false
         this.specToProduct()
-      },
+      }
+      ,
       handleSpecificationDelete(row) {
         const index = this.copyspecifications.indexOf(row)
         var keys = row.specification
@@ -903,7 +925,8 @@
         })
 
         this.specToProduct()
-      },
+      }
+      ,
       specToProduct() {
 
         if (this.specifications.length === 0) {
@@ -977,14 +1000,17 @@
         this.products = products
         // this.nperarr = this.leaseTerm
         this.changetenancy(this.leaseTerm)
-      },
+      }
+      ,
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
         this.productVisiable = true
-      },
+      }
+      ,
       uploadProductUrl: function(response) {
         this.productForm.url = response.data.url
-      },
+      }
+      ,
       handleProductEdit() {
         for (var i = 0; i < this.products.length; i++) {
           const v = this.products[i]
@@ -994,19 +1020,23 @@
           }
         }
         this.productVisiable = false
-      },
+      }
+      ,
       handleAttributeShow() {
         this.attributeForm = {}
         this.attributeVisiable = true
-      },
+      }
+      ,
       handleAttributeAdd() {
         this.attributes.push(this.attributeForm)
         this.attributeVisiable = false
-      },
+      }
+      ,
       handleAttributeDelete(row) {
         const index = this.attributes.indexOf(row)
         this.attributes.splice(index, 1)
-      },
+      }
+      ,
       attributeUp(index) {
         if (index === 0) {
           return
@@ -1015,7 +1045,8 @@
         // [this.attributes[index], this.attributes[index - 1]] = [this.attributes[index - 1], this.attributes[index]]
         this.$set(this.attributes, index - 1, this.attributes[index])
         this.$set(this.attributes, index, temp)
-      },
+      }
+      ,
       attributeDown(index) {
         if (index === this.attributes.length - 1) {
           return
@@ -1024,7 +1055,8 @@
         // [this.attributes[index], this.attributes[index + 1]] = [this.attributes[index + 1], this.attributes[index]]
         this.$set(this.attributes, index + 1, this.attributes[index])
         this.$set(this.attributes, index, temp)
-      },
+      }
+      ,
       changetenancy(val) {
         // this.products = [{
         //   id: 0,
@@ -1057,7 +1089,8 @@
             item.productFinanceDTOS = this.nperval
           })
         })
-      },
+      }
+      ,
       changetenancyType(val) {
         this.nperarr = []
         this.nperval = []
@@ -1068,11 +1101,13 @@
           this.nperarr = this.leaseTerm
         }
         this.changetenancy(this.leaseTerm)
-      },
+      }
+      ,
       handlelease(row) {
         this.productForm = JSON.parse(JSON.stringify(row))
         this.productLeaseVisi = true
-      },
+      }
+      ,
       handleLeaseEdit() {
         for (var i = 0; i < this.products.length; i++) {
           const v = this.products[i]
@@ -1082,20 +1117,23 @@
           }
         }
         this.productLeaseVisi = false
-      },
+      }
+      ,
       cancel() {
         this.productLeaseVisi = false
         // this.checkedLease.forEach(item => {
         //   item.rent = ''
         // })
-      },
+      }
+      ,
       sortKey(array, key) {
         return array.sort(function(a, b) {
           var x = a[key]
           var y = b[key]
           return ((x < y) ? -1 : (x > y) ? 1 : 0)
         })
-      },
+      }
+      ,
       editAttach() {
         if (this.once) {
           var obj = {}
