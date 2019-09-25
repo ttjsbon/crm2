@@ -718,17 +718,17 @@
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
         if (this.goodsReqs.buyoutis === true) {
           // console.log(isNaN(this.goods.buyoutCoefficient),'sbxm')
-          if (this.goods.buyoutCoefficient == null || this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0' || isNaN(this.goods.buyoutCoefficient)) {
-            this.$message({
-              type: 'error',
-              message: '买断系数不可以为空或者为0，请重新填写。'
-            })
-            return
-          }
           if (isNaN(this.goods.buyoutCoefficient)) {
             this.$message({
               type: 'error',
               message: '买断系数输入内容不能输入特殊字符，请重新填写。'
+            })
+            return
+          }
+          if (this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0' || isNaN(this.goods.buyoutCoefficient)) {
+            this.$message({
+              type: 'error',
+              message: '买断系数不可以为空或者为0，请重新填写。'
             })
             return
           }
