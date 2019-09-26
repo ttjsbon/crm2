@@ -111,3 +111,19 @@ export function sortV1_5_6(data) {
     data
   })
 }
+
+export function editGoodsV2_1_1(data) {
+  return request({
+    url: '/goods/v2.1.1/update',
+    method: 'post',
+    data
+  })
+}
+
+export function publishGoodsV2_1_1(data) {
+  return request({
+    url: '/goods/v2.1.1/create',
+    method: 'post',
+    data
+  })
+}

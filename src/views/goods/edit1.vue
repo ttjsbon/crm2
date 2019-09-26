@@ -26,12 +26,12 @@
             <el-radio :label="false">非新品</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="是否热卖" prop="isHot">
-          <el-radio-group v-model="goods.isHot">
-            <el-radio :label="false">普通</el-radio>
-            <el-radio :label="true">热卖</el-radio>
-          </el-radio-group>
-        </el-form-item>
+<!--        <el-form-item label="是否热卖" prop="isHot">-->
+<!--          <el-radio-group v-model="goods.isHot">-->
+<!--            <el-radio :label="false">普通</el-radio>-->
+<!--            <el-radio :label="true">热卖</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </el-form-item>-->
         <!-- <el-form-item label="是否在售" prop="isOnSale">
           <el-radio-group v-model="goods.isOnSale">
             <el-radio :label="true">在售</el-radio>
@@ -313,6 +313,11 @@
             <el-input v-model="item.price" placeholder="输入租金">
               <template slot="append">元</template>
             </el-input>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="rentlabel">活动价格:</span>
+            <el-input v-model="item.activityPrice" placeholder="输入活动价格">
+              <template slot="append">元</template>
+            </el-input>
           </div>
         </div>
         <div v-else>暂未选择租期！</div>
@@ -366,17 +371,17 @@
     <el-card class="box-card">
       <h3>商品活动</h3>
       <el-form :rules="rules" ref="goods" :model="goods" label-width="150px">
-        <!--        <el-form-item label="是否新品" prop="isNew">-->
-        <!--          <el-radio-group v-model="goods.isNew">-->
-        <!--            <el-radio :label="true">新品</el-radio>-->
-        <!--            <el-radio :label="false">非新品</el-radio>-->
-        <!--          </el-radio-group>-->
-        <!--        </el-form-item>-->
-        <el-form-item label="活动价格" prop="activityPrice">
-          <el-input v-model="goods.activityPrice" placeholder="输入商品活动价格，如：0.00">
-            <template slot="append">元</template>
-          </el-input>
+        <el-form-item label="是否热卖" prop="isHot">
+          <el-radio-group v-model="goods.isHot">
+            <el-radio :label="false">普通</el-radio>
+            <el-radio :label="true">热卖</el-radio>
+          </el-radio-group>
         </el-form-item>
+<!--        <el-form-item label="活动价格" prop="activityPrice">-->
+<!--          <el-input v-model="goods.activityPrice" placeholder="输入商品活动价格，如：0.00">-->
+<!--            <template slot="append">元</template>-->
+<!--          </el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="活动赠品" prop="activityGift">
           <el-input v-model="goods.activityGift" placeholder="输入商品活动赠品，如：赠送一张钢化膜"></el-input>
         </el-form-item>
@@ -475,7 +480,7 @@
   }
 
   .rentlabel {
-    width: 100px;
+    width: 200px;
     line-height: 36px;
   }
 
@@ -511,7 +516,8 @@
     getfinanceProduct,
     getfinanceAttach,
     editGoodsV1_4_0,
-    detailGoodsV1_4_0
+    detailGoodsV1_4_0,
+    editGoodsV2_1_1
   } from '@/api/goods'
   import {
     createStorage,
@@ -736,22 +742,23 @@
         this.goodsReqs.buyoutis = this.goods.buyout
         this.goods.minimumDays = this.MinimumDays
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
+        console.log(this.products)
         // 判断商品为热卖的话，活动价格和赠品不可为空
         if (this.goods.isHot === true) {
-          if (isNaN(this.goods.activityPrice)) {
-            this.$message({
-              type: 'error',
-              message: '商品活动价格输入内容不能输入特殊字符，请重新填写。'
-            })
-            return
-          }
-          if (this.goods.activityPrice == null || this.goods.activityPrice.length < 0) {
-            this.$message({
-              type: 'error',
-              message: '商品活动价格未配置。'
-            })
-            return
-          }
+          // if (isNaN(this.goods.activityPrice)) {
+          //   this.$message({
+          //     type: 'error',
+          //     message: '商品活动价格输入内容不能输入特殊字符，请重新填写。'
+          //   })
+          //   return
+          // }
+          // if (this.goods.activityPrice == null || this.goods.activityPrice.length < 0) {
+          //   this.$message({
+          //     type: 'error',
+          //     message: '商品活动价格未配置。'
+          //   })
+          //   return
+          // }
           if (this.goods.activityGift == null || this.goods.activityGift.length < 0) {
             this.$message({
               type: 'error',
@@ -787,8 +794,8 @@
           mallGoodsFinances: this.mallGoodsFinances,
           financeSpecifications: this.financeSpecifications
         }
-        // editGoods(finalGoods).then(response => {
-        editGoodsV1_4_0(finalGoods).then(response => {
+        editGoodsV2_1_1(finalGoods).then(response => {
+        // editGoodsV1_4_0(finalGoods).then(response => {
           this.$notify({
             title: '成功',
             message: '创建成功',
