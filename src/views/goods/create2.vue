@@ -386,7 +386,7 @@
 <!--          </el-input>-->
 <!--        </el-form-item>-->
         <el-form-item label="活动赠品" prop="activityGift">
-          <el-input v-model="goods.activityGift" placeholder="输入商品活动赠品，如：赠送一张钢化膜"></el-input>
+          <el-input v-model="goods.activityGift" placeholder="输入商品活动赠品(字数不可超过7个字符)，如：赠送一张钢化膜"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -579,6 +579,13 @@
             this.$message({
               type: 'error',
               message: '商品活动赠品未配置。'
+            })
+            return
+          }
+          if (this.goods.activityGift != null && this.goods.activityGift.length > 7) {
+            this.$message({
+              type: 'error',
+              message: '商品活动赠品配置输入内容最多不可超过7个字符。'
             })
             return
           }
