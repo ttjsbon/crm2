@@ -561,26 +561,23 @@
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
         // 判断商品为热卖的话，活动价格和赠品不可为空
         if (this.goods.hotGoods === true) {
-          // if (isNaN(this.goods.activityPrice)) {
-          //   this.$message({
-          //     type: 'error',
-          //     message: '商品活动价格输入内容不能输入特殊字符，请重新填写。'
-          //   })
-          //   return
-          // }
-          // if (this.goods.activityPrice == null || this.goods.activityPrice.length < 0) {
-          //   this.$message({
-          //     type: 'error',
-          //     message: '商品活动价格未配置。'
-          //   })
-          //   return
-          // }
           if (this.goods.activityGift == null || this.goods.activityGift.length < 0) {
             MessageBox.alert('商品活动赠品未配置', '未配置', {
               confirmButtonText: '确定',
               type: 'error'
             })
             return
+          }
+          var infos = this.productForm.specifications
+          if (!infos && infos.length > 0) {
+            for (var i = 0; i < infos.length; i++) {
+              if (infos.activityPrice) {
+                MessageBox.alert('商品活动价不能为空哦', '未配置', {
+                  confirmButtonText: '确定',
+                  type: 'error'
+                })
+              }
+            }
           }
         }
         // 判断商品支持买断的话，买断系数不可为空
