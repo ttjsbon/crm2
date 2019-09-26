@@ -561,48 +561,45 @@
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
         // 判断商品为热卖的话，活动价格和赠品不可为空
         if (this.goods.hotGoods === true) {
-          // if (isNaN(this.goods.activityPrice)) {
-          //   this.$message({
-          //     type: 'error',
-          //     message: '商品活动价格输入内容不能输入特殊字符，请重新填写。'
-          //   })
-          //   return
-          // }
-          // if (this.goods.activityPrice == null || this.goods.activityPrice.length < 0) {
-          //   this.$message({
-          //     type: 'error',
-          //     message: '商品活动价格未配置。'
-          //   })
-          //   return
-          // }
           if (this.goods.activityGift == null || this.goods.activityGift.length < 0) {
-            this.$message({
-              type: 'error',
-              message: '商品活动赠品未配置。'
+            MessageBox.alert('商品活动赠品未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
           if (this.goods.activityGift != null && this.goods.activityGift.length > 7) {
-            this.$message({
-              type: 'error',
-              message: '商品活动赠品配置输入内容最多不可超过7个字符。'
+            MessageBox.alert('商品活动赠品配置输入内容最多不可超过7个字符', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
+          }
+          var infos = this.productForm.specifications
+          if (!infos && infos.length > 0) {
+            for (var i = 0; i < infos.length; i++) {
+              if (infos.activityPrice) {
+                MessageBox.alert('商品活动价不能为空哦', '未配置', {
+                  confirmButtonText: '确定',
+                  type: 'error'
+                })
+              }
+            }
           }
         }
         // 判断商品支持买断的话，买断系数不可为空
         if (this.goods.isBuyout === true) {
           if (this.goods.buyoutCoefficient == null || this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0' || isNaN(this.goods.buyoutCoefficient)) {
-            this.$message({
-              type: 'error',
-              message: '买断系数不可以为空或者为0，请重新填写。'
+            MessageBox.alert('买断系数不可以为空或者为0，请重新填写', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
           if (isNaN(this.goods.buyoutCoefficient)) {
-            this.$message({
-              type: 'error',
-              message: '买断系数输入内容不能输入特殊字符，请重新填写。'
+            MessageBox.alert('买断系数输入内容不能输入特殊字符，请重新填写', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
