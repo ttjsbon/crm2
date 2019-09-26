@@ -576,9 +576,9 @@
           //   return
           // }
           if (this.goods.activityGift == null || this.goods.activityGift.length < 0) {
-            this.$message({
-              type: 'error',
-              message: '商品活动赠品未配置。'
+            MessageBox.alert('商品活动赠品未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
@@ -586,16 +586,16 @@
         // 判断商品支持买断的话，买断系数不可为空
         if (this.goods.isBuyout === true) {
           if (this.goods.buyoutCoefficient == null || this.goods.buyoutCoefficient === '' || this.goods.buyoutCoefficient === '0' || isNaN(this.goods.buyoutCoefficient)) {
-            this.$message({
-              type: 'error',
-              message: '买断系数不可以为空或者为0，请重新填写。'
+            MessageBox.alert('买断系数不可以为空或者为0，请重新填写', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
           if (isNaN(this.goods.buyoutCoefficient)) {
-            this.$message({
-              type: 'error',
-              message: '买断系数输入内容不能输入特殊字符，请重新填写。'
+            MessageBox.alert('买断系数输入内容不能输入特殊字符，请重新填写', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
             })
             return
           }
