@@ -148,63 +148,66 @@
       <h3>4.多平台申请情况</h3>
       <h4>1>近七天申请情况</h4>
       <el-table :data="attributesDays" style="font-size: 10px">
-        <el-table-column property="name" label="类目">
-        </el-table-column>
-        <el-table-column property="phone" label="手机号">
-        </el-table-column>
-        <el-table-column property="idCard" label="身份证">
-        </el-table-column>
-        <el-table-column property="multi" label="多维度">
-        </el-table-column>
+        <el-table-column property="name" label="类目"></el-table-column>
+        <el-table-column property="phone" label="手机号"></el-table-column>
+        <el-table-column property="idCard" label="身份证"></el-table-column>
+        <el-table-column property="multi" label="多维度"></el-table-column>
       </el-table>
       <h4>2>近1个月申请情况</h4>
       <el-table :data="attributesMonth" style="font-size: 10px">
-        <el-table-column property="name" label="类目">
-        </el-table-column>
-        <el-table-column property="phone" label="手机号">
-        </el-table-column>
-        <el-table-column property="idCard" label="身份证">
-        </el-table-column>
-        <el-table-column property="multi" label="多维度">
-        </el-table-column>
+        <el-table-column property="name" label="类目"></el-table-column>
+        <el-table-column property="phone" label="手机号"></el-table-column>
+        <el-table-column property="idCard" label="身份证"></el-table-column>
+        <el-table-column property="multi" label="多维度"></el-table-column>
       </el-table>
       <h4>3>近3个月多平台申请情况</h4>
       <el-table :data="attributesMonths" style="font-size: 10px">
-        <el-table-column property="name" label="类目">
-        </el-table-column>
-        <el-table-column property="phone" label="手机号">
-        </el-table-column>
-        <el-table-column property="idCard" label="身份证">
-        </el-table-column>
-        <el-table-column property="multi" label="多维度">
-        </el-table-column>
+        <el-table-column property="name" label="类目"></el-table-column>
+        <el-table-column property="phone" label="手机号"></el-table-column>
+        <el-table-column property="idCard" label="身份证"></el-table-column>
+        <el-table-column property="multi" label="多维度"></el-table-column>
       </el-table>
     </el-card>
 
     <el-card class="box-card">
 
-      <h3>4.客户申请记录</h3>
+      <h3>5.客户申请记录</h3>
       <el-table :data="attributes" style="font-size: 10px">
         <el-table-column align="center" label="申请时间" prop="add_time">
           <template slot-scope="scope" >
             <span>  {{ scope.row.add_time | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
           </template>
         </el-table-column>
-        <el-table-column property="order_sn" label="订单编号">
+        <el-table-column property="order_sn" label="订单编号"></el-table-column>
+        <el-table-column property="goods_name" label="商品名称"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="price" label="商品价值"></el-table-column>
+        <el-table-column property="consignee" label="收货人姓名"></el-table-column>
+        <el-table-column property="mobile" label="收货人手机号"></el-table-column>
+        <el-table-column property="address" label="收货地址" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="order_status" label="订单状态"></el-table-column>
+        <el-table-column property="electronuclear_remark" label="拒绝原因"></el-table-column>
+      </el-table>
+    </el-card>
+
+    <el-card class="box-card">
+      <h3>6.其他渠道申请记录</h3>
+      <el-table :data="otherAttributes" style="font-size: 10px">
+        <el-table-column align="center" label="申请时间" prop="add_time">
+          <template slot-scope="scope" >
+            <span>  {{ scope.row.add_time | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+          </template>
         </el-table-column>
-        <el-table-column property="goods_name" label="商品名称">
-        </el-table-column>
-        <el-table-column property="price" label="商品价值">
-        </el-table-column>
-        <el-table-column property="consignee" label="收货人姓名">
-        </el-table-column>
-        <el-table-column property="mobile" label="收货人手机号">
-        </el-table-column>
-        <el-table-column property="address" label="收货地址">
-        </el-table-column>
-        <el-table-column property="order_status" label="订单状态">
-        </el-table-column>
-        <el-table-column property="electronuclear_remark" label="拒绝原因">
+        <el-table-column property="order_sn" label="订单编号"></el-table-column>
+        <el-table-column property="goods_name" label="商品名称"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="price" label="商品价值"></el-table-column>
+        <el-table-column property="consignee" label="收货人姓名"></el-table-column>
+        <el-table-column property="mobile" label="收货人手机号"></el-table-column>
+        <el-table-column property="address" label="收货地址" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column property="order_status" label="订单状态"></el-table-column>
+        <el-table-column label="订单渠道">
+          <template slot-scope="scope">
+            <span>  {{ scope.row.channel =='jd' ? '京东': '其他'}}</span>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -408,6 +411,7 @@
         td_info: {},
         orderRemark: '',
         attributes: [],
+        otherAttributes: [],
         attributesDays: [],
         attributesMonth: [],
         attributesMonths: []
@@ -426,6 +430,7 @@
           this.info[0] = response.data.data
           this.td_info = this.info[0].td_info
           this.attributes = this.info[0].orders
+          this.otherAttributes = this.info[0].otherOrders
           this.attributesDays = this.info[0].td_info['7天内租赁人在多个平台申请借款']
           this.attributesMonth = this.info[0].td_info['1个月内租赁人在多个平台申请借款']
           this.attributesMonths = this.info[0].td_info['3个月内租赁人在多个平台申请借款']
