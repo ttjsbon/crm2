@@ -26,12 +26,12 @@
             <el-radio :label="false">非新品</el-radio>
           </el-radio-group>
         </el-form-item>
-<!--        <el-form-item label="是否热卖" prop="isHot">-->
-<!--          <el-radio-group v-model="goods.isHot">-->
-<!--            <el-radio :label="false">普通</el-radio>-->
-<!--            <el-radio :label="true">热卖</el-radio>-->
-<!--          </el-radio-group>-->
-<!--        </el-form-item>-->
+        <el-form-item label="是否热卖" prop="isHot">
+          <el-radio-group v-model="goods.isHot">
+            <el-radio :label="false">普通</el-radio>
+            <el-radio :label="true">热卖</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <!-- <el-form-item label="是否在售" prop="isOnSale">
           <el-radio-group v-model="goods.isOnSale">
             <el-radio :label="true">在售</el-radio>
@@ -371,10 +371,10 @@
     <el-card class="box-card">
       <h3>商品活动</h3>
       <el-form :rules="rules" ref="goods" :model="goods" label-width="150px">
-        <el-form-item label="是否热卖" prop="isHot">
-          <el-radio-group v-model="goods.isHot">
-            <el-radio :label="false">普通</el-radio>
-            <el-radio :label="true">热卖</el-radio>
+        <el-form-item label="是否热门推荐" prop="hotGoods">
+          <el-radio-group v-model="goods.hotGoods">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
 <!--        <el-form-item label="活动价格" prop="activityPrice">-->
@@ -742,9 +742,8 @@
         this.goodsReqs.buyoutis = this.goods.buyout
         this.goods.minimumDays = this.MinimumDays
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
-        console.log(this.products)
         // 判断商品为热卖的话，活动价格和赠品不可为空
-        if (this.goods.isHot === true) {
+        if (this.goods.hotGoods === true) {
           // if (isNaN(this.goods.activityPrice)) {
           //   this.$message({
           //     type: 'error',
