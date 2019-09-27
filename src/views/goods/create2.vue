@@ -222,7 +222,7 @@
       <div class="flex tenancybox">
         <span class="tenancylabel">买断系数</span>
         <el-input v-model="BuyoutCoefficient" placeholder="输入买断系数，如：1" style="width: 25%">
-<!--          <template slot="append">元</template>-->
+          <!--          <template slot="append">元</template>-->
         </el-input>
       </div>
       <div class="flex tenancybox">
@@ -380,11 +380,11 @@
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
-<!--        <el-form-item label="活动价格" prop="activityPrice">-->
-<!--          <el-input v-model="goods.activityPrice" placeholder="输入商品活动价格，如：0.00">-->
-<!--            <template slot="append">元</template>-->
-<!--          </el-input>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="活动价格" prop="activityPrice">-->
+        <!--          <el-input v-model="goods.activityPrice" placeholder="输入商品活动价格，如：0.00">-->
+        <!--            <template slot="append">元</template>-->
+        <!--          </el-input>-->
+        <!--        </el-form-item>-->
         <el-form-item label="活动赠品" prop="activityGift">
           <el-input v-model="goods.activityGift" placeholder="输入商品活动赠品(字数不可超过7个字符)，如：赠送一张钢化膜"></el-input>
         </el-form-item>
@@ -575,16 +575,30 @@
             })
             return
           }
-          var infos = this.productForm.specifications
-          if (!infos && infos.length > 0) {
+          var infos = this.products
+          var flag = null
+          if (infos != null && infos.length > 0) {
             for (var i = 0; i < infos.length; i++) {
-              if (infos.activityPrice) {
-                MessageBox.alert('商品活动价不能为空哦', '未配置', {
-                  confirmButtonText: '确定',
-                  type: 'error'
-                })
+              if (infos[i].productFinanceDTOS != null && infos[i].productFinanceDTOS.length > 0) {
+                var priceInfo = infos[i].productFinanceDTOS
+                for (var j = 0; j < priceInfo.length; j++) {
+                  if (!priceInfo[j].activityPrice || isNaN(priceInfo[j].activityPrice) || priceInfo[j].activityPrice === '0') {
+                    flag = false
+                  }
+                }
+              } else {
+                flag = false
               }
             }
+          } else {
+            flag = false
+          }
+          if (flag === false) {
+            MessageBox.alert('热门推荐商品活动价不能为空', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+            return
           }
         }
         // 判断商品支持买断的话，买断系数不可为空
@@ -613,8 +627,8 @@
           financeSpecifications: this.financeSpecifications
         }
         publishGoodsV2_1_1(finalGoods).then(response => {
-        // 保存商品信息1.4.0接口
-        // publishGoodsV1_4_0(finalGoods).then(response => {
+          // 保存商品信息1.4.0接口
+          // publishGoodsV1_4_0(finalGoods).then(response => {
           if (response.data.errno === 0) {
             this.$notify({
               title: '成功',
