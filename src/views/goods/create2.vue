@@ -561,7 +561,7 @@
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
         // 判断商品为热卖的话，活动价格和赠品不可为空
         if (this.goods.hotGoods === true) {
-          if (this.goods.activityGift == null || this.goods.activityGift.length < 0) {
+          if (!this.goods.activityGift || this.goods.activityGift.length < 0) {
             MessageBox.alert('商品活动赠品未配置', '未配置', {
               confirmButtonText: '确定',
               type: 'error'
