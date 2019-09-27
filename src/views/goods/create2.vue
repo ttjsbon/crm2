@@ -577,13 +577,16 @@
           }
           var infos = this.products
           var flag = null
+          var number = 0
           if (infos != null && infos.length > 0) {
             for (var i = 0; i < infos.length; i++) {
-              if (infos[i].productFinanceDTOS != null && infos[i].productFinanceDTOS.length > 0) {
-                var priceInfo = infos[i].productFinanceDTOS
+              if (infos[i].productFinances != null && infos[i].productFinances.length > 0) {
+                var priceInfo = infos[i].productFinances
                 for (var j = 0; j < priceInfo.length; j++) {
                   if (!priceInfo[j].activityPrice || isNaN(priceInfo[j].activityPrice) || priceInfo[j].activityPrice === '0') {
                     flag = false
+                  } else {
+                    number = number + 1
                   }
                 }
               } else {
@@ -593,13 +596,21 @@
           } else {
             flag = false
           }
-          if (flag === false) {
-            MessageBox.alert('热门推荐商品活动价不能为空', '未配置', {
+          console.log(number, '数量')
+          if (number < 1) {
+            MessageBox.alert('热门推荐商品活动价至少需要配置一项', '未配置', {
               confirmButtonText: '确定',
               type: 'error'
             })
             return
           }
+          // if (flag === false) {
+          //   MessageBox.alert('热门推荐商品活动价不能为空', '未配置', {
+          //     confirmButtonText: '确定',
+          //     type: 'error'
+          //   })
+          //   return
+          // }
         }
         // 判断商品支持买断的话，买断系数不可为空
         if (this.goods.isBuyout === true) {
