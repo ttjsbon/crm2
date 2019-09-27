@@ -24,11 +24,6 @@
           <el-tag>{{ scope.row.page===1 ? '活动详情页' : '商品详情页' }}</el-tag>
         </template>
       </el-table-column>
-      <!--<el-table-column align="center" label="跳转类型" prop="pageType">
-        <template slot-scope="scope">
-          <el-tag >{{ scope.row.pageType===1 ? '跳转至原生页面' : '跳转至H5页面' }}</el-tag>
-        </template>
-      </el-table-column>-->
       <el-table-column align="center" label="优惠券类型" prop="type">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.targetType===1 ? '新用户注册' : scope.row.targetType===2 ? '指定商品' : scope.row.targetType===3 ?
@@ -47,7 +42,6 @@
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button type="primary" size="mini" @click="changeGoods(scope.row)">设置商品</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,26 +90,21 @@
             </el-option>
           </el-select>
         </el-form-item>
-
         <el-form-item label="优惠金额" prop="discountedPrice">
           <el-input v-model="dataForm.discountedPrice"></el-input>
         </el-form-item>
-
         <el-form-item label="指定id" prop="targetId">
-          <el-input v-model="dataForm.targetId"></el-input>
+          <el-input v-model="dataForm.targetId" @focus="changeInfoId(dataForm.targetType, dataForm)"></el-input>
         </el-form-item>
-
         <el-form-item label="优惠券指定类别id">
           <el-button type="primary" @click="addId">添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in dataForm.categoryId'
                     v-model="dataForm.categoryId[index]"
                     :key="index" placeholder="请输入优惠券指定类别id"></el-input>
         </el-form-item>
-
         <el-form-item label="满足金额" prop="fullPrice">
           <el-input v-model="dataForm.fullPrice"></el-input>
         </el-form-item>
-
         <el-form-item label="过期时长(单位：天)" prop="expirationTime">
           <el-input v-model="dataForm.expirationTime"></el-input>
         </el-form-item>
@@ -168,7 +157,6 @@
       </div>
     </el-dialog>
 
-    <!-- 订单详情对话框 -->
     <el-dialog title="优惠券详情" width="900" :visible.sync="couponDetailDialog" @close='closeDetail'>
       <el-form :data="couponDetail" label-position="left">
         <div class="flex itemtogether">
@@ -190,9 +178,6 @@
           <el-form-item label="优惠券类型：">
             <span>{{couponDetail.targetType ===1 ? '新用户注册' : couponDetail.targetType === 2 ? '指定商品' : couponDetail.targetType === 3 ? '指定专题'  : couponDetail.targetType === 3 ? '指定用户' : '异常'}}</span>
           </el-form-item>
-          <!--          <el-form-item label="">-->
-          <!--            <span></span>-->
-          <!--          </el-form-item>-->
           <el-form-item label="新人优惠券指定类型id：">
             <span style="float: left">{{couponDetail.categoryId == null || couponDetail.categoryId.length === 0 ? '暂无' : couponDetail.categoryId}}</span>
           </el-form-item>
@@ -482,27 +467,28 @@
           this.downloadLoading = false
         })
       },
-      changeGoods(row) {
-        if (this.dialogGoods === false) {
-          if (row.goodId != null) {
-            getGoodsInfo({
-              idList: [row.goodId]
-            }).then(res => {
-              this.editGood = res.data.data
+      changeInfoId(type, row) {
+        if (type === 2) {
+          // 如果窗口未打开，现获取数据，数据获取成功，弹框展示
+          var targetId = row.targetId
+          if (this.dialogGoods === false) {
+            if (targetId != null) {
+              getGoodsInfo({
+                idList: [row.goodId]
+              }).then(res => {
+                this.editGood = res.data.data
+                this.dialogGoods = true
+                this.dataForm = Object.assign({}, row)
+              })
+            } else {
               this.dialogGoods = true
               this.dataForm = Object.assign({}, row)
-            })
-          } else {
-            this.dialogGoods = true
-            this.dataForm = Object.assign({}, row)
+            }
           }
-        } else if (this.dialogGoods === true) {
-          this.dialogGoods = false
         }
       },
       cancelGoods() {
         this.dialogGoods = false
-        this.resetGoods()
       },
       handleSelectGoods(val) {
         this.editGood[0] = ({
@@ -531,19 +517,16 @@
         }
       },
       addGoods() {
-        var arr = []
+        var arr = null
         this.editGood.forEach(item => {
-          arr.push(item.id)
+          arr = item.id
         })
-        this.dataForm.goodId = arr[0]
-        updateGoodAndTopic(this.dataForm).then(res => {
-          this.dialogGoods = false
-          this.getList()
-        })
+        this.dataForm.targetId = arr
+        this.dialogGoods = false
       },
       resetGoods() {
         this.editGood = []
-        this.resetForm()
+        this.dataForm.targetId = undefined
       },
       getGoods() {
         var listQuery = {
