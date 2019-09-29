@@ -79,7 +79,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="优惠券类型" prop="targetType">
-          <el-select v-model="dataForm.targetType" placeholder="请选择">
+          <el-select v-model="dataForm.targetType" placeholder="请选择" @change="addCategoryId(dataForm.targetType)">
             <el-option label="新用户注册" :value="1"></el-option>
             <el-option label="指定商品" :value="2"></el-option>
             <el-option label="指定专题" :value="3"></el-option>
@@ -92,8 +92,8 @@
         <el-form-item label="指定id" prop="targetId">
           <el-input v-model="dataForm.targetId" @focus="changeInfoId(dataForm.targetType, dataForm)"></el-input>
         </el-form-item>
-        <el-form-item label="指定类别id">
-          <el-button type="primary" @click="addId">添加</el-button>
+        <el-form-item label="指定类别id" v-if="addVisible">
+          <el-button type="primary" @click="addId" >添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in dataForm.categoryId'
                     v-model="dataForm.categoryId[index]" :key="index" placeholder="请输入优惠券指定类别id"></el-input>
         </el-form-item>
@@ -165,7 +165,7 @@
 
         <div class="flex itemtogether">
           <el-form-item label="指定id：">
-            <span>{{ couponDetail.targetId===1 ? '商品id' : '专题id' }}</span>
+            <span>{{ couponDetail.targetId }}</span>
           </el-form-item>
           <el-form-item label="优惠券类型：">
             <span>{{couponDetail.targetType ===1 ? '新用户注册' : couponDetail.targetType === 2 ? '指定商品' : couponDetail.targetType === 3 ? '指定专题'  : couponDetail.targetType === 3 ? '指定用户' : '异常'}}</span>
@@ -256,6 +256,7 @@
     },
     data() {
       return {
+        addVisible: false,
         couponDetail: {
           addTime: undefined,
           content: undefined,
@@ -445,6 +446,13 @@
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '广告信息')
           this.downloadLoading = false
         })
+      },
+      addCategoryId(type) {
+        if (type === 1) {
+          this.addVisible = true
+        } else {
+          this.addVisible = false
+        }
       },
       changeInfoId(type, row) {
         // 要返回id，name，pic
