@@ -65,3 +65,11 @@ export function getGoodsInfoV1_5_6(data) {
     data
   })
 }
+
+export function getTopicList(data) {
+  return request({
+    url: '/topic/getList',
+    method: 'post',
+    data
+  })
+}

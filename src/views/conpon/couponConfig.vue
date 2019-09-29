@@ -17,8 +17,8 @@
               highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" sortable>
       </el-table-column>
-      <el-table-column align="center" label="内容" prop="content">
-      </el-table-column>
+      <!--<el-table-column align="center" label="内容" prop="content">-->
+      <!--</el-table-column>-->
       <el-table-column align="center" label="展示位置" prop="page">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.page===1 ? '活动详情页' : '商品详情页' }}</el-tag>
@@ -80,14 +80,10 @@
         </el-form-item>
         <el-form-item label="优惠券类型" prop="targetType">
           <el-select v-model="dataForm.targetType" placeholder="请选择">
-            <el-option label="新用户注册" :value="1">
-            </el-option>
-            <el-option label="指定商品" :value="2">
-            </el-option>
-            <el-option label="指定专题" :value="3">
-            </el-option>
-            <el-option label="指定用户" :value="4">
-            </el-option>
+            <el-option label="新用户注册" :value="1"></el-option>
+            <el-option label="指定商品" :value="2"></el-option>
+            <el-option label="指定专题" :value="3"></el-option>
+            <el-option label="指定用户" :value="4"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="优惠金额" prop="discountedPrice">
@@ -96,11 +92,10 @@
         <el-form-item label="指定id" prop="targetId">
           <el-input v-model="dataForm.targetId" @focus="changeInfoId(dataForm.targetType, dataForm)"></el-input>
         </el-form-item>
-        <el-form-item label="优惠券指定类别id">
+        <el-form-item label="指定类别id">
           <el-button type="primary" @click="addId">添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in dataForm.categoryId'
-                    v-model="dataForm.categoryId[index]"
-                    :key="index" placeholder="请输入优惠券指定类别id"></el-input>
+                    v-model="dataForm.categoryId[index]" :key="index" placeholder="请输入优惠券指定类别id"></el-input>
         </el-form-item>
         <el-form-item label="满足金额" prop="fullPrice">
           <el-input v-model="dataForm.fullPrice"></el-input>
@@ -119,8 +114,7 @@
     <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchGoods"
-                         placeholder="请输入商品名称或id" @select="handleSelectGoods">
+                         :fetch-suggestions="querySearchGoods" placeholder="请输入商品名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -131,16 +125,14 @@
                 <div class="proname wordhide">{{props.item.name}}</div>
               </div>
             </div>
-            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
-              {{props.item.nonesuggestion}}
-            </div>
+            <div v-if='props.item.nonesuggestion' class="nonesuggestion">{{props.item.nonesuggestion}}</div>
           </template>
         </el-autocomplete>
         <div class="flex goodlist">
           <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
             <div class="goodbox flex">
-              <div>
-                <img :src="item.picUrl" alt="">
+              <div class="pic">
+                <img :src="item.picUrl" alt="" width="60" height="60">
               </div>
               <div class="goodnames">{{item.name}}</div>
             </div>
@@ -232,23 +224,13 @@
 </style>
 
 <script>
-  import {
-    couponConfigDetail,
-    couponConfigList,
-    addCouponConfig,
-    updateCouponConfig,
-    delCouponConfig
-  } from '@/api/coupon'
+  import { couponConfigDetail, couponConfigList, addCouponConfig, updateCouponConfig, delCouponConfig } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
-  import { updateGoodAndTopic } from '@/api/ad'
-  import {
-    listTopic,
-    getGoodsInfo
-  } from '@/api/topic'
-  import {
-    listGoods
-  } from '@/api/goods'
+  import { fetchList } from '@/api/user'
+  import { listTopic, getGoodsInfo, getTopicList } from '@/api/topic'
+  import { listGoods } from '@/api/goods'
+  import { getUserList } from '@/api/user'
 
   export default {
     filters: {
@@ -344,8 +326,6 @@
     },
     created() {
       this.getList()
-      this.getGoods()
-      this.getTopic()
     },
     methods: {
       getList() {
@@ -468,22 +448,68 @@
         })
       },
       changeInfoId(type, row) {
+        // 要返回id，name，pic
         if (type === 2) {
-          // 如果窗口未打开，现获取数据，数据获取成功，弹框展示
-          var targetId = row.targetId
-          if (this.dialogGoods === false) {
-            if (targetId != null) {
-              getGoodsInfo({
-                idList: [row.goodId]
-              }).then(res => {
-                this.editGood = res.data.data
-                this.dialogGoods = true
-                this.dataForm = Object.assign({}, row)
-              })
-            } else {
+          this.getGoods()
+          this.goodsBox(row)
+        } else if (type === 4) {
+          this.getUsers()
+          this.userBox(row)
+        } else if (type === 1) {
+          // this.newUserBox(row)
+        } else if (type === 3) {
+          this.getTopic()
+          this.topicBox(row)
+        }
+      },
+      goodsBox(row) {
+        var targetId = row.targetId
+        if (this.dialogGoods === false) {
+          if (targetId != null) {
+            getGoodsInfo({
+              idList: [row.goodId]
+            }).then(res => {
+              this.editGood = res.data.data
               this.dialogGoods = true
               this.dataForm = Object.assign({}, row)
-            }
+            })
+          } else {
+            this.dialogGoods = true
+            this.dataForm = Object.assign({}, row)
+          }
+        }
+      },
+      userBox(row) {
+        var targetId = row.targetId
+        if (this.dialogGoods === false) {
+          if (targetId != null) {
+            getUserList({
+              idList: [row.goodId]
+            }).then(res => {
+              this.editGood = res.data.data
+              this.dialogGoods = true
+              this.dataForm = Object.assign({}, row)
+            })
+          } else {
+            this.dialogGoods = true
+            this.dataForm = Object.assign({}, row)
+          }
+        }
+      },
+      topicBox(row) {
+        var targetId = row.targetId
+        if (this.dialogGoods === false) {
+          if (targetId != null) {
+            getTopicList({
+              idList: [row.goodId]
+            }).then(res => {
+              this.editGood = res.data.data
+              this.dialogGoods = true
+              this.dataForm = Object.assign({}, row)
+            })
+          } else {
+            this.dialogGoods = true
+            this.dataForm = Object.assign({}, row)
           }
         }
       },
@@ -491,6 +517,7 @@
         this.dialogGoods = false
       },
       handleSelectGoods(val) {
+        this.editGood = []
         this.editGood[0] = ({
           id: val.id,
           name: val.name,
@@ -555,14 +582,28 @@
       getTopic() {
         var listQuery = {
           page: 1,
-          limit: 1000,
+          limit: 10000,
           goodsSn: undefined,
           name: undefined,
           sort: 'add_time',
           order: 'desc'
         }
         listTopic(listQuery).then(response => {
-          this.allTopic = response.data.data.items
+          this.allgoods = response.data.data.items
+        })
+      },
+      getUsers() {
+        var listQuery = {
+          page: 1,
+          limit: 10000,
+          cardName: undefined,
+          timePeriod: [null],
+          mobile: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        }
+        fetchList(listQuery).then(response => {
+          this.allgoods = response.data.data.items
         })
       },
       handleDetail(row) {

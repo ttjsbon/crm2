@@ -31,3 +31,11 @@ export function updateUser(data) {
     data
   })
 }
+
+export function getUserList(data) {
+  return request({
+    url: '/user/getList',
+    method: 'post',
+    data
+  })
+}
