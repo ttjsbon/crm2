@@ -73,3 +73,10 @@ export function getTopicList(data) {
     data
   })
 }
+
+export function listTopic2(data) {
+  return request({
+    url: '/topic/listTopic',
+    method: 'get'
+  })
+}
