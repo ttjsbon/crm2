@@ -227,10 +227,9 @@
   import { couponConfigDetail, couponConfigList, addCouponConfig, updateCouponConfig, delCouponConfig } from '@/api/coupon'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
-  import { fetchList } from '@/api/user'
-  import { listTopic, getGoodsInfo, getTopicList } from '@/api/topic'
+  import { getGoodsInfo, getTopicList, listTopic2 } from '@/api/topic'
   import { listGoods } from '@/api/goods'
-  import { getUserList } from '@/api/user'
+  import { getUserList, listUser } from '@/api/user'
 
   export default {
     filters: {
@@ -449,6 +448,8 @@
       },
       changeInfoId(type, row) {
         // 要返回id，name，pic
+        this.dataForm.targetId = undefined
+        this.editGood = []
         if (type === 2) {
           this.getGoods()
           this.goodsBox(row)
@@ -580,30 +581,13 @@
         })
       },
       getTopic() {
-        var listQuery = {
-          page: 1,
-          limit: 10000,
-          goodsSn: undefined,
-          name: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        }
-        listTopic(listQuery).then(response => {
-          this.allgoods = response.data.data.items
+        listTopic2().then(response => {
+          this.allgoods = response.data.data
         })
       },
       getUsers() {
-        var listQuery = {
-          page: 1,
-          limit: 10000,
-          cardName: undefined,
-          timePeriod: [null],
-          mobile: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        }
-        fetchList(listQuery).then(response => {
-          this.allgoods = response.data.data.items
+        listUser().then(response => {
+          this.allgoods = response.data.data
         })
       },
       handleDetail(row) {

@@ -39,3 +39,10 @@ export function getUserList(data) {
     data
   })
 }
+
+export function listUser(data) {
+  return request({
+    url: '/user/listUser',
+    method: 'get'
+  })
+}
