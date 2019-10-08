@@ -742,6 +742,119 @@
         this.goodsReqs.buyoutis = this.goods.buyout
         this.goods.minimumDays = this.MinimumDays
         this.goods.buyoutCoefficient = this.BuyoutCoefficient
+        if (!this.goods.goodsSn || this.goods.goodsSn.length < 0) {
+          MessageBox.alert('商品编号未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.name || this.goods.name.length < 0) {
+          MessageBox.alert('商品名称未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.counterPrice || this.goods.counterPrice.length < 0) {
+          MessageBox.alert('租赁价格未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.retailPrice || this.goods.retailPrice.length < 0) {
+          MessageBox.alert('商品价格未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.picUrl) {
+          MessageBox.alert('商品图片未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.categoryId || this.goods.categoryId.length < 0 || this.goods.categoryId === 'undefined') {
+          MessageBox.alert('商品类目未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.brief || this.goods.brief.length < 0) {
+          MessageBox.alert('商品简介未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.goods.description || this.goods.description.length < 0) {
+          MessageBox.alert('商品详细介绍未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        console.log(this.specifications, '商品规格')
+        if (!this.specifications || this.specifications.length <= 0) {
+          MessageBox.alert('商品规格未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        console.log(this.products, '租赁信息')
+        if (!this.products || this.products.length <= 0) {
+          MessageBox.alert('租赁信息未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        var priceInfo = null
+        var productFinancesInfo = null
+        var amountInfo = null
+        if (this.products || this.products.length > 0) {
+          for (let i = 0; i < this.products.length; i++) {
+            if (!this.products[i].price || this.products[i].price.length <= 0) {
+              priceInfo = false
+            }
+            if (!this.products[i].productFinanceDTOS || this.products[i].productFinanceDTOS.length <= 0 || this.products[i].productFinanceDTOS === 'undefined') {
+              productFinancesInfo = false
+            } else {
+              for (let j = 0; j < this.products[i].productFinanceDTOS.length; j++) {
+                if (!this.products[i].productFinanceDTOS[j].price || isNaN(this.products[i].productFinanceDTOS[j].price) || this.products[i].productFinanceDTOS[j].price === '0') {
+                  amountInfo = false
+                }
+              }
+            }
+          }
+          if (priceInfo === false) {
+            MessageBox.alert('货品售价未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+            return
+          }
+          if (productFinancesInfo === false) {
+            MessageBox.alert('货品规格未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+            return
+          }
+          if (amountInfo === false) {
+            MessageBox.alert('分期价格未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+            return
+          }
+        }
+
         // 判断商品为热卖的话，活动价格和赠品不可为空
         if (this.goods.hotGoods === true) {
           if (!this.goods.activityGift || this.goods.activityGift.length < 0) {
