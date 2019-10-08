@@ -587,6 +587,13 @@
           })
           return
         }
+        if (!this.goods.picUrl) {
+          MessageBox.alert('商品图片未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
         if (!this.goods.categoryId || this.goods.categoryId.length < 0 || this.goods.categoryId === 'undefined') {
           MessageBox.alert('商品类目未配置', '未配置', {
             confirmButtonText: '确定',
@@ -635,8 +642,8 @@
             if (!this.products[i].productFinances || this.products[i].productFinances.length <= 0 || this.products[i].productFinances === 'undefined') {
               productFinancesInfo = false
             } else {
-              for (let j = 0; j < this.products[i].productFinanceDTOS.length; j++) {
-                if (!this.products[i].productFinanceDTOS[j].price || isNaN(this.products[i].productFinanceDTOS[j].price) || this.products[i].productFinanceDTOS[j].price === '0') {
+              for (let j = 0; j < this.products[i].productFinances.length; j++) {
+                if (!this.products[i].productFinances[j].price || isNaN(this.products[i].productFinances[j].price) || this.products[i].productFinances[j].price === '0') {
                   amountInfo = false
                 }
               }

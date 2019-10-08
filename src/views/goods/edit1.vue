@@ -770,6 +770,13 @@
           })
           return
         }
+        if (!this.goods.picUrl) {
+          MessageBox.alert('商品图片未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
         if (!this.goods.categoryId || this.goods.categoryId.length < 0 || this.goods.categoryId === 'undefined') {
           MessageBox.alert('商品类目未配置', '未配置', {
             confirmButtonText: '确定',
