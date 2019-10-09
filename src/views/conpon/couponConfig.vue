@@ -95,7 +95,8 @@
         <el-form-item label="指定类别id" v-if="addVisible">
           <el-button type="primary" @click="addId" >添加</el-button>
           <el-input style='margin-top:10px;' class='addinput' v-for='(item,index) in dataForm.categoryId'
-                    v-model="dataForm.categoryId[index]" :key="index" placeholder="请输入优惠券指定类别id"></el-input>
+                    v-model="dataForm.categoryId[index]" :key="index" placeholder="请输入优惠券指定类别id"
+                    @focus="changeInfoId(0, dataForm)"></el-input>
         </el-form-item>
         <el-form-item label="满足金额" prop="fullPrice">
           <el-input v-model="dataForm.fullPrice"></el-input>
@@ -111,7 +112,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
+    <el-dialog title="设置" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
                          :fetch-suggestions="querySearchGoods" placeholder="请输入商品名称或id" @select="handleSelectGoods">
@@ -469,6 +470,10 @@
         } else if (type === 3) {
           this.getTopic()
           this.topicBox(row)
+        } else if (type === 0) {
+          // 查询分类信息
+          this.getTopic()
+          this.topicBox(row)
         }
       },
       goodsBox(row) {
@@ -536,7 +541,7 @@
       querySearchGoods(queryString, cb) {
         var prodata = this.allgoods
         var results = queryString ? prodata.filter(this.createFilterGoods(queryString)) : prodata
-        if (results != null) {
+        if (results.length === 0) {
           results.push({
             nonesuggestion: '无搜索结果',
             data: queryString
