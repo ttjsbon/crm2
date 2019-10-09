@@ -832,13 +832,6 @@
               }
             }
           }
-          if (priceInfo === false) {
-            MessageBox.alert('货品售价未配置', '未配置', {
-              confirmButtonText: '确定',
-              type: 'error'
-            })
-            return
-          }
           if (productFinancesInfo === false) {
             MessageBox.alert('货品规格未配置', '未配置', {
               confirmButtonText: '确定',
@@ -848,6 +841,13 @@
           }
           if (amountInfo === false) {
             MessageBox.alert('分期价格未配置', '未配置', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+            return
+          }
+          if (priceInfo === false) {
+            MessageBox.alert('货品售价未配置', '未配置', {
               confirmButtonText: '确定',
               type: 'error'
             })
