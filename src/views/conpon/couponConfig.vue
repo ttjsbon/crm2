@@ -115,7 +115,7 @@
     <el-dialog title="设置" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchGoods" placeholder="请输入商品名称或id" @select="handleSelectGoods">
+                         :fetch-suggestions="querySearchGoods" placeholder="请输入名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -553,7 +553,7 @@
         return item => {
           return (
             item.id.toString().indexOf(queryString.toLowerCase()) !== -1 ||
-            item.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+            String(item.name).toLowerCase().indexOf(queryString.toLowerCase()) !== -1
           )
         }
       },

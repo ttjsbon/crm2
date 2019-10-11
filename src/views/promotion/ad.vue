@@ -3,53 +3,38 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告标题" v-model="listQuery.name">
-      </el-input>
-      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容" v-model="listQuery.content">
-      </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告标题" v-model="listQuery.name"></el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容" v-model="listQuery.content"></el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"
-                 :loading="downloadLoading">导出
-      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" :loading="downloadLoading">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
-              highlight-current-row>
-
-
-      <el-table-column align="center" label="广告ID" prop="id" sortable>
-      </el-table-column>
-
-      <el-table-column align="center" label="广告标题" prop="name">
-      </el-table-column>
-
-      <el-table-column align="center" label="广告内容" prop="content">
-      </el-table-column>
-
+    <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+      <el-table-column align="center" label="广告ID" prop="id" sortable></el-table-column>
+      <el-table-column align="center" label="广告标题" prop="name"></el-table-column>
+      <el-table-column align="center" label="广告内容" prop="content"></el-table-column>
       <el-table-column align="center" label="广告图片" prop="url">
         <template slot-scope="scope">
           <img :src="scope.row.url" width="80" v-if="scope.row.url"/>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="广告位置" prop="position">
+      <el-table-column align="center" label="广告位置" prop="position"></el-table-column>
+      <!--<el-table-column align="center" label="活动链接" prop="link"></el-table-column>-->
+      <el-table-column align="center" label="对象id/连接" prop="targetId"></el-table-column>
+      <el-table-column align="center" label="类型" prop="targetType">
+        <template slot-scope="scope">
+          <el-tag>{{scope.row.targetType | orderTypeFilter}}</el-tag>
+        </template>
       </el-table-column>
-
-      <el-table-column align="center" label="活动链接" prop="link">
-      </el-table-column>
-      <el-table-column align="center" label="商品id" prop="goodId">
-      </el-table-column>
-      <el-table-column align="center" label="专题id" prop="topicId">
-      </el-table-column>
-
+      <!--<el-table-column align="center" label="商品id" prop="goodId"></el-table-column>-->
+      <!--<el-table-column align="center" label="专题id" prop="topicId"></el-table-column>-->
       <el-table-column align="center" label="是否启用" prop="enabled">
         <template slot-scope="scope">
           <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -63,16 +48,14 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page="listQuery.page"
-                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
+                     :current-page="listQuery.page" :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
                      layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px"
-               style='width: 400px; margin-left:50px;'>
+      <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
         <el-form-item label="广告标题" prop="name">
           <el-input v-model="dataForm.name"></el-input>
         </el-form-item>
@@ -80,8 +63,7 @@
           <el-input v-model="dataForm.content"></el-input>
         </el-form-item>
         <el-form-item label="广告图片" prop="url">
-          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false"
-                     accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
+          <el-upload class="avatar-uploader" :action="uploadPath" list-type="picture-card" :show-file-list="false" accept=".jpg,.jpeg,.png,.gif" :on-success="uploadUrl">
             <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -92,27 +74,35 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动链接" prop="link">
-          <el-input v-model="dataForm.link"></el-input>
+        <!--<el-form-item label="活动链接" prop="link">-->
+          <!--<el-input v-model="dataForm.link"></el-input>-->
+        <!--</el-form-item>-->
+        <el-form-item label="类型" prop="targetType">
+          <el-select v-model="dataForm.targetType" placeholder="请选择">
+            <el-option label="h5网页" :value="1"></el-option>
+            <el-option label="商品详情" :value="2"></el-option>
+            <el-option label="专题列表" :value="3"></el-option>
+            <el-option label="其他" :value="4"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="商品id" prop="goodId">
-          <el-input v-model="dataForm.goodId"></el-input>
+        <el-form-item label="对象id/连接" prop="targetId">
+          <el-input v-model="dataForm.targetId"></el-input>
         </el-form-item>
-        <el-form-item label="专题id" prop="topicId">
-          <el-input v-model="dataForm.topicId"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="商品id" prop="goodId">-->
+          <!--<el-input v-model="dataForm.goodId"></el-input>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item label="专题id" prop="topicId">-->
+          <!--<el-input v-model="dataForm.topicId"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="选择展示渠道" prop="bannerType">
           <el-select v-model="dataForm.bannerType" placeholder="请选择">
-            <el-option v-for="(item,index) in options" :key="index" :label="item.label" :value="item.value">
-            </el-option>
+            <el-option v-for="(item,index) in options" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用" prop="enabled">
           <el-select v-model="dataForm.enabled" placeholder="请选择">
-            <el-option label="启用" :value="true">
-            </el-option>
-            <el-option label="不启用" :value="false">
-            </el-option>
+            <el-option label="启用" :value="true"></el-option>
+            <el-option label="不启用" :value="false"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -126,8 +116,7 @@
     <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchGoods"
-                         placeholder="请输入商品名称或id" @select="handleSelectGoods">
+                         :fetch-suggestions="querySearchGoods" placeholder="请输入商品名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -166,8 +155,7 @@
     <el-dialog title="设置专题" :visible.sync="dialogTopic" @close="cancelTopic" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchTopic"
-                         placeholder="请输入专题名称或id" @select="handleSelectTopic">
+                         :fetch-suggestions="querySearchTopic" placeholder="请输入专题名称或id" @select="handleSelectTopic">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -237,8 +225,6 @@
 <script>
   import {
     listAd,
-    createAd,
-    updateAd,
     deleteAd,
     updateGoodAndTopic,
     createAdV1_5_4_1,
@@ -259,6 +245,13 @@
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
 
+  const typeMap = {
+    1: 'h5网页',
+    2: '商品详情',
+    3: '专题列表',
+    4: '其他'
+  }
+
   export default {
     name: 'Ad',
     components: {
@@ -267,6 +260,7 @@
     },
     data() {
       return {
+        typeMap,
         uploadPath,
         dialogGoods: false,
         dialogTopic: false,
@@ -291,7 +285,9 @@
           goodId: undefined,
           topicId: undefined,
           enabled: true,
-          bannerType: undefined
+          bannerType: undefined,
+          targetType: undefined,
+          targetId: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -313,19 +309,21 @@
         allgoods: [],
         editTopic: [],
         allTopic: [],
-        options: [{
-          value: '支付宝',
-          label: '支付宝小程序'
-        }, {
-          value: '微信',
-          label: '微信小程序'
-        }, {
-          value: 'APP',
-          label: 'APP'
-        }, {
-          value: '全部',
-          label: '以上所有'
-        }],
+        options: [
+          {
+            value: '支付宝',
+            label: '支付宝小程序'
+          }, {
+            value: '微信',
+            label: '微信小程序'
+          }, {
+            value: 'APP',
+            label: 'APP'
+          }, {
+            value: '全部',
+            label: '以上所有'
+          }
+        ],
         value: '支付宝'
       }
     },
@@ -333,6 +331,11 @@
       this.getList()
       this.getGoods()
       this.getTopic()
+    },
+    filters: {
+      orderTypeFilter(status) {
+        return typeMap[status]
+      }
     },
     methods: {
       getList() {
