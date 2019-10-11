@@ -21,15 +21,12 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="广告位置" prop="position"></el-table-column>
-      <!--<el-table-column align="center" label="活动链接" prop="link"></el-table-column>-->
       <el-table-column align="center" label="对象id/连接" prop="targetId"></el-table-column>
       <el-table-column align="center" label="类型" prop="targetType">
         <template slot-scope="scope">
           <el-tag>{{scope.row.targetType | orderTypeFilter}}</el-tag>
         </template>
       </el-table-column>
-      <!--<el-table-column align="center" label="商品id" prop="goodId"></el-table-column>-->
-      <!--<el-table-column align="center" label="专题id" prop="topicId"></el-table-column>-->
       <el-table-column align="center" label="是否启用" prop="enabled">
         <template slot-scope="scope">
           <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
@@ -39,8 +36,6 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button type="primary" size="mini" @click="changeGoods(scope.row)">设置商品</el-button>
-          <el-button type="primary" size="mini" @click="changeTopic(scope.row)">设置专题</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,9 +69,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="活动链接" prop="link">-->
-          <!--<el-input v-model="dataForm.link"></el-input>-->
-        <!--</el-form-item>-->
         <el-form-item label="类型" prop="targetType">
           <el-select v-model="dataForm.targetType" placeholder="请选择">
             <el-option label="h5网页" :value="1"></el-option>
@@ -86,14 +78,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="对象id/连接" prop="targetId">
-          <el-input v-model="dataForm.targetId"></el-input>
+          <el-input v-model="dataForm.targetId" @focus="changeInfoId(dataForm.targetType, dataForm)"></el-input>
         </el-form-item>
-        <!--<el-form-item label="商品id" prop="goodId">-->
-          <!--<el-input v-model="dataForm.goodId"></el-input>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item label="专题id" prop="topicId">-->
-          <!--<el-input v-model="dataForm.topicId"></el-input>-->
-        <!--</el-form-item>-->
         <el-form-item label="选择展示渠道" prop="bannerType">
           <el-select v-model="dataForm.bannerType" placeholder="请选择">
             <el-option v-for="(item,index) in options" :key="index" :label="item.label" :value="item.value"></el-option>
@@ -113,10 +99,10 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="设置商品" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
+    <el-dialog title="设置" :visible.sync="dialogGoods" @close="cancelGoods" :close-on-click-modal='false'>
       <div class="content">
         <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchGoods" placeholder="请输入商品名称或id" @select="handleSelectGoods">
+                         :fetch-suggestions="querySearchGoods" placeholder="请输入名称或id" @select="handleSelectGoods">
           <template slot-scope="props">
             <div v-if='!props.item.nonesuggestion' class="proinfo flex">
               <div class="pic">
@@ -127,16 +113,14 @@
                 <div class="proname wordhide">{{props.item.name}}</div>
               </div>
             </div>
-            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
-              {{props.item.nonesuggestion}}
-            </div>
+            <div v-if='props.item.nonesuggestion' class="nonesuggestion">{{props.item.nonesuggestion}}</div>
           </template>
         </el-autocomplete>
         <div class="flex goodlist">
           <div class="goodwarp flex" v-for="(item,index) in editGood" :key="index">
             <div class="goodbox flex">
-              <div>
-                <img :src="item.picUrl" alt="" width="80px" height="80px">
+              <div class="pic">
+                <img :src="item.picUrl" alt="" width="60" height="60">
               </div>
               <div class="goodnames">{{item.name}}</div>
             </div>
@@ -144,50 +128,12 @@
               <div class="delattrs" @click="delGoods(index)"><i class="el-icon-close delicon"></i></div>
             </div>
           </div>
+
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelGoods">取消</el-button>
         <el-button type="primary" @click="addGoods">确定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="设置专题" :visible.sync="dialogTopic" @close="cancelTopic" :close-on-click-modal='false'>
-      <div class="content">
-        <el-autocomplete class="inline-input" popper-class='gamesuggestion' v-model="adddata.name"
-                         :fetch-suggestions="querySearchTopic" placeholder="请输入专题名称或id" @select="handleSelectTopic">
-          <template slot-scope="props">
-            <div v-if='!props.item.nonesuggestion' class="proinfo flex">
-              <div class="pic">
-                <img :src="props.item.picUrl" alt="">
-              </div>
-              <div class="prointroduce">
-                <div class="proId">{{props.item.id}}</div>
-                <div class="proname wordhide">{{props.item.name}}</div>
-              </div>
-            </div>
-            <div v-if='props.item.nonesuggestion' class="nonesuggestion">
-              {{props.item.nonesuggestion}}
-            </div>
-          </template>
-        </el-autocomplete>
-        <div class="flex topiclist">
-          <div class="goodwarp flex" v-for="(item,index) in editTopic" :key="index">
-            <div class="topicbox flex">
-              <div>
-                <img :src="item.picUrl" alt="" width="150px" height="80px">
-              </div>
-              <div class="topictitles">{{item.title}}</div>
-            </div>
-            <div class="rightinfo">
-              <div class="delattrs" @click="delTopic(index)"><i class="el-icon-close delicon"></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelTopic">取消</el-button>
-        <el-button type="primary" @click="addTopic">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -223,28 +169,12 @@
 </style>
 
 <script>
-  import {
-    listAd,
-    deleteAd,
-    updateGoodAndTopic,
-    createAdV1_5_4_1,
-    updateAdV1_5_4_1
-  } from '@/api/ad'
-
-  import {
-    listTopic,
-    read,
-    getGoodsInfo
-  } from '@/api/topic'
-  import {
-    listGoods
-  } from '@/api/goods'
-  import {
-    uploadPath
-  } from '@/api/storage'
+  import { listAd, deleteAd, createAdV1_5_4_1, updateAdV1_5_4_1 } from '@/api/ad'
+  import { getGoodsInfo, getTopicList, listTopic2 } from '@/api/topic'
+  import { listGoods } from '@/api/goods'
+  import { uploadPath } from '@/api/storage'
   import BackToTop from '@/components/BackToTop'
   import Editor from '@tinymce/tinymce-vue'
-
   const typeMap = {
     1: 'h5网页',
     2: '商品详情',
@@ -263,7 +193,6 @@
         typeMap,
         uploadPath,
         dialogGoods: false,
-        dialogTopic: false,
         list: undefined,
         total: undefined,
         listLoading: true,
@@ -416,7 +345,6 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             updateAdV1_5_4_1(this.dataForm).then(() => {
-              // updateAd(this.dataForm).then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
                   const index = this.list.indexOf(v)
@@ -476,9 +404,10 @@
       },
       cancelGoods() {
         this.dialogGoods = false
-        this.resetGoods()
+        // this.resetGoods()
       },
       handleSelectGoods(val) {
+        this.editGood = []
         this.editGood[0] = ({
           id: val.id,
           name: val.name,
@@ -488,7 +417,7 @@
       querySearchGoods(queryString, cb) {
         var prodata = this.allgoods
         var results = queryString ? prodata.filter(this.createFilterGoods(queryString)) : prodata
-        if (results != null) {
+        if (results.length === 0) {
           results.push({
             nonesuggestion: '无搜索结果',
             data: queryString
@@ -500,7 +429,7 @@
         return item => {
           return (
             item.id.toString().indexOf(queryString.toLowerCase()) !== -1 ||
-            item.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+            String(item.name).toLowerCase().indexOf(queryString.toLowerCase()) !== -1
           )
         }
       },
@@ -509,11 +438,8 @@
         this.editGood.forEach(item => {
           arr.push(item.id)
         })
-        this.dataForm.goodId = arr[0]
-        updateGoodAndTopic(this.dataForm).then(res => {
-          this.dialogGoods = false
-          this.getList()
-        })
+        this.dataForm.targetId = arr[0]
+        this.dialogGoods = false
       },
       resetGoods() {
         this.editGood = []
@@ -543,90 +469,56 @@
 
         })
       },
-      changeTopic(row) {
-        if (this.dialogTopic === false) {
-          if (row.topicId != null) {
-            this.dataForm.topicId = row.topicId
-            read(this.dataForm.topicId).then(res => {
-              this.editTopic = [res.data.data]
-              this.dialogTopic = true
+      changeInfoId(type, row) {
+        // 要返回id，name，pic
+        this.editGood = []
+        if (type === 2) {
+          this.dataForm.targetId = undefined
+          this.getGoods()
+          this.goodsBox(row)
+        } else if (type === 3) {
+          this.dataForm.targetId = undefined
+          this.getTopic()
+          this.topicBox(row)
+        }
+      },
+      goodsBox(row) {
+        var targetId = row.targetId
+        if (this.dialogGoods === false) {
+          if (targetId != null) {
+            getGoodsInfo({
+              idList: [row.goodId]
+            }).then(res => {
+              this.editGood = res.data.data
+              this.dialogGoods = true
               this.dataForm = Object.assign({}, row)
             })
           } else {
-            this.dialogTopic = true
+            this.dialogGoods = true
             this.dataForm = Object.assign({}, row)
           }
-        } else if (this.dialogTopic === true) {
-          this.dialogTopic = false
         }
       },
-      cancelTopic() {
-        this.dialogTopic = false
-        this.resetTopic()
-      },
-      handleSelectTopic(val) {
-        this.editTopic[0] = ({
-          id: val.id,
-          name: val.name,
-          picUrl: val.picUrl
-        })
-      },
-      querySearchTopic(queryString, cb) {
-        var prodata = this.allTopic
-        var results = queryString ? prodata.filter(this.createFilterTopic(queryString)) : prodata
-        if (results != null) {
-          results.push({
-            nonesuggestion: '无搜索结果',
-            data: queryString
-          })
+      topicBox(row) {
+        var targetId = row.targetId
+        if (this.dialogGoods === false) {
+          if (targetId != null) {
+            getTopicList({
+              idList: [row.goodId]
+            }).then(res => {
+              this.editGood = res.data.data
+              this.dialogGoods = true
+              this.dataForm = Object.assign({}, row)
+            })
+          } else {
+            this.dialogGoods = true
+            this.dataForm = Object.assign({}, row)
+          }
         }
-        cb(results)
-      },
-      createFilterTopic(queryString) {
-        return item => {
-          return (
-            item.id.toString().indexOf(queryString.toLowerCase()) !== -1 ||
-            item.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
-          )
-        }
-      },
-      addTopic() {
-        var arr = []
-        this.editTopic.forEach(item => {
-          arr.push(item.id)
-        })
-        this.dataForm.topicId = arr[0]
-        updateGoodAndTopic(this.dataForm).then(res => {
-          this.dialogTopic = false
-          this.getList()
-        })
-      },
-      resetTopic() {
-        this.editTopic = []
-        this.resetForm()
       },
       getTopic() {
-        var listQuery = {
-          page: 1,
-          limit: 1000,
-          goodsSn: undefined,
-          name: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        }
-        listTopic(listQuery).then(response => {
-          this.allTopic = response.data.data.items
-        })
-      },
-      delTopic(index) {
-        this.$confirm('确认删除此商品?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.editTopic.splice(index, 1)
-        }).catch(() => {
-
+        listTopic2().then(response => {
+          this.allgoods = response.data.data
         })
       }
     }
