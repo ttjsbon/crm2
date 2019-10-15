@@ -601,13 +601,13 @@
           })
           return
         }
-        if (!this.goods.brief || this.goods.brief.length < 0) {
-          MessageBox.alert('商品简介未配置', '未配置', {
-            confirmButtonText: '确定',
-            type: 'error'
-          })
-          return
-        }
+        // if (!this.goods.brief || this.goods.brief.length < 0) {
+        //   MessageBox.alert('商品简介未配置', '未配置', {
+        //     confirmButtonText: '确定',
+        //     type: 'error'
+        //   })
+        //   return
+        // }
         if (!this.goods.description || this.goods.description.length < 0) {
           MessageBox.alert('商品详细介绍未配置', '未配置', {
             confirmButtonText: '确定',
