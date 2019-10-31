@@ -17,8 +17,6 @@
               highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" sortable>
       </el-table-column>
-      <!--<el-table-column align="center" label="内容" prop="content">-->
-      <!--</el-table-column>-->
       <el-table-column align="center" label="展示位置" prop="page">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.page===1 ? '活动详情页' : '商品详情页' }}</el-tag>
@@ -201,6 +199,73 @@
         </div>
       </el-form>
     </el-dialog>
+
+    <el-dialog title="查询用户列表" :visible.sync="selectVisible" width="1300px">
+      <el-input v-model="search" placeholder="请输入内容" style="width: 1100px;"></el-input>
+      <el-button type="primary" @click="selectInInfo" style="width: 150px;">查询</el-button>
+      <el-pagination background @size-change="handleUserSizeChange" @current-change="handleUserCurrentChange"
+                     :current-page="userListQuery.page"
+                     :page-sizes="[100,300]" :page-size="userListQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="userLotal">
+      </el-pagination>
+      <el-table size="small" height="450px" :data="tables" element-loading-text="正在查询中。。。" @row-click="getDetails" border fit highlight-current-row>
+        <el-table-column align="center" width="100px" label="用户ID" sortable>
+          <template slot-scope="scope">
+            <span style="margin-left: 10px" v-html="format(scope.row.id)"></span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="姓名">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px" v-html="format(scope.row.cardName)"></span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="手机号码">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px" v-html="format(scope.row.mobile)"></span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="性别" >
+          <template slot-scope="scope">
+            <el-tag >{{genderDic[scope.row.status]}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="注册时间">
+          <template slot-scope="scope" >
+            <span  style="margin-left: 10px">{{ scope.row.addTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="selectVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmInfo">确定</el-button>
+      </div>
+
+    </el-dialog>
+
+    <el-dialog title="查询信息列表" :visible.sync="selectOtherVisible" width="1300px">
+        <el-input v-model="searchOther" placeholder="请输入内容"></el-input>
+        <el-table size="small" height="450px" :data="tablesOther" element-loading-text="正在查询中。。。" @row-click="getDetailsOther" border fit highlight-current-row>
+          <el-table-column align="center" label="图片" sortable>
+            <template slot-scope="scope" >
+              <img :src="scope.row.picUrl" height="100px" width="100px">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="ID">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px" v-html="formatOther(scope.row.id)"></span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="名称">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px" v-html="formatOther(scope.row.name)"></span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectOtherVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmInfoOther">确定</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -230,7 +295,7 @@
   import Editor from '@tinymce/tinymce-vue'
   import { getGoodsInfo, getTopicList, listTopic2 } from '@/api/topic'
   import { listGoods } from '@/api/goods'
-  import { getUserList, listUser } from '@/api/user'
+  import { fetchList } from '@/api/user'
 
   export default {
     filters: {
@@ -255,9 +320,52 @@
       BackToTop,
       Editor
     },
+    computed: {
+      tables() {
+        if (this.search) {
+          return this.userList.filter(dataNews => {
+            return Object.keys(dataNews).some(key => {
+              if (key !== 'addTime') {
+                return String(dataNews[key]).toLowerCase().indexOf(this.search) !== -1
+              }
+            })
+          })
+        }
+        return this.userList
+      },
+      tablesOther() {
+        if (this.searchOther) {
+          return this.allgoods.filter(dataNews => {
+            return Object.keys(dataNews).some(key => {
+              if (key !== 'addTime') {
+                return String(dataNews[key]).toLowerCase().indexOf(this.searchOther) !== -1
+              }
+            })
+          })
+        }
+        return this.allgoods
+      }
+    },
     data() {
       return {
+        selectOtherVisible: false,
+        searchOther: '',
+        search: '',
+        userList: [],
+        genderDic: ['未知', '男', '女'],
+        selectVisible: false,
         addVisible: false,
+        userLotal: undefined,
+        info: {},
+        userListQuery: {
+          page: 1,
+          limit: 100,
+          cardName: undefined,
+          timePeriod: [null],
+          mobile: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        },
         couponDetail: {
           addTime: undefined,
           content: undefined,
@@ -460,20 +568,22 @@
         this.dataForm.targetId = undefined
         this.editGood = []
         if (type === 2) {
-          this.getGoods()
-          this.goodsBox(row)
+          // this.getGoods()
+          // this.goodsBox(row)
+          this.handleSelectOther(type)
         } else if (type === 4) {
-          this.getUsers()
-          this.userBox(row)
+          this.handleSelect()
         } else if (type === 1) {
           // this.newUserBox(row)
         } else if (type === 3) {
-          this.getTopic()
-          this.topicBox(row)
+          // this.getTopic()
+          // this.topicBox(row)
+          this.handleSelectOther(type)
         } else if (type === 0) {
           // 查询分类信息
-          this.getTopic()
-          this.topicBox(row)
+          // this.getTopic()
+          // this.topicBox(row)
+          this.handleSelectOther(type)
         }
       },
       goodsBox(row) {
@@ -481,23 +591,6 @@
         if (this.dialogGoods === false) {
           if (targetId != null) {
             getGoodsInfo({
-              idList: [row.goodId]
-            }).then(res => {
-              this.editGood = res.data.data
-              this.dialogGoods = true
-              this.dataForm = Object.assign({}, row)
-            })
-          } else {
-            this.dialogGoods = true
-            this.dataForm = Object.assign({}, row)
-          }
-        }
-      },
-      userBox(row) {
-        var targetId = row.targetId
-        if (this.dialogGoods === false) {
-          if (targetId != null) {
-            getUserList({
               idList: [row.goodId]
             }).then(res => {
               this.editGood = res.data.data
@@ -598,11 +691,6 @@
           this.allgoods = response.data.data
         })
       },
-      getUsers() {
-        listUser().then(response => {
-          this.allgoods = response.data.data
-        })
-      },
       handleDetail(row) {
         couponConfigDetail(row.id).then(response => {
           this.couponDetail = response.data.data
@@ -613,7 +701,6 @@
         this.couponDetailDialog = false
       },
       addId() {
-
         if (this.dataForm.categoryId.length === 4) {
           this.$message.warning('已达到最大数量')
         } else {
@@ -623,6 +710,99 @@
       },
       resetId() {
         this.dataForm.categoryId = []
+      },
+      handleSelect() {
+        this.selectVisible = true
+        this.selectInInfo()
+      },
+      handleSelectOther(type) {
+        this.selectOtherVisible = true
+        if (type === 2) {
+          this.getGoods()
+        } else if (type === 4) {
+          this.handleSelect()
+        } else if (type === 1) {
+          // this.newUserBox(row)
+        } else if (type === 3) {
+          this.getTopic()
+        } else if (type === 0) {
+          // 查询分类信息
+          this.getTopic()
+        }
+        // this.selectInInfo()
+      },
+      selectInInfo() {
+        this.userListQuery.cardName = this.search
+        this.userListQuery.mobile = this.search
+        fetchList(this.userListQuery).then(response => {
+          var data = []
+          for (var i = 0; i < response.data.data.items.length; i++) {
+            if (response.data.data.items[i].status === 0) {
+              data.push(response.data.data.items[i])
+            }
+          }
+          this.userList = data
+          this.userLotal = response.data.data.total
+          this.listLoading = false
+        }).catch(() => {
+          this.userList = []
+          this.userLotal = 0
+          this.listLoading = false
+        })
+      },
+      getDetails(row) {
+        this.info = row
+        if (row.status !== 0) {
+          alert('该用户状态异常')
+        } else {
+          this.info = row
+        }
+      },
+      getDetailsOther(row) {
+        this.info = row
+        if (null != this.info.onSale && !this.info.onSale) {
+          alert('该信息异常')
+        } else {
+          this.info = row
+        }
+      },
+      format(val) {
+        if ((val + '').indexOf(this.search) !== -1 && this.search !== '') {
+          return (val + '').replace(this.search, '<font color="red">' + this.search + '</font>')
+        } else {
+          return val
+        }
+      },
+      formatOther(val) {
+        if ((val + '').indexOf(this.searchOther) !== -1 && this.searchOther !== '') {
+          return (val + '').replace(this.searchOther, '<font color="red">' + this.searchOther + '</font>')
+        } else {
+          return val
+        }
+      },
+      handleUserSizeChange(val) {
+        this.userListQuery.limit = val
+        this.selectInInfo()
+      },
+      handleUserCurrentChange(val) {
+        this.userListQuery.page = val
+        this.selectInInfo()
+      },
+      confirmInfo() {
+        if (this.info.status !== 0) {
+          alert('该用户状态异常')
+        } else {
+          this.dataForm.targetId = this.info.id
+          this.selectVisible = false
+        }
+      },
+      confirmInfoOther() {
+        if (null != this.info.onSale && !this.info.onSale) {
+          alert('该信息异常')
+        } else {
+          this.dataForm.targetId = this.info.id
+          this.selectOtherVisible = false
+        }
       }
     }
   }
