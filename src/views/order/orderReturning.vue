@@ -42,6 +42,15 @@
         <el-form-item label="金额">
           <el-input v-model="amount"></el-input>
         </el-form-item>
+        <el-form-item label="设备故障描述">
+          <el-input v-model="faultDescription"></el-input>
+        </el-form-item>
+        <el-form-item label="设备损坏图片">
+          <el-upload :action="uploadPath" :limit="10" multiple accept=".jpg,.jpeg,.png,.gif" list-type="picture-card"
+                     :on-exceed="uploadOverrun" :on-success="handleGalleryUrl" :on-remove="handleRemove">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAmount = false">取 消</el-button>
@@ -422,11 +431,16 @@
     detailOrder4,
     listOrderV1_5_0,
     detailOrderV1_5_3,
-    detailOrderV2_1_0
+    detailOrderV2_1_0,
+    enterTheAmountOfCompensationV2_1_3
   } from '@/api/order'
   import {
     parseTime
   } from '@/utils/index'
+  import {
+    // createStorage,
+    uploadPath
+  } from '@/api/storage'
 
   const statusMap = {
     101: '已下单',
@@ -451,7 +465,9 @@
     name: 'Order',
     data() {
       return {
+        uploadPath,
         amount: undefined,
+        faultDescription: undefined,
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -510,7 +526,10 @@
         dialogFormVisibleAmount: false,
         userdata: null,
         compensationPayChannel: null,
-        orderChannel: null
+        orderChannel: null,
+        // compensation: {
+        faultGallery: []
+        // }
       }
     },
     filters: {
@@ -546,7 +565,7 @@
         }
 
         listOrderV1_5_0(this.timeper).then(response => {
-        // listOrder4(this.timeper).then(response => {
+          // listOrder4(this.timeper).then(response => {
           this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
@@ -722,7 +741,14 @@
       },
       enterTheAmountOfCompensation(row) {
         this.dialogFormVisibleAmount = false
-        enterTheAmountOfCompensation(this.editRow.id, this.amount).then(response => {
+        if (!this.amount || isNaN(this.amount) || this.amount === '0') {
+          MessageBox.alert('赔偿金额未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        enterTheAmountOfCompensationV2_1_3(this.editRow.id, this.amount, this.faultDescription, this.faultGallery).then(response => {
           this.$notify({
             title: '成功',
             message: '赔偿金额录入成功',
@@ -762,6 +788,36 @@
             })
           })
         })
+      },
+      uploadOverrun: function() {
+        this.$message({
+          type: 'error',
+          message: '上传文件个数超出限制!最多上传10张图片!'
+        })
+      },
+      handleGalleryUrl(response, file, fileList) {
+        if (response.errno === 0) {
+          this.faultGallery.push(response.data.url)
+        }
+        console.log(this.faultGallery, 'sbxm')
+      },
+      handleRemove: function(file, fileList) {
+        for (var i = 0; i < this.faultGallery.length; i++) {
+          // 这里存在两种情况
+          // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
+          //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
+          // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
+          var url
+          if (file.response === undefined) {
+            url = file.url
+          } else {
+            url = file.response.data.url
+          }
+
+          if (this.faultGallery[i] === url) {
+            this.faultGallery.splice(i, 1)
+          }
+        }
       }
     }
   }

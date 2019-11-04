@@ -119,6 +119,19 @@ export function enterTheAmountOfCompensation(orderId, amount) {
   })
 }
 
+export function enterTheAmountOfCompensationV2_1_3(orderId, amount, faultDescription, faultGallery) {
+  return request({
+    url: '/order/v2.1.3/enterTheAmountOfCompensation',
+    method: 'get',
+    params: {
+      orderId: orderId,
+      amount: amount,
+      faultDescription: faultDescription,
+      faultGallery: faultGallery
+    }
+  })
+}
+
 export function thaw(orderId) {
   return request({
     url: '/order/thaw',
