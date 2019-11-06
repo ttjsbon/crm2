@@ -236,7 +236,7 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="selectVisible = false">取消</el-button>
+        <el-button @click="selectVisibleCancel">取消</el-button>
         <el-button type="primary" @click="confirmInfo">确定</el-button>
       </div>
 
@@ -262,7 +262,7 @@
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectOtherVisible = false">取消</el-button>
+          <el-button @click="selectVisibleCancel">取消</el-button>
           <el-button type="primary" @click="confirmInfoOther">确定</el-button>
         </div>
     </el-dialog>
@@ -803,6 +803,12 @@
           this.dataForm.targetId = this.info.id
           this.selectOtherVisible = false
         }
+      },
+      selectVisibleCancel() {
+        this.selectVisible = false
+        this.selectOtherVisible = false
+        this.search = ''
+        this.searchOther = ''
       }
     }
   }
