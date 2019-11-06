@@ -39,14 +39,15 @@
     <!-- 待结算录入金额 -->
     <el-dialog title="输入金额" :visible.sync="dialogFormVisibleAmount">
       <el-form>
-        <el-form-item label="金额">
-          <el-input v-model="amount"></el-input>
+        <el-form-item label="金额" prop="pendingAmount">
+          <el-input v-model="pendingAmount"></el-input>
         </el-form-item>
-        <el-form-item label="设备故障描述">
+        <el-form-item label="设备故障描述" prop="faultDescription">
           <el-input v-model="faultDescription"></el-input>
         </el-form-item>
         <el-form-item label="设备损坏图片">
-          <el-upload :action="uploadPath" :limit="10" multiple accept=".jpg,.jpeg,.png,.gif" list-type="picture-card"
+          <el-upload :action="uploadPath" :limit="10" multiple accept=".jpg,.jpeg,.png,.gif"
+                     :file-list="galleryFileList" list-type="picture-card"
                      :on-exceed="uploadOverrun" :on-success="handleGalleryUrl" :on-remove="handleRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -432,7 +433,8 @@
     listOrderV1_5_0,
     detailOrderV1_5_3,
     detailOrderV2_1_0,
-    enterTheAmountOfCompensationV2_1_3
+    enterTheAmountOfCompensationV2_1_3,
+    pendingDetail
   } from '@/api/order'
   import {
     parseTime
@@ -471,6 +473,7 @@
         uploadPath,
         amount: undefined,
         faultDescription: undefined,
+        pendingAmount: undefined,
         timePeriod: '',
         payTimePeriod: '',
         lang: {
@@ -530,9 +533,8 @@
         userdata: null,
         compensationPayChannel: null,
         orderChannel: null,
-        // compensation: {
-        faultGallery: []
-        // }
+        faultGallery: [],
+        galleryFileList: []
       }
     },
     filters: {
@@ -744,14 +746,14 @@
       },
       enterTheAmountOfCompensation(row) {
         this.dialogFormVisibleAmount = false
-        if (!this.amount || isNaN(this.amount) || this.amount === '0') {
+        if (!this.pendingAmount || isNaN(this.pendingAmount) || this.pendingAmount === '0') {
           MessageBox.alert('赔偿金额未配置', '未配置', {
             confirmButtonText: '确定',
             type: 'error'
           })
           return
         }
-        enterTheAmountOfCompensationV2_1_3(this.editRow.id, this.amount, this.faultDescription, this.faultGallery).then(response => {
+        enterTheAmountOfCompensationV2_1_3(this.editRow.id, this.pendingAmount, this.faultDescription, this.faultGallery).then(response => {
           this.$notify({
             title: '成功',
             message: '赔偿金额录入成功',
@@ -769,6 +771,23 @@
         }).then(() => {
           this.editRow = row
           this.dialogFormVisibleAmount = true
+          pendingDetail(row.id).then(response => {
+            var compensation
+            compensation = response.data.data
+            this.pendingAmount = compensation.compensationAmount
+            this.faultDescription = compensation.compensationFaultDescription
+            this.faultGallery = compensation.compensationFaultGallery
+            this.galleryFileList = []
+            if (!this.faultGallery || this.faultGallery.length < 0) {
+              this.faultGallery = []
+            } else {
+              for (var i = 0; i < this.faultGallery.length; i++) {
+                this.galleryFileList.push({
+                  url: this.faultGallery[i]
+                })
+              }
+            }
+          })
         }).catch(() => {
           this.$confirm('确定解冻押金么?', '提示', {
             confirmButtonText: '确定',
@@ -802,7 +821,6 @@
         if (response.errno === 0) {
           this.faultGallery.push(response.data.url)
         }
-        console.log(this.faultGallery, 'sbxm')
       },
       handleRemove: function(file, fileList) {
         for (var i = 0; i < this.faultGallery.length; i++) {

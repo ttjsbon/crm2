@@ -442,3 +442,13 @@ export function listBuyoutOrderV2_1_0(query) {
     params: query
   })
 }
+
+export function pendingDetail(id) {
+  return request({
+    url: '/order/v2.1.3/pendingDetail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
