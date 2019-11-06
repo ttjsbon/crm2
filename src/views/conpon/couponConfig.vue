@@ -200,7 +200,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="查询用户列表" :visible.sync="selectVisible" width="1300px">
+    <el-dialog title="查询用户列表" :visible.sync="selectVisible" width="1300px" @close="selectVisibleCancel">
       <el-input v-model="search" placeholder="请输入内容" style="width: 1100px;"></el-input>
       <el-button type="primary" @click="selectInInfo" style="width: 150px;">查询</el-button>
       <el-pagination background @size-change="handleUserSizeChange" @current-change="handleUserCurrentChange"
@@ -236,13 +236,13 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="selectVisible = false">取消</el-button>
+        <el-button @click="selectVisibleCancel">取消</el-button>
         <el-button type="primary" @click="confirmInfo">确定</el-button>
       </div>
 
     </el-dialog>
 
-    <el-dialog title="查询信息列表" :visible.sync="selectOtherVisible" width="1300px">
+    <el-dialog title="查询信息列表" :visible.sync="selectOtherVisible" width="1300px" @close="selectVisibleCancel">
         <el-input v-model="searchOther" placeholder="请输入内容"></el-input>
         <el-table size="small" height="450px" :data="tablesOther" element-loading-text="正在查询中。。。" @row-click="getDetailsOther" border fit highlight-current-row>
           <el-table-column align="center" label="图片" sortable>
@@ -262,7 +262,7 @@
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectOtherVisible = false">取消</el-button>
+          <el-button @click="selectVisibleCancel">取消</el-button>
           <el-button type="primary" @click="confirmInfoOther">确定</el-button>
         </div>
     </el-dialog>
@@ -803,6 +803,12 @@
           this.dataForm.targetId = this.info.id
           this.selectOtherVisible = false
         }
+      },
+      selectVisibleCancel() {
+        this.selectVisible = false
+        this.selectOtherVisible = false
+        this.search = ''
+        this.searchOther = ''
       }
     }
   }
