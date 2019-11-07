@@ -774,19 +774,26 @@
           pendingDetail(row.id).then(response => {
             var compensation
             compensation = response.data.data
-            this.pendingAmount = compensation.compensationAmount
-            this.faultDescription = compensation.compensationFaultDescription
-            this.faultGallery = compensation.compensationFaultGallery
-            this.galleryFileList = []
-            if (!this.faultGallery || this.faultGallery.length < 0) {
+            if (compensation.compensationInfo === 'false') {
+              this.pendingAmount = undefined
+              this.faultDescription = undefined
               this.faultGallery = []
             } else {
-              for (var i = 0; i < this.faultGallery.length; i++) {
-                this.galleryFileList.push({
-                  url: this.faultGallery[i]
-                })
+              this.pendingAmount = compensation.compensationAmount
+              this.faultDescription = compensation.compensationFaultDescription
+              this.faultGallery = compensation.compensationFaultGallery
+              this.galleryFileList = []
+              if (!this.faultGallery || this.faultGallery.length < 0) {
+                this.faultGallery = []
+              } else {
+                for (var i = 0; i < this.faultGallery.length; i++) {
+                  this.galleryFileList.push({
+                    url: this.faultGallery[i]
+                  })
+                }
               }
             }
+
           })
         }).catch(() => {
           this.$confirm('确定解冻押金么?', '提示', {
