@@ -40,9 +40,11 @@
     <el-dialog title="输入金额" :visible.sync="dialogFormVisibleAmount">
       <el-form>
         <el-form-item label="金额" prop="pendingAmount">
+          <span style="color: red; font-size: 6px">(必填)</span>
           <el-input v-model="pendingAmount"></el-input>
         </el-form-item>
         <el-form-item label="设备故障描述" prop="faultDescription">
+          <span style="color: red; font-size: 6px">(必填)</span>
           <el-input v-model="faultDescription"></el-input>
         </el-form-item>
         <el-form-item label="设备损坏图片">
@@ -534,7 +536,19 @@
         compensationPayChannel: null,
         orderChannel: null,
         faultGallery: [],
-        galleryFileList: []
+        galleryFileList: [],
+        // rules: {
+        //   pendingAmount: [{
+        //     required: true,
+        //     message: '金额不能为空',
+        //     trigger: 'blur'
+        //   }],
+        //   faultDescription: [{
+        //     required: true,
+        //     message: '故障描述不能为空',
+        //     trigger: 'blur'
+        //   }]
+        // }
       }
     },
     filters: {
@@ -748,6 +762,13 @@
         this.dialogFormVisibleAmount = false
         if (!this.pendingAmount || isNaN(this.pendingAmount) || this.pendingAmount === '0') {
           MessageBox.alert('赔偿金额未配置', '未配置', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+          return
+        }
+        if (!this.faultDescription || this.faultDescription.length < 0) {
+          MessageBox.alert('故障描述未配置', '未配置', {
             confirmButtonText: '确定',
             type: 'error'
           })
