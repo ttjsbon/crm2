@@ -29,7 +29,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button type="primary" size="mini" @click="handleDetail(scope.row)">报告</el-button>
+          <el-button type="primary" size="mini" @click="handleReport(scope.row)">报告</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -358,6 +358,7 @@
         timeper: {},
         statusMap,
         orderDialogVisible: false,
+        orderReportVisible: false,
         orderDetail: {
           order: {},
           user: {},
@@ -410,21 +411,6 @@
           this.listLoading = false
         })
       },
-      addRemarkV1_4_0_1() {
-        addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
-          this.flags = response.data.data.flag
-          this.$notify({
-            title: '成功',
-            message: this.flags === true ? '保存成功' : '保存失败',
-            type: this.flags === true ? 'success' : 'error',
-            duration: 2000
-          })
-          this.orderDialogVisible = false
-          this.getList()
-        }).catch(() => {
-          this.flags = false
-        })
-      },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -453,6 +439,14 @@
         console.info(this.orderDetail)
         this.orderDialogVisible = true
       },
+      handleReport(row) {
+        this.$router.push({
+          path: 'jd_order_audit_info',
+          query: {
+            id: row.id
+          }
+        })
+      },
       closeDetail() {
         this.userdata = null
       },
@@ -469,20 +463,6 @@
         if (val && val[result]) {
           const Str = JSON.stringify(val[result]).replace(/{/g, '{<br>').replace(/,/g, ',<br>').replace(/\\/g, '')
           val[result] = Str
-        }
-      },
-      dateFormat(row, column) {
-        const daterc = row[column.property]
-        if (daterc != null) {
-          const dateMat = new Date(parseInt(daterc.replace('/Date(', '').replace(')/', ''), 14))
-          const year = dateMat.getFullYear()
-          const month = dateMat.getMonth() + 1
-          const day = dateMat.getDate()
-          const hh = dateMat.getHours()
-          const mm = dateMat.getMinutes()
-          const ss = dateMat.getSeconds()
-          const timeFormat = year + '-' + month + '-' + day + ' ' + hh + ':' + mm + ':' + ss
-          return timeFormat
         }
       }
     }

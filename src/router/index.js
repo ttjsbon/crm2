@@ -411,6 +411,16 @@ export const asyncRouterMap = [{
       title: '待审核',
       noCache: true
     }
+  },
+  {
+    path: 'jd_order_audit_info',
+    component: _import('jd_order/jd_order_audit_info'),
+    name: 'jd_order_audit_info',
+    meta: {
+      title: '报告信息',
+      noCache: true
+    },
+    hidden: true
   }
   ]
 },

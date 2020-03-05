@@ -18,3 +18,13 @@ export function detail(id) {
   })
 }
 
+export function notification(id) {
+  return request({
+    url: '/jdOrder/notification',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
