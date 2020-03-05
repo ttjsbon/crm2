@@ -384,6 +384,36 @@ export const asyncRouterMap = [{
   }
   ]
 },
+
+{
+  path: '/jd_order',
+  component: Layout,
+  redirect: 'noredirect',
+  name: 'jd_order',
+  meta: {
+    title: '京东订单管理',
+    icon: 'chart'
+  },
+  children: [{
+    path: 'jd_order_all',
+    component: _import('jd_order/jd_order_all'),
+    name: 'jd_order_all',
+    meta: {
+      title: '总订单',
+      noCache: true
+    }
+  },
+  {
+    path: 'jd_order_audit',
+    component: _import('jd_order/jd_order_audit'),
+    name: 'jd_order_audit',
+    meta: {
+      title: '待审核',
+      noCache: true
+    }
+  }
+  ]
+},
 {
   path: '/goods',
   component: Layout,
