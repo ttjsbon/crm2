@@ -284,7 +284,7 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="风险标注：">
-            <span>{{(reportInfo.resp_data.booleandata_localhistory.sign + '').substr(0, reportInfo.resp_data.booleandata_localhistory.sign.length - 1)}}</span>
+            <span>{{reportInfo.resp_data.booleandata_localhistory.sign ? (reportInfo.resp_data.booleandata_localhistory.sign + '').substr(0, reportInfo.resp_data.booleandata_localhistory.sign.length - 1) : '无'}}</span>
           </el-form-item>
         </div>
       </el-form>
