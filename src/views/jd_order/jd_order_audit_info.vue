@@ -5,12 +5,12 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="报告编号：">
-            {{ reportInfo.resp_order ? reportInfo.resp_order : '无' }}
+            {{ reportInfo.resp_order}}
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="报告生成时间：">
-            {{ reportInfo.timestamp ? (reportInfo.timestamp | formatDate) : '无'}}
+            {{(reportInfo.timestamp | formatDate)}}
           </el-form-item>
         </div>
       </el-form>
@@ -20,12 +20,12 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="综合评分：">
-            <span>{{reportInfo.resp_data.seer_grade ? reportInfo.resp_data.seer_grade : '无'}}</span>
+            <span>{{reportInfo.resp_data.seer_grade}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="审核建议：">
-            <span>{{reportInfo.resp_data.suggest ? reportInfo.resp_data.suggest : '无'}}</span>
+            <span>{{reportInfo.resp_data.suggest}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
@@ -51,26 +51,26 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="姓名：">
-            <span>{{reportInfo.resp_data.base_info.name ? reportInfo.resp_data.base_info.name : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.name}}</span>
           </el-form-item>
           <el-form-item label="身份证号：">
-            <span>{{reportInfo.resp_data.base_info.idcard ? reportInfo.resp_data.base_info.idcard : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.idcard}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="手机号：">
-            <span>{{reportInfo.resp_data.base_info.phone ? reportInfo.resp_data.base_info.phone : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.phone}}</span>
           </el-form-item>
           <el-form-item label="年龄：">
-            <span>{{reportInfo.resp_data.base_info.age ? reportInfo.resp_data.base_info.age : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.age}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="户籍：">
-            <span>{{reportInfo.resp_data.base_info.idcard_address ? reportInfo.resp_data.base_info.idcard_address : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.idcard_address}}</span>
           </el-form-item>
           <el-form-item label="号码归属地：">
-            <span>{{reportInfo.resp_data.base_info.phone_address ? reportInfo.resp_data.base_info.phone_address : '无'}}</span>
+            <span>{{reportInfo.resp_data.base_info.phone_address}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -81,50 +81,50 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="高风险名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.hign_risk_focus_list ? reportInfo.resp_data.risk_list_check.hign_risk_focus_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.hign_risk_focus_list}}</span>
           </el-form-item>
           <el-form-item label="虚拟号码库：">
-            <span>{{reportInfo.resp_data.risk_list_check.virtual_number_base ? reportInfo.resp_data.risk_list_check.virtual_number_base : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.virtual_number_base}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="信贷逾期名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.credit_overdue_list ? reportInfo.resp_data.risk_list_check.credit_overdue_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.credit_overdue_list}}</span>
           </el-form-item>
           <el-form-item label="通信小号库：">
-            <span>{{reportInfo.resp_data.risk_list_check.small_number_base ? reportInfo.resp_data.risk_list_check.small_number_base : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.small_number_base}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="法院执行名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.court_execute_list ? reportInfo.resp_data.risk_list_check.court_execute_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.court_execute_list}}</span>
           </el-form-item>
           <el-form-item label="位于高风险较为集中地区：">
-            <span>{{reportInfo.resp_data.risk_list_check.census_register_hign_risk_area ? reportInfo.resp_data.risk_list_check.census_register_hign_risk_area : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.census_register_hign_risk_area}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="法院结案名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.court_case_list ? reportInfo.resp_data.risk_list_check.court_case_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.court_case_list}}</span>
           </el-form-item>
           <el-form-item label="助学贷款欠费历史：">
-            <span>{{reportInfo.resp_data.risk_list_check.student_loan_arrearage_list ? reportInfo.resp_data.risk_list_check.student_loan_arrearage_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.student_loan_arrearage_list}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="法院失信名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.court_break_faith_list ? reportInfo.resp_data.risk_list_check.court_break_faith_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.court_break_faith_list}}</span>
           </el-form-item>
           <el-form-item label="车辆租赁违约名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.car_rental_break_contract_list ? reportInfo.resp_data.risk_list_check.car_rental_break_contract_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.car_rental_break_contract_list}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="犯罪通缉名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.crime_manhunt_list ? reportInfo.resp_data.risk_list_check.crime_manhunt_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.crime_manhunt_list}}</span>
           </el-form-item>
           <el-form-item label="租赁高风险名单：">
-            <span>{{reportInfo.resp_data.risk_list_check.rent_high_list ? reportInfo.resp_data.risk_list_check.rent_high_list : '无'}}</span>
+            <span>{{reportInfo.resp_data.risk_list_check.rent_high_list}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -161,27 +161,27 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="负债机构总数：">
-            {{ reportInfo.resp_data.loan_details.liabilities_mechanism_number ? reportInfo.resp_data.loan_details.liabilities_mechanism_number : '无' }}
+            {{ reportInfo.resp_data.loan_details.liabilities_mechanism_number}}
           </el-form-item>
         </div>
       </el-form>
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="消费金融类机构数：" >
-            {{ reportInfo.resp_data.loan_details.cflenders ? reportInfo.resp_data.loan_details.cflenders : '无' }}
+            {{ reportInfo.resp_data.loan_details.cflenders}}
           </el-form-item>
           <el-form-item label="网络贷款类机构数：">
-            {{ reportInfo.resp_data.loan_details.nllenders ? reportInfo.resp_data.loan_details.nllenders : '无' }}
+            {{ reportInfo.resp_data.loan_details.nllenders}}
           </el-form-item>
         </div>
       </el-form>
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="已结清负债机构书：">
-            {{ reportInfo.resp_data.loan_details.settlement_number ? reportInfo.resp_data.loan_details.settlement_number : '无' }}
+            {{ reportInfo.resp_data.loan_details.settlement_number}}
           </el-form-item>
           <el-form-item label="首次负债距今时长(天)：">
-            {{ reportInfo.resp_data.loan_details.loanday ? reportInfo.resp_data.loan_details.loanday : '无' }}
+            {{ reportInfo.resp_data.loan_details.loanday}}
           </el-form-item>
         </div>
       </el-form>
@@ -201,7 +201,7 @@
         <el-table-column align="center" property="m3" label="近3个月"></el-table-column>
         <el-table-column align="center" property="m6" label="近6个月"></el-table-column>
       </el-table>
-      <h5>最近一次成功还款距今天数（天）：{{reportInfo.resp_data.repay_info.last_repay_day ? reportInfo.resp_data.repay_info.last_repay_day : '无' }}</h5>
+      <h5>最近一次成功还款距今天数（天）：{{reportInfo.resp_data.repay_info.last_repay_day}}</h5>
       <br>
       <el-table :data="repay_fail" style="font-size: 10px">
         <el-table-column align="center" property="name" label=""></el-table-column>
@@ -215,22 +215,22 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="是否逾期：">
-            <span>{{reportInfo.resp_data.overdue_info.is_overdue ? reportInfo.resp_data.overdue_info.is_overdue : '无' }}</span>
+            <span>{{reportInfo.resp_data.overdue_info.is_overdue}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="逾期机构数：">
-            <span>{{reportInfo.resp_data.overdue_info.counts ? reportInfo.resp_data.overdue_info.counts : '无' }}</span>
+            <span>{{reportInfo.resp_data.overdue_info.counts}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="逾期金额：">
-            <span>{{reportInfo.resp_data.overdue_info.overdue_money ? reportInfo.resp_data.overdue_info.overdue_money : '无' }}</span>
+            <span>{{reportInfo.resp_data.overdue_info.overdue_money}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="是否存在逾期未结清：">
-            <span>{{reportInfo.resp_data.overdue_info.settlement ? reportInfo.resp_data.overdue_info.settlement : '无' }}</span>
+            <span>{{reportInfo.resp_data.overdue_info.settlement}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -241,12 +241,12 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="3个月身份证关联手机号数：">
-            <span>{{reportInfo.resp_data.relevance_risk_check.ident_to_phone_counts ? reportInfo.resp_data.relevance_risk_check.ident_to_phone_counts : '无'}}</span>
+            <span>{{reportInfo.resp_data.relevance_risk_check.ident_to_phone_counts}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="3个月手机号关联身份证数：">
-            <span>{{reportInfo.resp_data.relevance_risk_check.phone_to_ident_counts ? reportInfo.resp_data.relevance_risk_check.phone_to_ident_counts : '无'}}</span>
+            <span>{{reportInfo.resp_data.relevance_risk_check.phone_to_ident_counts}}</span>
           </el-form-item>
         </div>
       </el-form>
@@ -258,7 +258,7 @@
         <el-table-column align="center" type="index" :index="index + 1" label="序号"></el-table-column>
         <el-table-column align="center" label="审结日期" prop="sort_time_string">
           <template slot-scope="scope" >
-            <span>  {{ scope.row.sort_time_string ? (scope.row.sort_time_string | dateformat('YYYY-MM-DD HH:mm:ss')) : '无'}}</span>
+            <span>  {{(scope.row.sort_time_string | dateformat('YYYY-MM-DD HH:mm:ss'))}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" property="data_type" label="类型"></el-table-column>
@@ -279,12 +279,12 @@
       <el-form :data="reportInfo" label-width="200px">
         <div class="flex itemtogether">
           <el-form-item label="最高分数：">
-            <span>{{reportInfo.resp_data.booleandata_localhistory.max_grade ? reportInfo.resp_data.booleandata_localhistory.max_grade : '无'}}</span>
+            <span>{{reportInfo.resp_data.booleandata_localhistory.max_grade}}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="风险标注：">
-            <span>{{reportInfo.resp_data.booleandata_localhistory ? (reportInfo.resp_data.booleandata_localhistory.sign + '').substr(0, reportInfo.resp_data.booleandata_localhistory.sign.length - 1) : '无'}}</span>
+            <span>{{(reportInfo.resp_data.booleandata_localhistory.sign + '').substr(0, reportInfo.resp_data.booleandata_localhistory.sign.length - 1)}}</span>
           </el-form-item>
         </div>
       </el-form>
