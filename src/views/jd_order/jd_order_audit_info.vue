@@ -30,10 +30,9 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="命中风险标注：">
-            <span>1、命中风险关注名单；</span><br>
-            <span>2、有频繁借贷记录；</span><br>
-            <span>3、有逾期历史记录；</span><br>
-            <span>4、涉及法院风险信息记录；</span>
+            <span v-for="(sign, index) in reportInfo.resp_data.sign">
+              {{index + 1 + '、' + sign}}<br>
+            </span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
