@@ -73,6 +73,11 @@
             <span>{{reportInfo.resp_data.base_info.phone_address}}</span>
           </el-form-item>
         </div>
+        <div class="flex itemtogether">
+          <el-form-item label="三要素认证：">
+            <span>{{reportInfo.realResult}}</span>
+          </el-form-item>
+        </div>
       </el-form>
     </el-card>
 
