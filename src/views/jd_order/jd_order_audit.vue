@@ -90,24 +90,24 @@
         <div class="flex itemtogether">
           <el-form-item label="总押金">
             <template slot-scope="scope">
-              <span>{{orderDetail.order.all_deposit}}</span>
+              <span>{{orderDetail.order.allDeposit}}</span>
             </template>
           </el-form-item>
           <el-form-item label="信用免押金">
-            <span>{{ orderDetail.order.credit_deposit }}</span>
+            <span>{{ orderDetail.order.creditDeposit }}</span>
           </el-form-item>
           <el-form-item label="预授权冻结金额">
-            <span>{{ orderDetail.order.freeze_deposit }}</span>
+            <span>{{ orderDetail.order.freezeDeposit }}</span>
           </el-form-item>
         </div>
         <div class="flex itemtogether">
           <el-form-item label="结算押金">
             <template slot-scope="scope">
-              <span>{{orderDetail.order.assign_strong_notary_deposit}}</span>
+              <span>{{orderDetail.order.assignStrongNotaryDeposit}}</span>
             </template>
           </el-form-item>
           <el-form-item label="结算押金">
-            <span>{{ orderDetail.order.settlement_deposit }}</span>
+            <span>{{ orderDetail.order.settlementDeposit }}</span>
           </el-form-item>
           <el-form-item >
             <span></span>
