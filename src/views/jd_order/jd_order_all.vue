@@ -79,41 +79,35 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="分期期数">
-            <template slot-scope="scope">
+            <span>{{orderDetail.order.rentType === 1 ? '日租' ? '月租'}}</span>
+          </el-form-item>
+          <el-form-item label="分期期数">
               <span>{{orderDetail.order.rentTime}}</span>
-            </template>
           </el-form-item>
           <el-form-item label="每期租金">
             <span>{{ orderDetail.order.rentPrice }}</span>
           </el-form-item>
-          <el-form-item label="全部租金">
-            <span>{{ orderDetail.order.totalRentPrice }}</span>
-          </el-form-item>
         </div>
         <div class="flex itemtogether">
+          <el-form-item label="全部租金">
+            <span>{{ orderDetail.order.totalRentPrice ? orderDetail.order.totalRentPrice : (orderDetail.order.rentTime * orderDetail.order.rentPrice) }}</span>
+          </el-form-item>
           <el-form-item label="总押金">
-            <template slot-scope="scope">
               <span>{{orderDetail.order.allDeposit}}</span>
-            </template>
           </el-form-item>
           <el-form-item label="信用免押金">
             <span>{{ orderDetail.order.creditDeposit }}</span>
           </el-form-item>
+        </div>
+        <div class="flex itemtogether">
           <el-form-item label="预授权冻结金额">
             <span>{{ orderDetail.order.freezeDeposit }}</span>
           </el-form-item>
-        </div>
-        <div class="flex itemtogether">
           <el-form-item label="结算押金">
-            <template slot-scope="scope">
               <span>{{orderDetail.order.assignStrongNotaryDeposit}}</span>
-            </template>
           </el-form-item>
           <el-form-item label="结算押金">
             <span>{{ orderDetail.order.settlementDeposit }}</span>
-          </el-form-item>
-          <el-form-item >
-            <span></span>
           </el-form-item>
         </div>
 <!--        <div class="flex itemtogether">-->
