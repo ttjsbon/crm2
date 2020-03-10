@@ -79,7 +79,7 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="分期期数">
-            <span>{{orderDetail.order.rentType === 1 ? '日租' ? '月租'}}</span>
+            <span>{{ orderDetail.order.rentType === 1 ? '日租' : '月租' }}</span>
           </el-form-item>
           <el-form-item label="分期期数">
               <span>{{orderDetail.order.rentTime}}</span>
@@ -418,21 +418,6 @@
           this.list = []
           this.total = 0
           this.listLoading = false
-        })
-      },
-      addRemarkV1_4_0_1() {
-        addRemarkV1_4_0(this.orderDetail.order.remark, this.orderDetail.order.orderSn).then(response => {
-          this.flags = response.data.data.flag
-          this.$notify({
-            title: '成功',
-            message: this.flags === true ? '保存成功' : '保存失败',
-            type: this.flags === true ? 'success' : 'error',
-            duration: 2000
-          })
-          this.orderDialogVisible = false
-          this.getList()
-        }).catch(() => {
-          this.flags = false
         })
       },
       handleFilter() {

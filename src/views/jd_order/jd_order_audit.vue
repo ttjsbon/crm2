@@ -76,7 +76,7 @@
         </div>
         <div class="flex itemtogether">
           <el-form-item label="分期期数">
-            <span>{{orderDetail.order.rentType === 1 ? '日租' ? '月租'}}</span>
+            <span>{{orderDetail.order.rentType === 1 ? '日租' : '月租'}}</span>
           </el-form-item>
           <el-form-item label="分期期数">
             <span>{{orderDetail.order.rentTime}}</span>
