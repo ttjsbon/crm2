@@ -23,7 +23,7 @@
           <el-tag>{{scope.row.channelStatus | orderStatusFilter}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="押金金额" prop="allDeposit"></el-table-column>
+      <el-table-column align="center" label="押金金额" prop="settlementDeposit"></el-table-column>
       <el-table-column align="center" label="分期金额" prop="rentPrice"></el-table-column>
       <el-table-column align="center" label="期数(日/月)" prop="rentTime"></el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -100,7 +100,7 @@
           <el-form-item label="预授权冻结金额">
             <span>{{ orderDetail.order.freezeDeposit }}</span>
           </el-form-item>
-          <el-form-item label="结算押金">
+          <el-form-item label="赋强公证金额">
             <span>{{orderDetail.order.assignStrongNotaryDeposit}}</span>
           </el-form-item>
           <el-form-item label="结算押金">
