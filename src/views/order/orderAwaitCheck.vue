@@ -358,35 +358,35 @@
         <!--''-->
         <!--</el-form-item>-->
         <!--</div>-->
-        <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>
-          <div v-html='showCheckData.creditScore'>
-            <!-- {{showCheckData}} -->
-          </div>
-        </el-form-item>
-        <el-form-item label="信用分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.creditScore)'>
-          ''
-        </el-form-item>
-        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='showCheckData&&showCheckData.score'>
-          {{showCheckData.score}}
-        </el-form-item>
-        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.score)'>
-          ''
-        </el-form-item>
-        <el-form-item label="风控建议" prop="refundMoney" v-if='showCheckData&&showCheckData.decision'>
-          {{showCheckData.decision}}
-        </el-form-item>
-        <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>
-          ''
-        </el-form-item>
+<!--        <el-form-item label="信用分数" prop="refundMoney" v-if='showCheckData&&showCheckData.creditScore'>-->
+<!--          <div v-html='showCheckData.creditScore'>-->
+<!--            &lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+<!--          </div>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="信用分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.creditScore)'>-->
+<!--          ''-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='showCheckData&&showCheckData.score'>-->
+<!--          {{showCheckData.score}}-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="反欺诈分数" prop="refundMoney" v-if='!(showCheckData&&showCheckData.score)'>-->
+<!--          ''-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="风控建议" prop="refundMoney" v-if='showCheckData&&showCheckData.decision'>-->
+<!--          {{showCheckData.decision}}-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="风控建议" prop="refundMoney" v-if='!(showCheckData&&showCheckData.decision)'>-->
+<!--          ''-->
+<!--        </el-form-item>-->
         <!--<el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result'>
           <div v-html='showCheckData.result'>
             {{showCheckData}}
           </div>
         </el-form-item>-->
-        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">
-          <div v-html='showCheckData.result'>
-            <!-- {{showCheckData}} -->
-          </div>
+<!--        <el-form-item label="风控详情" prop="refundMoney" v-if='showCheckData&&showCheckData.result' style="width: 700px">-->
+<!--          <div v-html='showCheckData.result'>-->
+<!--            &lt;!&ndash; {{showCheckData}} &ndash;&gt;-->
+<!--          </div>-->
           <!--<span v-if="checkTongDun.INFOANALYSIS.id_age" >年龄：{{ checkTongDun.INFOANALYSIS.id_age }}<br></span>
           <span v-if="checkTongDun.INFOANALYSIS.id_gender">性别：{{ checkTongDun.INFOANALYSIS.id_gender === 'F' ? '女' : '男' }}<br></span>
           <span v-if="checkTongDun.INFOANALYSIS.address_detect.mobile_address_province">移动地址省份：{{ checkTongDun.INFOANALYSIS.address_detect.mobile_address_province }}<br></span>
@@ -433,10 +433,10 @@
               <span v-if="risk_detail.frequency_detail_list.type">所在名单：{{risk_detail.frequency_detail_list.type}}<br></span>
             </div>
           </div>-->
-        </el-form-item>
-        <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>
-          ''
-        </el-form-item>
+<!--        </el-form-item>-->
+<!--        <el-form-item label="风控详情" prop="refundMoney" v-if='!(showCheckData&&showCheckData.result)'>-->
+<!--          ''-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="checkDialogVisible=false">取消</el-button>
