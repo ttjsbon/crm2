@@ -104,7 +104,7 @@
             <span>{{orderDetail.order.assignStrongNotaryDeposit}}</span>
           </el-form-item>
           <el-form-item label="结算押金">
-            <span>{{ orderDetail.order.settlementDeposit }}</span>
+            <span>{{ orderDetail.order.allDeposit - orderDetail.order.creditDeposit }}</span>
           </el-form-item>
         </div>
         <!--        <div class="flex itemtogether">-->
