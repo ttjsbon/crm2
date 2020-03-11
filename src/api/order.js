@@ -452,3 +452,14 @@ export function pendingDetail(id) {
     }
   })
 }
+
+export function notification(id) {
+  return request({
+    url: '/order/notification',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
