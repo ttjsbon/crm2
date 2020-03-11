@@ -23,7 +23,11 @@
           <el-tag>{{scope.row.channelStatus | orderStatusFilter}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="押金金额" prop="settlementDeposit"></el-table-column>
+      <el-table-column align="center" label="押金金额">
+        <template slot-scope="scope">
+          <el-tag>{{ (scope.row.allDeposit - scope.row.creditDeposit) }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="分期金额" prop="rentPrice"></el-table-column>
       <el-table-column align="center" label="期数(日/月)" prop="rentTime"></el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -104,7 +108,7 @@
             <span>{{orderDetail.order.assignStrongNotaryDeposit}}</span>
           </el-form-item>
           <el-form-item label="结算押金">
-            <span>{{ orderDetail.order.allDeposit - orderDetail.order.creditDeposit }}</span>
+            <span>{{ (orderDetail.order.allDeposit - orderDetail.order.creditDeposit) }}</span>
           </el-form-item>
         </div>
         <!--        <div class="flex itemtogether">-->
