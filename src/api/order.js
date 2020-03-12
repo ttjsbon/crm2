@@ -463,3 +463,10 @@ export function notification(id) {
   })
 }
 
+export function overdueBadDebtsAndReturns(query) {
+  return request({
+    url: '/order/overdueBadDebtsAndReturns',
+    method: 'get',
+    params: query
+  })
+}

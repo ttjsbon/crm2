@@ -313,6 +313,14 @@ export const asyncRouterMap = [{
       title: '还机逾期',
       noCache: true
     }
+  },{
+    path: 'orderBadDebtAndReturns',
+    component: _import('order/orderBadDebtAndReturns'),
+    name: 'orderBadDebtAndReturns',
+    meta: {
+      title: '还机&坏账逾期',
+      noCache: true
+    }
   }, {
     path: 'orderCompensation',
     component: _import('order/orderCompensation'),
